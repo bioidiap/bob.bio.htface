@@ -107,14 +107,22 @@ def main():
 
   args = parser.parse_args()
 
-  ubm   = bob.learn.em.GMMMachine(bob.io.base.HDF5File(args.ubm))
+  
+  try:
+    ubm   = bob.learn.em.GMMMachine(bob.io.base.HDF5File(args.ubm))
+  except RuntimeError:
+    hdf5 = bob.io.base.HDF5File(args.ubm)
+    hdf5.cd('Projector')
+    ubm   = bob.learn.em.GMMMachine(hdf5)
+
   ubm_components = ubm.shape[0]  
 
   if not os.path.exists(args.output):
     bob.io.base.create_directories_safe(args.output)
   
   database = bob.bio.base.utils.resources.load_resource(args.database, RESOURCE_KEY)
-  data     = database.training_files(protocol=args.protocol)[0:100]
+  #data     = database.training_files(protocol=args.protocol)[0:100]
+  data     = database.objects(protocol=args.protocol, group="world")
 
   sys.stdout.write("Training set size {0}\n".format(len(data))); sys.stdout.flush();
   
@@ -140,7 +148,7 @@ def main():
       #####
       # MOST IMPORTANT THING OF THE SCRIPT. Filtering the modalities
       #####
-      if d.modality != m:
+      if d.f.modality != m:
         continue
       
       features = bob.io.base.load(os.path.join(args.features_dir,d.path+".hdf5"))
@@ -174,6 +182,7 @@ def main():
   #                  | ,
   #                  | #NGauss_MOD_A/(#NGauss_MOD_A   +   #NGauss_MOD_B)   ---  #NGauss_MOD_B/(#NGauss_MOD_A   +   #NGauss_MOD_B)
 
+  
   for c in range(ubm_components):
   #for c in range(1):
 

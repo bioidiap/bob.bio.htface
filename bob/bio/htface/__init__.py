@@ -1,5 +1,5 @@
 from . import database
-
+from . import algorithm
 
 def get_config():
   """Returns a string containing the configuration information.

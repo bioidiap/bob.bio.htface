@@ -71,3 +71,7 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
     def zobjects(self, groups=None, protocol="search_split1_p2s", **kwargs):
         retval = self.db.zobjects(groups=groups, protocol=protocol, **kwargs)
         return [CUHK_CUFSBioFile(f, self.db) for f in retval]
+        
+    def annotations(self, file_object):
+        return file_object.f.annotations()
+

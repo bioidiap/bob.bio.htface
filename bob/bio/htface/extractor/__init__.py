@@ -1,4 +1,5 @@
 from .CNNFeatureBlocks import CNNFeatureBlocks
+from .AugmentedDCTBlocks import AugmentedDCTBlocks
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):

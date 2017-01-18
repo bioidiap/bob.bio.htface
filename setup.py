@@ -106,6 +106,14 @@ setup(
             'nivl         = bob.bio.htface.config.database.nivl:database',
             'pola_thermal = bob.bio.htface.config.database.pola_thermal:database',
         ],
+        
+        'console_scripts' : [
+            'gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main',
+            'plot_covariate_shift.py = bob.bio.htface.script.plot_covariate_shift:main',
+            'grassmann_test.py = bob.bio.htface.script.grassmann_test:main',
+            'verify_ht.py = bob.bio.htface.script.verify:main'
+        ],
+
     },
 
     # Classifiers are important if you plan to distribute this package through

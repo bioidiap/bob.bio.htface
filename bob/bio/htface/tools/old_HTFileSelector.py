@@ -4,17 +4,19 @@
 # @date: Sun Mar  07 17:15:00 CET 2015
 
 
-from facereclib.toolchain import FileSelector
+from bob.bio.base import utils
+from bob.bio.base.tools.FileSelector import FileSelector
 
+
+@utils.Singleton
 class HTFileSelector(FileSelector):
   """This class provides shortcuts for selecting different files for different stages of the verification process"""
 
-  def __init__(self, separator, database,
-  
+  def __init__(self, separator,  
       # parameters of the File selector
       **kwargs):
 
-    FileSelector.__init__(self, database,**kwargs)
+    super(HTFileSelector, self).__init__(**kwargs)
     self.m_separator = separator
     
 
