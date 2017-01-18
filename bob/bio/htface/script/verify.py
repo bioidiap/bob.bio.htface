@@ -20,7 +20,7 @@ def parse_arguments(command_line_parameters, exclude_resources_from = []):
   # Add sub-tasks that can be executed by this script
   parser = parsers['main']
   
-  parser.add_argument('--modality-separator', default = 'preprocessed', type=str,
+  parser.add_argument('--modality-separator', default = 'preprocessed', type=str, required=True,
                       help="Use this flag to split the data between modalities")
   
   parser.add_argument('--sub-task',
