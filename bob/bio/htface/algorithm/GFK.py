@@ -64,6 +64,32 @@ class GFK (HTAlgorithm):
     self.target_machine = None
     self.G = None
     self.requires_projector_training = True
+    self.eps = 1e-20;
+
+
+  def _null_space(self, A):
+    """
+      [~,S,V] = svd(A,0);
+      if m > 1, s = diag(S);
+         elseif m == 1, s = S(1);
+         else s = 0;
+      end
+      tol = max(m,n) * eps(max(s));
+      r = sum(s > tol);
+      Z = V(:,r+1:n);    
+    """
+
+    U, S, V = numpy.linalg.svd(A)
+    m, n = A.shape
+    
+    if m==1:
+      s = S[0]
+    else:
+      s = S
+
+    r = sum(s > self.eps)
+    return V[:,r:n]
+
 
   def _train_gfk(self, Ps, Pt):
     """
@@ -74,9 +100,7 @@ class GFK (HTAlgorithm):
 
     N = Ps.shape[1]
     dim = Pt.shape[1]
-
-
-    eps = 1e-20;
+    
 
     #Principal angles
     QPt = numpy.dot(Ps.T, Pt)
@@ -97,12 +121,12 @@ class GFK (HTAlgorithm):
     theta = numpy.arccos(numpy.diagonal(Gam))
     
     B1 = numpy.diag(0.5* (1+( numpy.sin(2*theta) / (2.*numpy.maximum
-  (theta,eps)))))
+  (theta,self.eps)))))
     B2 = numpy.diag(0.5*((numpy.cos(2*theta)-1) / (2*numpy.maximum(
-  theta,eps))))
+  theta,self.eps))))
     B3 = B2
     B4 = numpy.diag(0.5* (1-( numpy.sin(2*theta) / (2.*numpy.maximum
-  (theta,eps)))))
+  (theta,self.eps)))))
 
 
     delta1_1 = numpy.hstack( (V1, numpy.zeros(shape=(dim,N-dim))) )
@@ -142,17 +166,19 @@ class GFK (HTAlgorithm):
 
     # For re-shaping, we need to copy...
     variances = variances.copy()
-
+    subspace_dim = self.m_subspace_dim
+    
     # compute variance percentage, if desired
     if isinstance(self.m_subspace_dim, float):
       cummulated = numpy.cumsum(variances) / numpy.sum(variances)
       for index in range(len(cummulated)):
-        if cummulated[index] > self.m_subspace_dim:
-          self.m_subspace_dim = index
+        if cummulated[index] > subspace_dim:
+          subspace_dim = index
           break
-      self.m_subspace_dim = index
-    logger.info("    ... Keeping %d PCA dimensions", self.m_subspace_dim)
+      subspace_dim = index
+    logger.info("    ... Keeping %d PCA dimensions", subspace_dim)
     
+    machine.resize(machine.shape[0], subspace_dim)
     machine.input_subtract = mu_data
     machine.input_divide = std_data
     
@@ -161,7 +187,7 @@ class GFK (HTAlgorithm):
 
   def train_projector(self, training_features, projector_file):
     """Compute the kernel"""
-           
+
     source = training_features[0]
     target = training_features[1]
 
@@ -175,8 +201,7 @@ class GFK (HTAlgorithm):
     Pt = self._train_pca(target, mu_target, std_target)
     #self.m_machine                = bob.io.base.load("/idiap/user/tpereira/gitlab/workspace_HTFace/GFK.hdf5")
     
-    #G = self._train_gfk(Ps.weights, Pt.weights[:,0:self.m_principal_angles_dimension])
-    G = self._train_gfk(Ps.weights, Pt.weights[:,:])
+    G = self._train_gfk(numpy.hstack((Ps.weights, self._null_space(Ps.weights.T))), Pt.weights[:,0:self.m_principal_angles_dimension])
     
     # Saving the source linear machine, target linear machine and the Kernel
     f = bob.io.base.HDF5File(projector_file, "w")

@@ -97,7 +97,6 @@ class GridSubmission:
     if not self.args.dry_run:
       if(self.env is not None):
         kwargs['env'] = self.env
-
       job_id = self.job_manager.submit(
           command_line = cmd,
           name = name,

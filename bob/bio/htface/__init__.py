@@ -1,5 +1,6 @@
 from . import database
 from . import algorithm
+from . import extractor
 
 def get_config():
   """Returns a string containing the configuration information.

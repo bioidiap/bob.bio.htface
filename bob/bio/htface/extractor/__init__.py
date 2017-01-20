@@ -1,5 +1,6 @@
 from .CNNFeatureBlocks import CNNFeatureBlocks
 from .AugmentedDCTBlocks import AugmentedDCTBlocks
+from .LBPHS import LBPHS
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -19,3 +20,4 @@ __appropriate__(
     CNNFeatureBlocks,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]
+

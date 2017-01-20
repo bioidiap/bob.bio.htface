@@ -17,21 +17,10 @@ from .HTAlgorithm import HTAlgorithm
 
 class HT_PCA (HTAlgorithm):
   """
-  Eigenfaces with dataset shift from image modality A and B
+  Eigenfaces with dataset shift from image modality A and B.
   
-  This algorithm do the following.
-  
-  1. TRAIN: 
-     A. Computes PCA over the whole training data (both modalities)
-     B. For each modality (A and B), computes \mu_A and \mu_B.
-
-  2. ENROLL   
-     Since we assumed that the shift is from A and B, the enrollment is just a simple projection from features from modality A
-  
-  3. PROBE
-     A. Project feature
-     B. Apply the covariate shift
-  
+  Given X_A and X_B features from modality A and B, this algorithm tries to make P(X_A) = P(X_B) by doing znorm using only features from A.
+    
   """
 
   def __init__(
@@ -72,11 +61,19 @@ class HT_PCA (HTAlgorithm):
     # Initializes the data
     data_A = numpy.vstack([feature.flatten() for feature in training_features[0]])
     data_B = numpy.vstack([feature.flatten() for feature in training_features[1]])
+
+    # Computing statistics from A
+    data_A, mu_A, std_A = self._znorm(data_A)
+    
+    # Normalizing B with data from A
+    data_B = (data_B - mu_A) / std_A    
     data = numpy.concatenate((data_A,data_B),axis=0)
 
     logger.info("  -> Training LinearMachine using PCA")
     t = bob.learn.linear.PCATrainer()
     self.m_machine, self.m_variances = t.train(data)
+    self.m_machine.input_subtract = mu_A
+    self.m_machine.input_divide = std_A
 
     # For re-shaping, we need to copy...
     self.variances = self.m_variances.copy()
@@ -93,19 +90,24 @@ class HT_PCA (HTAlgorithm):
 
     # re-shape machine
     self.m_machine.resize(self.m_machine.shape[0], self.m_subspace_dim)
-
-    self.m_ht_offset, self.m_ht_std = self.compute_offset(data_A, data_B)
     
-    f = bob.io.base.HDF5File(projector_file, "w")
-    f.set("Eigenvalues", self.m_variances)
-    f.set("ht_offset", self.m_ht_offset)
-    f.set("ht_std", self.m_ht_std)
-    
-    f.create_group("Machine")
-    f.cd("/Machine")
+    f = bob.io.base.HDF5File(projector_file, "w")    
     self.m_machine.save(f)
 
 
+  def _znorm(self, data):
+    """
+    Z-Normalize
+    """
+
+    mu  = numpy.average(data,axis=0)
+    std = numpy.std(data,axis=0)
+
+    data = (data-mu)/std
+
+    return data,mu,std
+
+  """
   def compute_offset(self, data_A, data_B):
   
     projected_A = self.m_machine(data_A)
@@ -118,19 +120,21 @@ class HT_PCA (HTAlgorithm):
     std = numpy.std(projected_A, axis=0)
     
     return offset, std
+  """
+
 
 
   def load_projector(self, projector_file):
     """Reads the PCA projection matrix from file"""
     # read PCA projector
     f = bob.io.base.HDF5File(projector_file)
-    self.m_variances = f.read("Eigenvalues")
-    self.m_ht_offset = f.read("ht_offset")
-    self.m_ht_std    = f.read("ht_std")
-    f.cd("/Machine")
+    #self.m_variances = f.read("Eigenvalues")
+    #self.m_ht_offset = f.read("ht_offset")
+    #self.m_ht_std    = f.read("ht_std")
+    #f.cd("/Machine")
     self.m_machine = bob.learn.linear.Machine(f)
     # Allocates an array for the projected data
-    self.m_projected_feature = numpy.ndarray(self.m_machine.shape[1], numpy.float64)
+    #self.m_projected_feature = numpy.ndarray(self.m_machine.shape[1], numpy.float64)
 
   def project(self, feature):
     """Projects the data using the stored covariance matrix"""
@@ -140,6 +144,7 @@ class HT_PCA (HTAlgorithm):
   def enroll(self, enroll_features):
     """Enrolls the model by computing an average of the given input vectors"""
     assert len(enroll_features)
+    
     # just store all the features
     model = numpy.zeros((len(enroll_features), enroll_features[0].shape[0]), numpy.float64)
     for n, feature in enumerate(enroll_features):
@@ -153,11 +158,10 @@ class HT_PCA (HTAlgorithm):
     """Computes the distance of the model to the probe using the distance function taken 
        from the config file applying from the feature offset
     """
-    
     # return the negative distance (as a similarity measure)
     if len(model.shape) == 2:
       # we have multiple models, so we use the multiple model scoring
-      return self.score_for_multiple_models(model, (probe + self.m_ht_offset))
+      return self.score_for_multiple_models(model, (probe))
     else:
       # single model, single probe (multiple probes have already been handled)
-      return self.m_factor * self.m_distance_function(model, (probe + self.m_ht_offset))
+      return self.m_factor * self.m_distance_function(model, (probe))
