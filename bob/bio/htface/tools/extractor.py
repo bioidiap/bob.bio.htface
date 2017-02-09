@@ -159,8 +159,9 @@ def read_features(file_names, extractor, split_by_client = False, allow_missing_
     The list of extracted features, in the same order as in the ``file_names``.
   """
   file_names = utils.filter_missing_files(file_names, split_by_client, allow_missing_files)
-
   if split_by_client:
     return [[extractor.read_feature(f) for f in client_files] for client_files in file_names]
   else:
-    return [extractor.read_feature(f) for f in file_names]
+    #TODO: It is redundant, but it is just for understanding
+    return [[extractor.read_feature(f) for f in modality_files] for modality_files in file_names]      
+

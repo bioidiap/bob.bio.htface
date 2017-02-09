@@ -279,7 +279,6 @@ def compute_scores(algorithm, compute_zt_norm, indices = None, groups = ['dev', 
   if algorithm.performs_projection or algorithm.requires_projector_training:
     algorithm.load_projector(fs.projector_file)
   algorithm.load_enroller(fs.enroller_file)
-
   for group in groups:
     # get model ids
     model_ids = fs.model_ids(group)

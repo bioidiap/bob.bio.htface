@@ -31,7 +31,8 @@ class GFK (HTAlgorithm):
   def __init__(
       self,
       number_of_subspaces,  # if int, number of subspace dimensions; if float, percentage of variance to keep
-      subspaces_dimension,
+      source_subspace_dimension,
+      target_subspace_dimension,      
       use_lda=False, # BUild the subspaces with LDA
       distance_function = scipy.spatial.distance.euclidean,
       is_distance_function = True,
@@ -59,7 +60,8 @@ class GFK (HTAlgorithm):
       )
 
       self.m_number_of_subspaces = number_of_subspaces
-      self.m_subspaces_dimension = subspaces_dimension
+      self.m_source_subspace_dimension = source_subspace_dimension
+      self.m_target_subspace_dimension = target_subspace_dimension
       self.gfk_machine = None
 
       self.m_distance_function = distance_function
@@ -74,8 +76,8 @@ class GFK (HTAlgorithm):
     """Compute the kernel"""
 
     gfk_trainer = GFKTrainer(self.m_number_of_subspaces, 
-                             subspace_dim_source=self.m_subspaces_dimension,
-                             subspace_dim_target=self.m_subspaces_dimension,
+                             subspace_dim_source=self.self.m_source_subspace_dimension,
+                             subspace_dim_target=self.m_target_subspace_dimension,
                              eps=self.eps)
 
     source_data = training_features[0]
@@ -119,5 +121,4 @@ class GFK (HTAlgorithm):
   def score(self, model, probe):
     """Computes the distance of the model to the probe using the distance function taken from the config file"""
     return self.gfk_machine(model, probe)
-
 
