@@ -70,6 +70,7 @@ class GFK (HTAlgorithm):
       
       self.requires_projector_training = True
       self.eps = 1e-20;
+      self.use_lda = use_lda
 
 
   def train_projector(self, training_features, projector_file):

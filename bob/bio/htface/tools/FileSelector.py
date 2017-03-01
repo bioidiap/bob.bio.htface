@@ -170,7 +170,7 @@ class FileSelector(object):
     If arrange_by_client is enabled, a list of lists (one list for each client) is returned."""
 
     files = self.database.training_files(step, arrange_by_client)
-
+    
     if not arrange_by_client and arrange_by_modality:
       return self.__arrange_by_modality(files, directory_type)
     else:#arrange_by_client and arrange_by_modality:
@@ -181,7 +181,8 @@ class FileSelector(object):
         a,b = self.__arrange_by_modality(c, directory_type)
         list_A.append(a)
         list_B.append(b)
-        
+    
+            
       return [list_A, list_B]
 
 
