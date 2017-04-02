@@ -253,7 +253,7 @@ class GFK_GaborJet(GFK, GaborJet):
     
         # Train PCA first
         pca_machine = self._znorm_perclient_and_pca(train_features)
-
+    
         # Project the data with PCA        
         pca_data = []
         for c in train_features:
