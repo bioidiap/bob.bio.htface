@@ -27,6 +27,10 @@ class CUHK_CUFSFBioFile(FaceBioFile):
         #else:
         #    return self.f.load(directory=directory, extension=extension)
 
+    @property
+    def modality(self):
+        return self.f.modality
+
 
 class CUHK_CUFSFBioDatabase(BioDatabase):
     """
@@ -48,6 +52,9 @@ class CUHK_CUFSFBioDatabase(BioDatabase):
                                    original_extension=original_extension,
                                    feret_directory=feret_directory
                                    )
+    @property
+    def modality_separator(self):
+        return "photo"
 
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    

@@ -19,13 +19,17 @@ class CUHK_CUFSBioFile(FaceBioFile):
     def __init__(self, f, db):
         super(CUHK_CUFSBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
-        self.db  = db
+        self.db = db
 
     def load(self, directory=None, extension=""):
         if directory is None:
             return bob.io.base.load(self.db.original_file_name(self.f))
         else:
-            return self.f.load(directory=None, extension="")
+            return self.f.load(directory=directory, extension=extension)
+
+    @property
+    def modality(self):
+        return self.f.modality
 
 
 class CUHK_CUFSBioDatabase(ZTBioDatabase):
@@ -51,6 +55,10 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
                                    original_extension = original_extension
                                    )
 
+    @property
+    def modality_separator(self):
+        return "photo"
+
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    
 
@@ -74,4 +82,3 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
         
     def annotations(self, file_object):
         return file_object.f.annotations()
-
