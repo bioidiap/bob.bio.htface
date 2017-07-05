@@ -40,6 +40,10 @@ class Pola_ThermalBioDatabase(BioDatabase):
         from bob.db.pola_thermal.query import Database as LowLevelDatabase
         self.db = LowLevelDatabase()
 
+    @property
+    def modality_separator(self):
+        return "VIS"
+
     def model_ids_with_protocol(self, groups=None, protocol="VIS-polarimetric-overall-split1", **kwargs):
         return self.db.model_ids(groups=groups, protocol=protocol)
 
@@ -49,4 +53,3 @@ class Pola_ThermalBioDatabase(BioDatabase):
 
     def annotations(self, file_object):
         return file_object.f.annotations()
-        
