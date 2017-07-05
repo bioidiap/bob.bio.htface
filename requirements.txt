@@ -22,3 +22,7 @@ bob.ip.facedetect
 bob.ip.flandmark
 matplotlib   # for plotting
 gridtk
+bob.bio.face
+bob.bio.base
+bob.bio.gmm
+bob.ip.caffe_extractor

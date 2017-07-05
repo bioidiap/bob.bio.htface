@@ -111,7 +111,8 @@ setup(
             'gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main',
             'plot_covariate_shift.py = bob.bio.htface.script.plot_covariate_shift:main',
             'grassmann_test.py = bob.bio.htface.script.grassmann_test:main',
-            'verify_ht.py = bob.bio.htface.script.verify_ht:main'
+            'verify_ht.py = bob.bio.htface.script.verify_ht:main',
+            'plot_tsne_modality.py = bob.bio.htface.script.plot_tsne_modality:main',
         ],
 
     },

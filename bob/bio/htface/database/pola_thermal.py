@@ -20,6 +20,10 @@ class Pola_ThermalBioFile(FaceBioFile):
         super(Pola_ThermalBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
 
+    @property
+    def modality(self):
+        return self.f.modality
+
 
 class Pola_ThermalBioDatabase(BioDatabase):
     """

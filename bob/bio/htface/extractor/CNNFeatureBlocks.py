@@ -1,7 +1,5 @@
 import numpy
-import bob.ip.caffe_extractor
 from bob.bio.base.extractor import Extractor
-
 
 
 class CNNFeatureBlocks(Extractor):
@@ -46,8 +44,9 @@ class CNNFeatureBlocks(Extractor):
         feature : 2D :py:class:`numpy.ndarray` (floats)
           The extracted features
         """
-   
+
         if self.new_feature is None:
+            import bob.ip.caffe_extractor
             self.new_feature = bob.ip.caffe_extractor.VGGFace(self.feature_layer)
 
         temp_feature = self.new_feature(image)
