@@ -65,7 +65,7 @@ def main():
     protocol = args['<protocol>']
     database_original_directory = args['--database-original-directory']
     database_extension = args['--database-extension']
-    output_file = args['--output_file']
+    output_file = args['--output-file']
 
     seed = int(args['--seed'])
     perplexity = int(args['--perplexity'])
