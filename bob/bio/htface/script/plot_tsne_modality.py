@@ -17,7 +17,7 @@ van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-S
 
 Usage:
   plot_tsne.py  <database> <protocol> --database-original-directory=<arg>
-               [--database-extension=<arg> --output_file=<arg>]
+               [--database-extension=<arg> --output-file=<arg>]
                [--iterations=<arg> --learning-rate=<arg> --perplexity=<arg> --seed=<arg>]
                [--preprocessor=<arg>] 
   plot_tsne.py -h | --help
@@ -39,6 +39,8 @@ import logging
 from bob.bio.htface.tools import FileSelector
 
 import numpy
+import matplotlib
+matplotlib.use('agg')
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as mpl
 from sklearn.manifold import TSNE
