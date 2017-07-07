@@ -11,6 +11,7 @@ class TensorflowEmbedding(Extractor):
 
     def __init__(
             self,
+            path,
             normalizer=None
     ):
         Extractor.__init__(self, skip_extractor_training=True)
@@ -26,7 +27,7 @@ class TensorflowEmbedding(Extractor):
                                  analizer=None,
                                  temp_dir=None)
 
-        trainer.create_network_from_file("/Users/tiago.pereira/Documents/gitlab/bob.bio.htface/temp/inception/model_snapshot2000.ckp-2000")
+        trainer.create_network_from_file(path)
         self.embedding = Embedding(trainer.data_ph['left'], trainer.graph['left'], normalizer=normalizer)
 
     def __call__(self, image):
