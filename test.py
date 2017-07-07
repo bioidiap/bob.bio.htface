@@ -38,13 +38,13 @@ def my_inception(inputs, scope='myInception', reuse=False, device="/cpu:0"):
         #graph = slim.max_pool2d(graph, [2, 2], scope='pool2')
 
         end_point = "conv2"
-        graph = layers.conv2d(graph, 64, [5, 5], stride=2, scope=end_point)
+        graph = layers.conv2d(graph, 64, [5, 5], stride=2, scope=end_point, normalizer_fn=layers_lib.batch_norm)
 
         end_point = "pool2"
         graph = layers_lib.max_pool2d(graph, [2, 2], stride=1, scope=end_point)
 
         end_point = "conv3"
-        graph = layers.conv2d(graph, 32, [5, 5], stride=2, scope=end_point)
+        graph = layers.conv2d(graph, 32, [5, 5], stride=2, scope=end_point, normalizer_fn=layers_lib.batch_norm)
 
         end_point = "pool3"
         graph = layers_lib.max_pool2d(graph, [2, 2], stride=2, scope=end_point)
@@ -52,17 +52,17 @@ def my_inception(inputs, scope='myInception', reuse=False, device="/cpu:0"):
 
         with variable_scope.variable_scope("Mixed2"):
             with variable_scope.variable_scope('Branch_0'):
-                branch_0 = layers.conv2d(graph, 192, [1, 1], scope='Conv2d_0a_1x1')
+                branch_0 = layers.conv2d(graph, 192, [1, 1], scope='Conv2d_0a_1x1', normalizer_fn=layers_lib.batch_norm)
 
             with variable_scope.variable_scope('Branch_1'):
-                branch_1 = layers.conv2d(graph, 96, [1, 1], scope='Conv2d_0a_1x1')
+                branch_1 = layers.conv2d(graph, 96, [1, 1], scope='Conv2d_0a_1x1', normalizer_fn=layers_lib.batch_norm)
                 branch_1 = layers.conv2d(
                     branch_1, 208, [3, 3], scope='Conv2d_0b_3x3')
 
             with variable_scope.variable_scope('Branch_2'):
-                branch_2 = layers.conv2d(graph, 16, [1, 1], scope='Conv2d_0a_1x1')
+                branch_2 = layers.conv2d(graph, 16, [1, 1], scope='Conv2d_0a_1x1', normalizer_fn=layers_lib.batch_norm)
                 branch_2 = layers.conv2d(
-                    branch_2, 48, [3, 3], scope='Conv2d_0b_3x3')
+                    branch_2, 48, [3, 3], scope='Conv2d_0b_3x3', normalizer_fn=layers_lib.batch_norm)
 
             #with variable_scope.variable_scope('Branch_3'):
             #    branch_3 = layers_lib.max_pool2d(
@@ -133,15 +133,15 @@ chopra = Chopra()
 #graph['left'] = inception.inception_v1(inputs['left'])[0]
 #graph['right'] = inception.inception_v1(inputs['right'], reuse=True)[0]
 
-import ipdb;
-ipdb.set_trace()
+#import ipdb;
+#ipdb.set_trace()
 
 graph['left'] = my_inception(inputs['left'])
 graph['right'] = my_inception(inputs['right'], reuse=True)
 
 
 # One graph trainer
-iterations = 100
+iterations = 10000
 trainer = SiameseTrainer(train_data_shuffler,
                          iterations=iterations,
                          analizer=None,
