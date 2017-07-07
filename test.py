@@ -1,6 +1,7 @@
 from bob.bio.htface.datashuffler import SiameseDiskHTFace
 from bob.learn.tensorflow.loss import ContrastiveLoss
 from bob.learn.tensorflow.trainers import SiameseTrainer, constant
+from bob.learn.tensorflow.network import Chopra
 import tensorflow as tf
 
 directory = "./temp/inception"
@@ -36,8 +37,13 @@ inputs = train_data_shuffler("data", from_queue=False)
 
 from tensorflow.contrib.slim.python.slim.nets import inception
 graph = dict()
-graph['left'] = inception.inception_v1(inputs['left'])[0]
-graph['right'] = inception.inception_v1(inputs['right'], reuse=True)[0]
+chopra = Chopra()
+graph['left'] = chopra(inputs['left'])
+graph['right'] = chopra(inputs['right'], reuse=True)
+
+#graph['left'] = inception.inception_v1(inputs['left'])[0]
+#graph['right'] = inception.inception_v1(inputs['right'], reuse=True)[0]
+
 
 # One graph trainer
 iterations = 100
