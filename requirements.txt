@@ -26,3 +26,4 @@ bob.bio.face
 bob.bio.base
 bob.bio.gmm
 bob.ip.caffe_extractor
+scikit-learn

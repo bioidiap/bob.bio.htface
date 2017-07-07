@@ -42,7 +42,7 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
             cufs_database_dir="",
             arface_database_dir="",
             xm2vts_database_dir="",
-            original_extension = ['.jpg','.JPG','.ppm'],
+            original_extension=['.jpg', '.JPG', '.ppm'],
             **kwargs
     ):
         # call base class constructors to open a session to the database
@@ -57,7 +57,7 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
 
     @property
     def modality_separator(self):
-        return "photo"
+        return self.db.modality_separator
 
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    
