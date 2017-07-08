@@ -94,6 +94,73 @@ def my_inception(inputs, scope='myInception', reuse=False, device="/cpu:0"):
     return graph
 
 
+def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
+    slim = tf.contrib.slim
+    initializer = tf.contrib.layers.xavier_initializer(seed=10)  # Weights initializer
+    with variable_scope.variable_scope(scope, 'InceptionVx', [inputs], reuse=reuse):
+
+
+        # 224 x 224 x
+        graph = slim.conv2d(inputs, 64, [5, 5], activation_fn=tf.nn.relu,
+                            stride=2, scope='conv1',
+                            weights_initializer=initializer)
+
+        # 112 x 112 x 64
+        graph = slim.max_pool2d(graph, [3, 3], stride=2, scope='pool1')
+
+        # 64 x 64 x 64
+        graph = slim.conv2d(graph, 96, [5, 5], activation_fn=tf.nn.relu,
+                            stride=2, scope='conv2',
+                            weights_initializer=initializer)
+
+        # 16 x 16 x 64
+        graph = slim.max_pool2d(graph, [3, 3], stride=2, scope='pool2')
+
+        with variable_scope.variable_scope("Inception_1"):
+            with tf.variable_scope('Branch_0'):
+                branch_0 = slim.conv2d(graph, 32, [1, 1], stride=1,
+                                       activation_fn=tf.nn.relu, scope='Branch_0_1x1')
+
+            with tf.variable_scope('Branch_1'):
+                branch_1 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                       scope='Branch_1_1x1')
+                branch_1 = slim.conv2d(branch_1, 64, [3, 3], stride=1, activation_fn=tf.nn.relu,
+                                       scope='Branch_1_3x3')
+
+            with tf.variable_scope('Branch_2'):
+                branch_2 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                       scope='Branch_2_1x1')
+                branch_2 = slim.conv2d(branch_2, 64, [5, 5], stride=1, activation_fn=tf.nn.relu,
+                                       scope='Branch_2_5x5')
+
+            with tf.variable_scope('Branch_3'):
+                branch_3 = slim.max_pool2d(graph, [3, 3], padding="SAME", stride=1, scope='Branch_3_pool')
+                branch_3 = slim.conv2d(branch_3, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                       scope='Branch_3_5x5')
+
+        # 32 + 64 + 64 + 32 -- 192
+        graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
+
+        graph = slim.flatten(graph, scope='flatten1')
+
+        graph = slim.fully_connected(graph, 192,
+                                     weights_initializer=initializer,
+                                     activation_fn=tf.nn.relu,
+                                     scope='fc1',
+                                     reuse=reuse)
+
+        graph = slim.fully_connected(graph, 75,
+                                     weights_initializer=initializer,
+                                     activation_fn=None,
+                                     scope='fcN',
+                                     reuse=reuse)
+
+        #graph = slim.softmax(graph, 75, scope='Predictions')
+
+        return graph
+
+
+
 def create_architecture(placeholder):
     initializer = tf.contrib.layers.xavier_initializer(seed=10)  # Weights initializer
 
@@ -109,9 +176,16 @@ def create_architecture(placeholder):
 
 # Loading data
 from bob.db.cuhk_cufs.query import Database
-database = Database(original_directory="/Users/tiago.pereira/Documents/database/cuhk_cufs_process",
-                    original_extension=".png",
+database = Database(original_directory="/Users/tiagodefreitaspereira/Documents/DataBases/CUHK/preprocessed",
+                    original_extension=".hdf5",
                     arface_directory="", xm2vts_directory="")
+
+
+#train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
+#                                        batch_size=8,
+#                                        input_shape=[None, 112, 112, 1],
+#                                        normalizer=MeanOffset(bob.io.base.load("means.hdf5")))
+
 
 train_data_shuffler = SiameseDiskHTFace(database=database, protocol="cuhk_p2s",
                                         batch_size=8,
@@ -126,7 +200,7 @@ inputs = train_data_shuffler("data", from_queue=False)
 
 from tensorflow.contrib.slim.python.slim.nets import inception
 graph = dict()
-chopra = Chopra()
+#chopra = Chopra()
 #graph['left'] = chopra(inputs['left'])
 #graph['right'] = chopra(inputs['right'], reuse=True)
 
@@ -136,8 +210,8 @@ chopra = Chopra()
 #import ipdb;
 #ipdb.set_trace()
 
-graph['left'] = my_inception(inputs['left'])
-graph['right'] = my_inception(inputs['right'], reuse=True)
+graph['left'] = my_inception_2(inputs['left'])
+graph['right'] = my_inception_2(inputs['right'], reuse=True)
 
 
 # One graph trainer
