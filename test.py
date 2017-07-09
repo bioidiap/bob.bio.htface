@@ -14,7 +14,8 @@ from tensorflow.contrib.layers.python.layers import layers as layers_lib
 import os
 
 directory = "./temp/inception"
-
+database_path = "/Users/tiago.pereira/Documents/database/cuhk_cufs_process"
+device="/cpu:0"
 
 def my_inception(inputs, scope='myInception', reuse=False, device="/cpu:0"):
     slim = tf.contrib.slim
@@ -157,6 +158,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
             graph = slim.fully_connected(graph, 192,
                                          weights_initializer=initializer,
                                          activation_fn=tf.nn.relu,
+                                         normalizer_fn=slim.batch_norm,
                                          scope='fc1',
                                          reuse=reuse)
 
@@ -187,7 +189,7 @@ def create_architecture(placeholder):
 
 # Loading data
 from bob.db.cuhk_cufs.query import Database
-database = Database(original_directory="/Users/tiago.pereira/Documents/database/cuhk_cufs_process",
+database = Database(original_directory=database_path,
                     original_extension=".hdf5",
                     arface_directory="", xm2vts_directory="")
 
@@ -198,7 +200,7 @@ database = Database(original_directory="/Users/tiago.pereira/Documents/database/
 #                                        normalizer=MeanOffset(bob.io.base.load("means.hdf5")))
 
 
-train_data_shuffler = SiameseDiskHTFace(database=database, protocol="cuhk_p2s",
+train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
                                         batch_size=8,
                                         input_shape=[None, 224, 224, 1],
                                         normalizer=MeanOffset(bob.io.base.load("means.hdf5")))
@@ -221,8 +223,8 @@ graph = dict()
 #import ipdb;
 #ipdb.set_trace()
 
-graph['left'] = my_inception_2(inputs['left'])
-graph['right'] = my_inception_2(inputs['right'], reuse=True)
+graph['left'] = my_inception_2(inputs['left'], device=device)
+graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
 
 
 # One graph trainer
