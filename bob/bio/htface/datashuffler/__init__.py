@@ -2,6 +2,7 @@
 # vim: set fileencoding=utf-8 :
 
 from .SiameseDiskHTFace import SiameseDiskHTFace
+from .Normalizer import MeanOffsetHT
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
