@@ -2,7 +2,7 @@ from bob.bio.htface.datashuffler import SiameseDiskHTFace, MeanOffsetHT
 from bob.learn.tensorflow.loss import ContrastiveLoss
 from bob.learn.tensorflow.trainers import SiameseTrainer, constant
 from bob.learn.tensorflow.network import Chopra
-from bob.learn.tensorflow.datashuffler import MeanOffset
+from bob.learn.tensorflow.datashuffler import MeanOffset, ImageAugmentation
 import bob.io.base
 
 import tensorflow as tf
@@ -194,14 +194,14 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
             # N x 37.632
             graph = slim.dropout(graph, keep_prob=0.4)
 
-            graph = slim.fully_connected(graph, 808,
-                                         weights_initializer=initializer,
-                                         activation_fn=tf.nn.relu,
-                                         normalizer_fn=slim.batch_norm,
-                                         scope='fc1',
-                                         reuse=reuse)
+            #graph = slim.fully_connected(graph, 808,
+            #                             weights_initializer=initializer,
+            #                             activation_fn=tf.nn.relu,
+            #                             normalizer_fn=slim.batch_norm,
+            #                             scope='fc1',
+            #                             reuse=reuse)
 
-            graph = slim.dropout(graph, keep_prob=0.4)
+            #graph = slim.dropout(graph, keep_prob=0.4)
 
             graph = slim.fully_connected(graph, 404,
                                          weights_initializer=initializer,
@@ -248,7 +248,8 @@ normalizer = MeanOffset(bob.io.base.load("means.hdf5"))
 train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
                                         batch_size=8,
                                         input_shape=[None, 224, 224, 1],
-                                        normalizer=normalizer)
+                                        normalizer=normalizer,
+                                        data_augmentation=ImageAugmentation())
 
 validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
                                              batch_size=32,
