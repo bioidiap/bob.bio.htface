@@ -83,7 +83,7 @@ class SiameseDiskHTFace(SiameseDisk):
         # TODO: very bad solution to deal with bob.shape images an tf shape images
         self.bob_shape = tuple([input_shape[3]] + list(input_shape[1:3]))
 
-    def load_data_per_identity_modality(self, identity, modality):
+    def load_data_per_identity_modality(self, identity, modality, is_modality_A=True):
 
         # Fetching genuine modality A
         objects = self.database.objects(protocol=self.protocol,
@@ -93,7 +93,10 @@ class SiameseDiskHTFace(SiameseDisk):
                                         modality=[modality])
         numpy.random.shuffle(objects)
         file_name = objects[0].make_path(self.database.original_directory, self.database.original_extension)
-        return self.normalize_sample(self.load_from_file(str(file_name)))
+
+        # Checking if the normalizer is a HT normalizer
+        if hasattr(self.normalizer, "is_ht"):
+            return self.normalizer(self.load_from_file(str(file_name)), is_modality_a=is_modality_A)
 
     def get_batch(self):
         """
@@ -120,13 +123,13 @@ class SiameseDiskHTFace(SiameseDisk):
             genuine_index = self.client_ids[0]
 
             if genuine:
-                l = self.load_data_per_identity_modality(genuine_index, self.database.modalities[0])
-                r = self.load_data_per_identity_modality(genuine_index, self.database.modalities[1])
+                l = self.load_data_per_identity_modality(genuine_index, self.database.modalities[0], True)
+                r = self.load_data_per_identity_modality(genuine_index, self.database.modalities[1], False)
 
             else:
                 impostor_index = self.client_ids[1]
-                l = self.load_data_per_identity_modality(genuine_index, self.database.modalities[0])
-                r = self.load_data_per_identity_modality(impostor_index, self.database.modalities[1])
+                l = self.load_data_per_identity_modality(genuine_index, self.database.modalities[0], True)
+                r = self.load_data_per_identity_modality(impostor_index, self.database.modalities[1], False)
 
             sample_l[i, ...] = l
             sample_r[i, ...] = r
