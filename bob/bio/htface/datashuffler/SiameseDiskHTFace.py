@@ -50,7 +50,9 @@ class SiameseDiskHTFace(SiameseDisk):
                  batch_size=1,
                  seed=10,
                  data_augmentation=None,
-                 normalizer=Linear()):
+                 normalizer=Linear(),
+                 groups="world",
+                 purposes=["train"]):
 
         #if isinstance(data, list):
         #    data = numpy.array(data)
@@ -58,13 +60,16 @@ class SiameseDiskHTFace(SiameseDisk):
         #if isinstance(labels, list):
         #    labels = numpy.array(labels)
 
+        self.groups = groups
+        self.purposes = purposes
+
         numpy.random.seed(seed)
         self.database = database
 
         #self.db_objects = self.database.objects(self.database.original_directory,
         #                                        self.database.original_extension)
 
-        self.client_ids = self.database.model_ids(protocol=protocol, groups="world")
+        self.client_ids = self.database.model_ids(protocol=protocol, groups=self.groups)
         self.protocol = protocol
 
         super(SiameseDisk, self).__init__(
@@ -87,8 +92,8 @@ class SiameseDiskHTFace(SiameseDisk):
 
         # Fetching genuine modality A
         objects = self.database.objects(protocol=self.protocol,
-                                        groups=["world"],
-                                        purposes=["train"],
+                                        groups=[self.groups],
+                                        purposes=self.purposes,
                                         model_ids=[identity],
                                         modality=[modality])
         numpy.random.shuffle(objects)

@@ -248,6 +248,15 @@ train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_spli
                                         input_shape=[None, 224, 224, 1],
                                         normalizer=MeanOffsetHT(bob.io.base.load("means_visual.hdf5"), bob.io.base.load("means_sketch.hdf5")))
 
+validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
+                                             batch_size=32,
+                                             input_shape=[None, 224, 224, 1],
+                                             normalizer=MeanOffsetHT(bob.io.base.load("means_visual.hdf5"), bob.io.base.load("means_sketch.hdf5")),
+                                             groups="dev",
+                                             purposes=["enroll", "probe"])
+
+
+
 # Loss for the softmax
 loss = ContrastiveLoss()
 
@@ -274,12 +283,13 @@ graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
 trainer = SiameseTrainer(train_data_shuffler,
                          iterations=iterations,
                          analizer=None,
-                         temp_dir=directory
+                         temp_dir=directory,
+                         validation_snapshot=100
                          )
 trainer.create_network_from_scratch(graph=graph,
                                     loss=loss,
                                     learning_rate=constant(l_rate, name="regular_lr"),
                                     optimizer=tf.train.GradientDescentOptimizer(l_rate)
                                     )
-trainer.train()
+trainer.train(validation_data_shuffler)
 x = 0
