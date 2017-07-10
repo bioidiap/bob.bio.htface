@@ -236,6 +236,8 @@ database = Database(original_directory=database_path,
                     original_extension=".hdf5",
                     arface_directory="", xm2vts_directory="")
 
+#normalizer = MeanOffsetHT(bob.io.base.load("means_visual.hdf5"), bob.io.base.load("means_sketch.hdf5"))
+normalizer = MeanOffset(bob.io.base.load("means.hdf5"))
 
 #train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
 #                                        batch_size=8,
@@ -246,16 +248,14 @@ database = Database(original_directory=database_path,
 train_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
                                         batch_size=8,
                                         input_shape=[None, 224, 224, 1],
-                                        normalizer=MeanOffsetHT(bob.io.base.load("means_visual.hdf5"), bob.io.base.load("means_sketch.hdf5")))
+                                        normalizer=normalizer)
 
 validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
                                              batch_size=32,
                                              input_shape=[None, 224, 224, 1],
-                                             normalizer=MeanOffsetHT(bob.io.base.load("means_visual.hdf5"), bob.io.base.load("means_sketch.hdf5")),
+                                             normalizer=normalizer,
                                              groups="dev",
                                              purposes=["enroll", "probe"])
-
-
 
 # Loss for the softmax
 loss = ContrastiveLoss()

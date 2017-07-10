@@ -102,6 +102,8 @@ class SiameseDiskHTFace(SiameseDisk):
         # Checking if the normalizer is a HT normalizer
         if hasattr(self.normalizer, "is_ht"):
             return self.normalizer(self.load_from_file(str(file_name)), is_modality_a=is_modality_A)
+        else:
+            return self.normalizer(self.load_from_file(str(file_name)))
 
     def get_batch(self):
         """
