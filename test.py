@@ -15,7 +15,10 @@ import os
 
 directory = "./temp/inception"
 database_path = "/Users/tiago.pereira/Documents/database/cuhk_cufs_process"
-device="/cpu:0"
+device = "/cpu:0"
+l_rate = 0.01
+iterations = 100000
+
 
 def my_inception(inputs, scope='myInception', reuse=False, device="/cpu:0"):
     slim = tf.contrib.slim
@@ -198,11 +201,15 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
                                          scope='fc1',
                                          reuse=reuse)
 
+            graph = slim.dropout(graph, keep_prob=0.4)
+
             graph = slim.fully_connected(graph, 404,
                                          weights_initializer=initializer,
                                          activation_fn=None,
                                          scope='fcN',
                                          reuse=reuse)
+
+            graph = tf.nn.l2_normalize(graph, 1, 1e-10, name="normalizer")
 
             #graph = slim.softmax(graph, 75, scope='Predictions')
 
@@ -264,7 +271,6 @@ graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
 
 
 # One graph trainer
-iterations = 100000
 trainer = SiameseTrainer(train_data_shuffler,
                          iterations=iterations,
                          analizer=None,
@@ -272,8 +278,8 @@ trainer = SiameseTrainer(train_data_shuffler,
                          )
 trainer.create_network_from_scratch(graph=graph,
                                     loss=loss,
-                                    learning_rate=constant(0.01, name="regular_lr"),
-                                    optimizer=tf.train.GradientDescentOptimizer(0.01)
+                                    learning_rate=constant(l_rate, name="regular_lr"),
+                                    optimizer=tf.train.GradientDescentOptimizer(l_rate)
                                     )
 trainer.train()
 x = 0
