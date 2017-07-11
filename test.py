@@ -79,7 +79,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
 
                 graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
 
-
+            """
             # 14 x 14 x 192 (32 + 64 + 64 + 32)
             with variable_scope.variable_scope("Inception_2"):
                 with tf.variable_scope('Branch_0'):
@@ -139,7 +139,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
                                            scope='Branch_3_5x5')
 
                 graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
-
+            """
             # N x 37.632
             graph = slim.dropout(graph, keep_prob=0.6)
 
