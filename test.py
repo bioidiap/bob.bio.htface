@@ -172,6 +172,156 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
 
 
 
+def my_inception_modality_specific(inputs, scope='myInception', reuse=False, modality_name="modality_A", device="/cpu:0"):
+    slim = tf.contrib.slim
+    initializer = tf.contrib.layers.xavier_initializer(seed=10)  # Weights initializer
+
+    with tf.device(device):
+
+        # 224 x 224 x
+        graph = slim.conv2d(inputs, 64, [5, 5], activation_fn=tf.nn.relu,
+                            stride=2, scope='conv1_' + modality_name,
+                            normalizer_fn=slim.batch_norm,
+                            weights_initializer=initializer)
+
+        # 112 x 112 x 64
+        graph = slim.max_pool2d(graph, [3, 3], stride=2,
+                                padding="SAME", scope='pool1_' + modality_name)
+
+        # 56 x 56 x 64
+        graph = slim.conv2d(graph, 96, [5, 5], activation_fn=tf.nn.relu, normalizer_fn=slim.batch_norm,
+                            stride=2, scope='conv2_' + modality_name,
+                            weights_initializer=initializer)
+
+        # 28 x 28 x 64
+        graph = slim.max_pool2d(graph, [3, 3], stride=2,
+                                padding="SAME", scope='pool2_' + modality_name)
+
+        with variable_scope.variable_scope(scope, 'InceptionVx', [inputs], reuse=reuse):
+            # 14 x 14 x 64
+            with variable_scope.variable_scope("Inception_1"):
+                with tf.variable_scope('Branch_0'):
+                    branch_0 = slim.conv2d(graph, 32, [1, 1], stride=1, normalizer_fn=slim.batch_norm,
+                                           activation_fn=tf.nn.relu, scope='Branch_0_1x1')
+
+                with tf.variable_scope('Branch_1'):
+                    branch_1 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_1x1')
+                    branch_1 = slim.conv2d(branch_1, 64, [3, 3], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_3x3')
+
+                with tf.variable_scope('Branch_2'):
+                    branch_2 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_1x1')
+                    branch_2 = slim.conv2d(branch_2, 64, [5, 5], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_5x5')
+
+                with tf.variable_scope('Branch_3'):
+                    branch_3 = slim.max_pool2d(graph, [3, 3], padding="SAME", stride=1, scope='Branch_3_pool')
+                    branch_3 = slim.conv2d(branch_3, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_3_5x5')
+
+
+                graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
+
+            """
+            # 14 x 14 x 192 (32 + 64 + 64 + 32)
+            with variable_scope.variable_scope("Inception_2"):
+                with tf.variable_scope('Branch_0'):
+                    branch_0 = slim.conv2d(graph, 32, [1, 1], stride=1, normalizer_fn=slim.batch_norm,
+                                           activation_fn=tf.nn.relu, scope='Branch_0_1x1')
+
+                with tf.variable_scope('Branch_1'):
+                    branch_1 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_1x1')
+                    branch_1 = slim.conv2d(branch_1, 64, [3, 3], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_3x3')
+
+                with tf.variable_scope('Branch_2'):
+                    branch_2 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_1x1')
+                    branch_2 = slim.conv2d(branch_2, 64, [5, 5], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_5x5')
+
+                with tf.variable_scope('Branch_3'):
+                    branch_3 = slim.max_pool2d(graph, [3, 3], padding="SAME", stride=1, scope='Branch_3_pool')
+                    branch_3 = slim.conv2d(branch_3, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_3_5x5')
+
+                graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
+
+
+            with variable_scope.variable_scope("Inception_3"):
+                with tf.variable_scope('Branch_0'):
+                    branch_0 = slim.conv2d(graph, 32, [1, 1], stride=1, normalizer_fn=slim.batch_norm,
+                                           activation_fn=tf.nn.relu, scope='Branch_0_1x1')
+
+                with tf.variable_scope('Branch_1'):
+                    branch_1 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_1x1')
+                    branch_1 = slim.conv2d(branch_1, 64, [3, 3], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_1_3x3')
+
+                with tf.variable_scope('Branch_2'):
+                    branch_2 = slim.conv2d(graph, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_1x1')
+                    branch_2 = slim.conv2d(branch_2, 64, [5, 5], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_2_5x5')
+
+                with tf.variable_scope('Branch_3'):
+                    branch_3 = slim.max_pool2d(graph, [3, 3], padding="SAME", stride=1, scope='Branch_3_pool')
+                    branch_3 = slim.conv2d(branch_3, 32, [1, 1], stride=1, activation_fn=tf.nn.relu,
+                                           normalizer_fn=slim.batch_norm,
+                                           scope='Branch_3_5x5')
+
+                graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
+            """
+            # N x 37.632
+            graph = slim.dropout(graph, keep_prob=0.6)
+
+            # 14 x 14 x 192 (32 + 64 + 64 + 32)
+            graph = slim.flatten(graph, scope='flatten1')
+
+            # N x 37.632
+            graph = slim.dropout(graph, keep_prob=0.6)
+
+            #graph = slim.fully_connected(graph, 808,
+            #                             weights_initializer=initializer,
+            #                             activation_fn=tf.nn.relu,
+            #                             normalizer_fn=slim.batch_norm,
+            #                             scope='fc1',
+            #                             reuse=reuse)
+
+            #graph = slim.dropout(graph, keep_prob=0.4)
+
+            graph = slim.fully_connected(graph, 404,
+                                         weights_initializer=initializer,
+                                         activation_fn=None,
+                                         scope='fcN',
+                                         reuse=reuse)
+
+            graph = tf.nn.l2_normalize(graph, 1, 1e-10, name="normalizer")
+
+            #graph = slim.softmax(graph, 75, scope='Predictions')
+
+        return graph
+
+
+
 def create_architecture(placeholder):
     initializer = tf.contrib.layers.xavier_initializer(seed=10)  # Weights initializer
 
@@ -213,6 +363,11 @@ validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search
                                              groups="dev",
                                              purposes=["enroll", "probe"])
 
+
+
+
+
+
 # Loss for the softmax
 loss = ContrastiveLoss()
 
@@ -231,8 +386,12 @@ graph = dict()
 #import ipdb;
 #ipdb.set_trace()
 
-graph['left'] = my_inception_2(inputs['left'], device=device)
-graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
+#graph['left'] = my_inception_2(inputs['left'], device=device)
+#graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
+
+
+graph['left'] = my_inception_modality_specific(inputs['left'], modality_name="modality_A", device=device)
+graph['right'] = my_inception_modality_specific(inputs['right'], modality_name="modality_B", reuse=True, device=device)
 
 
 # One graph trainer
