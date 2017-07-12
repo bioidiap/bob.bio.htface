@@ -14,13 +14,17 @@ from tensorflow.contrib.layers.python.layers import layers as layers_lib
 import os
 
 directory = "./temp/inception"
-database_path = "/Users/tiago.pereira/Documents/database/cuhk_cufs_process"
-device = "/cpu:0"
-l_rate = 0.01
-iterations = 100000
+#database_path = "/Users/tiago.pereira/Documents/database/cuhk_cufs_process"
+#device = "/cpu:0"
+#l_rate = 0.01
+
+database_path = "/home/tiago-ttt/Documents/gitlab/database/CASIA-CleanedCroped_gray"
+device = "/gpu:1"
+l_rate = 0.1
+iterations = 300000
 
 
-def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
+def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0", n_classes=404):
     slim = tf.contrib.slim
     initializer = tf.contrib.layers.xavier_initializer(seed=10)  # Weights initializer
 
@@ -79,7 +83,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
 
                 graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
 
-            """
+
             # 14 x 14 x 192 (32 + 64 + 64 + 32)
             with variable_scope.variable_scope("Inception_2"):
                 with tf.variable_scope('Branch_0'):
@@ -139,7 +143,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
                                            scope='Branch_3_5x5')
 
                 graph = array_ops.concat([branch_0, branch_1, branch_2, branch_3], 3)
-            """
+
             # N x 37.632
             graph = slim.dropout(graph, keep_prob=0.6)
 
@@ -158,7 +162,7 @@ def my_inception_2(inputs, scope='myInception', reuse=False, device="/cpu:0"):
 
             #graph = slim.dropout(graph, keep_prob=0.4)
 
-            graph = slim.fully_connected(graph, 404,
+            graph = slim.fully_connected(graph, n_classes,
                                          weights_initializer=initializer,
                                          activation_fn=None,
                                          scope='fcN',
@@ -308,7 +312,7 @@ def my_inception_modality_specific(inputs, scope='myInception', reuse=False, mod
 
             #graph = slim.dropout(graph, keep_prob=0.4)
 
-            graph = slim.fully_connected(graph, 404,
+            graph = slim.fully_connected(graph, n_classes,
                                          weights_initializer=initializer,
                                          activation_fn=None,
                                          scope='fcN',
@@ -386,12 +390,12 @@ graph = dict()
 #import ipdb;
 #ipdb.set_trace()
 
-#graph['left'] = my_inception_2(inputs['left'], device=device)
-#graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
+graph['left'] = my_inception_2(inputs['left'], device=device)
+graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
 
 
-graph['left'] = my_inception_modality_specific(inputs['left'], modality_name="modality_A", device=device)
-graph['right'] = my_inception_modality_specific(inputs['right'], modality_name="modality_B", reuse=True, device=device)
+#graph['left'] = my_inception_modality_specific(inputs['left'], modality_name="modality_A", device=device)
+#graph['right'] = my_inception_modality_specific(inputs['right'], modality_name="modality_B", reuse=True, device=device)
 
 
 # One graph trainer
