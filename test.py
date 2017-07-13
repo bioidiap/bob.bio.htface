@@ -397,9 +397,9 @@ train_file_names = [o.make_path(directory=casia_path, extension=".png")
 # MOBIO
 import bob.db.mobio
 db_mobio = bob.db.mobio.Database()
-validation_objects = sorted(db_mobio.objects(groups="dev"), key=lambda x: x.id)
+validation_objects = sorted(db_mobio.objects(protocol="mobile0-male", groups="dev"), key=lambda x: x.id)
 validation_labels = map_labels([int(o.client_id) for o in validation_objects])
-validation_file_names = [o.make_path(directory=mobio, extension=".png")
+validation_file_names = [o.make_path(directory=mobio, extension=".hdf5")
     for o in validation_objects]
 
 
@@ -409,7 +409,7 @@ train_data_shuffler = SiameseDisk(train_file_names, train_labels,
                                   normalizer=normalizer,
                                   prefetch=True,
                                   prefetch_capacity=10,
-                                  prefetch_threshold=3)
+                                  prefetch_threads=3)
 
 validation_data_shuffler = SiameseDisk(validation_file_names, validation_labels,
                                        input_shape=[None, 224, 224, 1],
