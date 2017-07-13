@@ -389,6 +389,7 @@ normalizer = MeanOffset(bob.io.base.load("means_casia.hdf5"))
 # CASIA
 import bob.db.casia_webface
 db_casia = bob.db.casia_webface.Database()
+
 train_objects = sorted(db_casia.objects(groups="world"), key=lambda x: x.id)
 train_labels = map_labels([int(o.client_id) for o in train_objects])
 train_file_names = [o.make_path(directory=casia_path, extension=".png")
@@ -442,8 +443,10 @@ graph = dict()
 #import ipdb;
 #ipdb.set_trace()
 
-graph['left'] = my_inception_2(inputs['left'], device=device)
-graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device)
+n_classes = len(set([f.client_id for f in db_casia.objects(groups="world")]))
+
+graph['left'] = my_inception_2(inputs['left'], device=device, n_classes=n_classes)
+graph['right'] = my_inception_2(inputs['right'], reuse=True, device=device, n_classes=n_classes)
 
 
 #graph['left'] = my_inception_modality_specific(inputs['left'], modality_name="modality_A", device=device)
