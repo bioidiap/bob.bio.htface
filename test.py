@@ -22,6 +22,7 @@ directory = "./temp/inception"
 
 casia_path = "/home/tiago-ttt/Documents/gitlab/database/CASIA-CleanedCroped_gray"
 cuhk_cufs = "/home/tiago-ttt/Documents/gitlab/database/cuhk_cufs_process"
+mobio = "/home/tiago-ttt/Documents/gitlab/database/mobio/mobio_cropped_gray"
 device = "/gpu:1"
 l_rate = 0.1
 
@@ -384,6 +385,8 @@ normalizer = MeanOffset(bob.io.base.load("means_casia.hdf5"))
 #                                        data_augmentation=ImageAugmentation())
 
 
+
+# CASIA
 import bob.db.casia_webface
 db_casia = bob.db.casia_webface.Database()
 train_objects = sorted(db_casia.objects(groups="world"), key=lambda x: x.id)
@@ -391,17 +394,32 @@ train_labels = map_labels([int(o.client_id) for o in train_objects])
 train_file_names = [o.make_path(directory=casia_path, extension=".png")
     for o in train_objects]
 
-train_data_shuffler = SiameseDisk(train_file_names, train_labels,
-                           input_shape=[None, 224, 224, 1],
-                           batch_size=32,
-                           normalizer=normalizer)
+# MOBIO
+import bob.db.mobio
+db_mobio = bob.db.mobio.Database()
+validation_objects = sorted(db_mobio.objects(groups="dev"), key=lambda x: x.id)
+validation_labels = map_labels([int(o.client_id) for o in validation_objects])
+validation_file_names = [o.make_path(directory=mobio, extension=".png")
+    for o in validation_objects]
 
-validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
-                                             batch_size=32,
-                                             input_shape=[None, 224, 224, 1],
-                                             normalizer=normalizer,
-                                             groups="dev",
-                                             purposes=["enroll", "probe"])
+
+train_data_shuffler = SiameseDisk(train_file_names, train_labels,
+                                  input_shape=[None, 224, 224, 1],
+                                  batch_size=32,
+                                  normalizer=normalizer)
+
+validation_data_shuffler = SiameseDisk(validation_file_names, validation_labels,
+                                  input_shape=[None, 224, 224, 1],
+                                  batch_size=32,
+                                  normalizer=normalizer)
+
+
+#validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
+#                                             batch_size=32,
+#                                             input_shape=[None, 224, 224, 1],
+#                                             normalizer=normalizer,
+#                                             groups="dev",
+#                                             purposes=["enroll", "probe"])
 
 # Loss for the softmax
 loss = ContrastiveLoss()
