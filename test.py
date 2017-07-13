@@ -406,12 +406,15 @@ validation_file_names = [o.make_path(directory=mobio, extension=".png")
 train_data_shuffler = SiameseDisk(train_file_names, train_labels,
                                   input_shape=[None, 224, 224, 1],
                                   batch_size=32,
-                                  normalizer=normalizer)
+                                  normalizer=normalizer,
+                                  prefetch=True,
+                                  prefetch_capacity=10,
+                                  prefetch_threshold=3)
 
 validation_data_shuffler = SiameseDisk(validation_file_names, validation_labels,
-                                  input_shape=[None, 224, 224, 1],
-                                  batch_size=32,
-                                  normalizer=normalizer)
+                                       input_shape=[None, 224, 224, 1],
+                                       batch_size=32,
+                                       normalizer=normalizer)
 
 
 #validation_data_shuffler = SiameseDiskHTFace(database=database, protocol="search_split1_p2s",
