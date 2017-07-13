@@ -409,8 +409,8 @@ train_data_shuffler = SiameseDisk(train_file_names, train_labels,
                                   batch_size=32,
                                   normalizer=normalizer,
                                   prefetch=True,
-                                  prefetch_capacity=10,
-                                  prefetch_threads=3)
+                                  prefetch_capacity=500,
+                                  prefetch_threads=5)
 
 validation_data_shuffler = SiameseDisk(validation_file_names, validation_labels,
                                        input_shape=[None, 224, 224, 1],
