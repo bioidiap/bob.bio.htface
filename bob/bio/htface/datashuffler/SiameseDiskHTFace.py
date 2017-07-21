@@ -4,6 +4,7 @@
 # @date: Wed 11 May 2016 09:39:36 CEST 
 
 import numpy
+numpy.random.seed(10)
 import bob.core
 logger = bob.core.log.setup("bob.learn.tensorflow")
 
@@ -105,7 +106,55 @@ class SiameseDiskHTFace(SiameseDisk):
         else:
             return self.normalizer(self.load_from_file(str(file_name)))
 
-    def get_batch(self):
+
+
+        """
+    def _fetch_batch(self, zero_one_labels=True):
+
+        Get a random pair of samples
+
+        **Parameters**
+            is_target_set_train: Defining the target set to get the batch
+
+        **Return**
+
+
+        pairs_generator = self.get_genuine_or_not(self.data, self.labels)
+        for i in range(self.data.shape[0]):
+
+            left_filename, right_filename, label = pairs_generator.next()
+            left = self.load_from_file(left_filename)
+            right = self.load_from_file(right_filename)
+
+            # Applying the data augmentation
+            if self.data_augmentation is not None:
+                d = self.bob2skimage(self.data_augmentation(self.skimage2bob(left)))
+                left = d
+
+                d = self.bob2skimage(self.data_augmentation(self.skimage2bob(right)))
+                right = d
+
+            left = self.normalize_sample(left)
+            right = self.normalize_sample(right)
+
+            yield left.astype(self.input_dtype), right.astype(self.input_dtype), label
+        """
+
+    def list_2_dict(self, list_objects):
+
+        dict_objects = dict()
+
+        for l in list_objects:
+            if l.client_id not in dict_objects:
+                dict_objects[l.client_id] = []
+            dict_objects[l.client_id].append(l)
+
+        for d in dict_objects:
+            numpy.random.shuffle(dict_objects[d])
+
+        return dict_objects
+
+    def _fetch_batch(self):
         """
         Get a random pair of samples
 
@@ -115,6 +164,47 @@ class SiameseDiskHTFace(SiameseDisk):
         **Return**
         """
 
+        samples_A = self.database.objects(protocol=self.protocol,
+                                          groups=[self.groups],
+                                          purposes=self.purposes,
+                                          modality=[self.database.modalities[0]])
+        modality_A = self.list_2_dict(samples_A)
+
+        modality_B = self.list_2_dict(self.database.objects(protocol=self.protocol,
+                                           groups=[self.groups],
+                                           purposes=self.purposes,
+                                           modality=[self.database.modalities[0]]))
+
+        genuine = True
+        for i in modality_A:
+
+
+
+            if genuine:
+
+                modality_A[i][0]
+
+
+            for j in zip(modality_A[i],:
+
+                if genuine:
+                    left = j
+
+
+            # Applying the data augmentation
+            if self.data_augmentation is not None:
+                d = self.bob2skimage(self.data_augmentation(self.skimage2bob(left)))
+                left = d
+
+                d = self.bob2skimage(self.data_augmentation(self.skimage2bob(right)))
+                right = d
+
+            left = self.normalize_sample(left)
+            right = self.normalize_sample(right)
+
+        ###
+
+
         shape = [self.batch_size] + list(self.input_shape[1:])
 
         sample_l = numpy.zeros(shape=shape, dtype=self.input_dtype)
@@ -122,7 +212,7 @@ class SiameseDiskHTFace(SiameseDisk):
         labels_siamese = numpy.zeros(shape=shape[0], dtype=self.input_dtype)
 
         genuine = True
-
+        import ipdb; ipdb.set_trace()
         for i in range(shape[0]):
 
             # Shuffling client ids

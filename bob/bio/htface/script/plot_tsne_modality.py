@@ -36,6 +36,8 @@ Options:
 
 from docopt import docopt
 import logging
+import bob.bio.base
+import bob.core
 from bob.bio.htface.tools import FileSelector
 
 import numpy
@@ -114,6 +116,7 @@ def main():
     indexes_modality = dict()
     indexes_modality[database.modality_separator] = []
     indexes_modality["not_{0}".format(database.modality_separator)] = []
+    #import bob.ip.color
     for o, i in zip(original_datalist, range(len(original_datalist))):
 
         if o.modality == database.modality_separator:
@@ -128,10 +131,15 @@ def main():
                 raw_data = bob.ip.color.rgb_to_gray(raw_data)
 
             data.append(raw_data.reshape(raw_data.shape[0] * raw_data.shape[1]))
-
         else:
             annotations = fs.get_annotations(o)
             p_d = preprocessor(raw_data, annotations)
+
+            #if len(p_d.shape) == 3:
+            #    bob.io.base.save(p_d.astype("uint8"), o.make_path("/Users/tiago.pereira/Documents/database/cuhk_cufs_process", ".png"))
+            #else:
+            #    bob.io.base.save(p_d.astype("uint8"),
+            #                     o.make_path("/Users/tiago.pereira/Documents/database/cuhk_cufs_process", ".png"))
             data.append(p_d.reshape(p_d.shape[0]*p_d.shape[1]))
 
     data = numpy.array(data)
