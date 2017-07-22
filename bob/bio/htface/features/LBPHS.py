@@ -4,7 +4,6 @@
 
 import bob.ip.gabor
 import bob.ip.base
-import xfacereclib.extension.HTUBM
 
 import numpy
 import math
