@@ -6,7 +6,7 @@ def test_siamease_datashuffler_cuhk_cufs():
 
 
     from bob.db.cuhk_cufs.query import Database
-    database = Database(original_directory="/Users/tiagodefreitaspereira/Documents/DataBases/CUHK/preprocessed",
+    database = Database(original_directory="/idiap/temp/tpereira/HTFace/CUHK-CUFS/SIAMESE/split1/preprocessed/",
                         original_extension=".hdf5",
                         arface_directory="", xm2vts_directory="")
 
@@ -15,10 +15,11 @@ def test_siamease_datashuffler_cuhk_cufs():
                                            input_shape=[None, 224, 224, 1])
 
     offset = 0
+    import ipdb; ipdb.set_trace();
     while True:
         print offset
         offset += 1
-        siamese_disk_htface.get_batch()
+        batch = siamese_disk_htface.get_batch()
         if siamese_disk_htface.epoch > 1:
             break
 

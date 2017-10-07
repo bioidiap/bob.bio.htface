@@ -1,8 +1,20 @@
 import numpy
 from bob.bio.base.extractor import Extractor
-from bob.learn.tensorflow.trainers import SiameseTrainer
-from bob.learn.tensorflow.network import Embedding
+import bob.ip.color
 
+def bob2skimage(bob_image):
+    """
+    Convert bob color image to the skcit image
+    """
+    skimage = numpy.zeros(shape=(bob_image.shape[1], bob_image.shape[2], bob_image.shape[0]))
+    skimage[:,:,2] = bob_image[0, :, :]
+    skimage[:,:,1] = bob_image[1, :, :]
+    skimage[:,:,0] = bob_image[2, :, :]        
+    
+    #for i in range(bob_image.shape[0]):
+    #    skimage[:, :, i] = bob_image[i, :, :]
+    
+    return skimage
 
 class TensorflowEmbedding(Extractor):
 
@@ -11,24 +23,10 @@ class TensorflowEmbedding(Extractor):
 
     def __init__(
             self,
-            path,
-            normalizer=None
+            tf_extractor
     ):
         Extractor.__init__(self, skip_extractor_training=True)
-
-        # block parameters
-        # initialize this when called for the first time
-        # since caffe may not work if it is compiled to run with gpu
-        self.new_feature = None
-        self.feature_layer = ""
-
-        trainer = SiameseTrainer(None,
-                                 iterations=0,
-                                 analizer=None,
-                                 temp_dir=None)
-
-        trainer.create_network_from_file(path)
-        self.embedding = Embedding(trainer.data_ph['left'], trainer.graph['left'], normalizer=normalizer)
+        self.tf_extractor = tf_extractor
 
     def __call__(self, image):
         """__call__(image) -> feature
@@ -46,12 +44,16 @@ class TensorflowEmbedding(Extractor):
           The extracted features
         """
 
-        data = numpy.zeros(shape=(1, image.shape[0], image.shape[1], 1))
-        data[0, :, :, 0] = image
+        if image.ndim>2:
+            image = bob2skimage(image)
+            image = numpy.reshape(image, tuple([1] + list(image.shape)) )
+            image = image.astype("float32")            
+        else:
+            image = numpy.reshape(image, tuple([1] + list(image.shape) + [1]) )
+        
+        features = self.tf_extractor(image)
 
-        feature = self.embedding(data)[0]
-
-        return feature
+        return features[0]
 
     # re-define the train function to get it non-documented
     def train(*args, **kwargs): raise NotImplementedError("This function is not implemented and should not be called.")
