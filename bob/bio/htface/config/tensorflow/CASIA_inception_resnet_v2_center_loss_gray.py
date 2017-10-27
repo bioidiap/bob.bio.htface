@@ -53,7 +53,7 @@ train_data_shuffler  = TFRecordImage(filename_queue=filename_queue,
                                 output_shape=[None, 160, 160, 3],
                                 input_dtype=tf.uint8,
                                 normalization=True,
-                                gray_scale=False
+                                gray_scale=True
                                 )
                                 
 validation_data_shuffler  = TFRecordImage(filename_queue=filename_queue_validation,
@@ -63,7 +63,7 @@ validation_data_shuffler  = TFRecordImage(filename_queue=filename_queue_validati
                                 shuffle=False,
                                 input_dtype=tf.uint8,
                                 normalization=True,
-                                gray_scale=False)
+                                gray_scale=True)
 
 # Tensor used for training
 prelogits = build_graph(train_data_shuffler("data", from_queue=False))
@@ -79,8 +79,7 @@ validation_graph = tf.nn.l2_normalize(build_graph(validation_data_shuffler("data
 #loss = MeanSoftMaxLossCenterLoss(n_classes=n_classes)
 # Setup from (https://github.com/davidsandberg/facenet/issues/391)
 #loss = MeanSoftMaxLossCenterLoss(alpha=0.5, factor=0.02, n_classes=n_classes)
-#loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.5, factor=0.02, n_classes=n_classes)
-loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.95, factor=0.02, n_classes=n_classes)
+loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.5, factor=0.02, n_classes=n_classes)
 
 
 ### LEARNING RATE ###

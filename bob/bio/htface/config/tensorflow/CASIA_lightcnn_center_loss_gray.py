@@ -1,12 +1,10 @@
 import numpy
 import sys
 from bob.learn.tensorflow.datashuffler import Memory, ImageAugmentation, ScaleFactor, Linear, TFRecordImage
-from bob.learn.tensorflow.network import Embedding, LightCNN9, inception_resnet_v2
+from bob.learn.tensorflow.network import Embedding, light_cnn9
 from bob.learn.tensorflow.loss import mean_cross_entropy_loss, mean_cross_entropy_center_loss
 from bob.learn.tensorflow.trainers import Trainer, constant
 from bob.learn.tensorflow.utils import load_mnist
-from tensorflow.contrib.slim.python.slim.nets import inception
-from tensorflow.contrib.slim.python.slim.nets import vgg
 from bob.learn.tensorflow.network.utils import append_logits
 import bob.io.base
 import bob.io.image
@@ -24,8 +22,6 @@ num_epochs=60
 n_classes = 10575
 
 
-#tf_record_path = "/idiap/temp/tpereira/databases/casia_webface/182x/tfrecord/"
-#tf_record_path_validation = "/idiap/temp/tpereira/databases/LFW/182x/tfrecord/"
 tf_record_path = "/idiap/temp/tpereira/databases/casia_webface/182x/tfrecord_onlygood/"
 tf_record_path_validation = "/idiap/temp/tpereira/databases/LFW/182x/tfrecord_onlygood/"
 
@@ -33,7 +29,7 @@ tf_record_path_validation = "/idiap/temp/tpereira/databases/LFW/182x/tfrecord_on
 
 def build_graph(inputs, reuse=False):
 
-    prelogits = inception_resnet_v2(inputs, reuse=reuse)[0]
+    prelogits = light_cnn9(inputs, reuse=reuse)[0]
     
     return prelogits 
 
@@ -50,20 +46,20 @@ filename_queue_validation = tf.train.string_input_producer(tfrecords_filename_va
 train_data_shuffler  = TFRecordImage(filename_queue=filename_queue,
                                 batch_size=batch_size,
                                 input_shape=[None, 182, 182, 3],
-                                output_shape=[None, 160, 160, 3],
+                                output_shape=[None, 128, 128, 3],
                                 input_dtype=tf.uint8,
                                 normalization=True,
-                                gray_scale=False
+                                gray_scale=True
                                 )
                                 
 validation_data_shuffler  = TFRecordImage(filename_queue=filename_queue_validation,
                                 batch_size=validation_batch_size,
                                 input_shape=[None, 182, 182, 3],
-                                output_shape=[None, 160, 160, 3],
+                                output_shape=[None, 128, 128, 3],
                                 shuffle=False,
                                 input_dtype=tf.uint8,
                                 normalization=True,
-                                gray_scale=False)
+                                gray_scale=True)
 
 # Tensor used for training
 prelogits = build_graph(train_data_shuffler("data", from_queue=False))
@@ -79,12 +75,11 @@ validation_graph = tf.nn.l2_normalize(build_graph(validation_data_shuffler("data
 #loss = MeanSoftMaxLossCenterLoss(n_classes=n_classes)
 # Setup from (https://github.com/davidsandberg/facenet/issues/391)
 #loss = MeanSoftMaxLossCenterLoss(alpha=0.5, factor=0.02, n_classes=n_classes)
-#loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.5, factor=0.02, n_classes=n_classes)
-loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.95, factor=0.02, n_classes=n_classes)
+loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.5, factor=0.02, n_classes=n_classes)
 
 
 ### LEARNING RATE ###
-learning_rate = constant(base_learning_rate=0.01)
+learning_rate = constant(base_learning_rate=0.1)
 
 
 ### SOLVER ###

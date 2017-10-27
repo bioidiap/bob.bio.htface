@@ -111,7 +111,6 @@ class SiameseDiskHTFace(SiameseDisk):
 
         **Return**
         """
-
         # List of samples from modality A
         samples_A = self.database.objects(protocol=self.protocol,
                                           groups=[self.groups],
@@ -123,6 +122,7 @@ class SiameseDiskHTFace(SiameseDisk):
                                           groups=[self.groups],
                                           purposes=self.purposes,
                                           modality=[self.database.modalities[1]]))
+                                          
         genuine = True
         for o in samples_A:
 
@@ -142,7 +142,7 @@ class SiameseDiskHTFace(SiameseDisk):
                         break
 
             right = self.load_from_file(right_object.make_path(self.database.original_directory, self.database.original_extension))
-
+            
             # Applying the data augmentation
             if self.data_augmentation is not None:
                 d = self.bob2skimage(self.data_augmentation(self.skimage2bob(left)))
@@ -150,10 +150,10 @@ class SiameseDiskHTFace(SiameseDisk):
 
                 d = self.bob2skimage(self.data_augmentation(self.skimage2bob(right)))
                 right = d
-
+            
             left = self.normalize_sample(left)
             right = self.normalize_sample(right)
-
+            
             genuine = not genuine
 
             yield left, right, label

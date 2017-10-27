@@ -1,20 +1,7 @@
 import numpy
 from bob.bio.base.extractor import Extractor
-import bob.ip.color
+import bob.io.image
 
-def bob2skimage(bob_image):
-    """
-    Convert bob color image to the skcit image
-    """
-    skimage = numpy.zeros(shape=(bob_image.shape[1], bob_image.shape[2], bob_image.shape[0]))
-    skimage[:,:,2] = bob_image[0, :, :]
-    skimage[:,:,1] = bob_image[1, :, :]
-    skimage[:,:,0] = bob_image[2, :, :]        
-    
-    #for i in range(bob_image.shape[0]):
-    #    skimage[:, :, i] = bob_image[i, :, :]
-    
-    return skimage
 
 class TensorflowEmbedding(Extractor):
 
@@ -45,7 +32,7 @@ class TensorflowEmbedding(Extractor):
         """
 
         if image.ndim>2:
-            image = bob2skimage(image)
+            image = bob.io.image.to_matplotlib(image)
             image = numpy.reshape(image, tuple([1] + list(image.shape)) )
             image = image.astype("float32")            
         else:

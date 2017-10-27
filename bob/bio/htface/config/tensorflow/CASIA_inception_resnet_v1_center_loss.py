@@ -1,7 +1,7 @@
 import numpy
 import sys
 from bob.learn.tensorflow.datashuffler import Memory, ImageAugmentation, ScaleFactor, Linear, TFRecordImage
-from bob.learn.tensorflow.network import Embedding, LightCNN9, inception_resnet_v2
+from bob.learn.tensorflow.network import Embedding, LightCNN9, inception_resnet_v1
 from bob.learn.tensorflow.loss import mean_cross_entropy_loss, mean_cross_entropy_center_loss
 from bob.learn.tensorflow.trainers import Trainer, constant
 from bob.learn.tensorflow.utils import load_mnist
@@ -33,7 +33,7 @@ tf_record_path_validation = "/idiap/temp/tpereira/databases/LFW/182x/tfrecord_on
 
 def build_graph(inputs, reuse=False):
 
-    prelogits = inception_resnet_v2(inputs, reuse=reuse)[0]
+    prelogits = inception_resnet_v1(inputs, reuse=reuse)[0]
     
     return prelogits 
 
@@ -79,7 +79,6 @@ validation_graph = tf.nn.l2_normalize(build_graph(validation_data_shuffler("data
 #loss = MeanSoftMaxLossCenterLoss(n_classes=n_classes)
 # Setup from (https://github.com/davidsandberg/facenet/issues/391)
 #loss = MeanSoftMaxLossCenterLoss(alpha=0.5, factor=0.02, n_classes=n_classes)
-#loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.5, factor=0.02, n_classes=n_classes)
 loss = mean_cross_entropy_center_loss(logits, prelogits, labels, alpha=0.95, factor=0.02, n_classes=n_classes)
 
 

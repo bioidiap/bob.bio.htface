@@ -63,7 +63,8 @@ class FaceDetectMTCNN(Base):
     """
     
     #TODO: I need two preprocessors, one for the color and one for the gray
-    color_channel = "rgb"
+    #color_channel = "rgb"
+    color_channel = "gray"
 
     # Loading the thing
     if self.extractor is None:
@@ -78,12 +79,13 @@ class FaceDetectMTCNN(Base):
         
     if cropped_image is None:
         logger.warning("Face not found!!")
-        cropped_image = numpy.zeros(shape=( ([3] + list(self.image_size) )))
-        bob.ip.base.scale(image, cropped_image)
+        return None
+        #cropped_image = numpy.zeros(shape=( ([3] + list(self.image_size) )))
+        #bob.ip.base.scale(image, cropped_image)
       
     if color_channel == "gray":
-        #return self.tan_triggs(bob.ip.color.rgb_to_gray(cropped_image.astype("uint8")))
-        return bob.ip.color.rgb_to_gray(cropped_image.astype("uint8"))
+        return self.tan_triggs(bob.ip.color.rgb_to_gray(cropped_image.astype("uint8")))
+        #return bob.ip.color.rgb_to_gray(cropped_image.astype("uint8"))
     elif color_channel == "red":
         return cropped_image[0, :, :]
     elif color_channel == "green":
