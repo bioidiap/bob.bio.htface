@@ -54,7 +54,11 @@ class CUHK_CUFSFBioDatabase(BioDatabase):
                                    )
     @property
     def modality_separator(self):
-        return "photo"
+        return self.db.modality_separator
+
+    @property
+    def modalities(self):
+        return self.db.modalities
 
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    

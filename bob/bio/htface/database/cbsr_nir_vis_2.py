@@ -17,7 +17,7 @@ class CBSR_NIR_VIS_2BioFile(FaceBioFile):
         self.f = f
         
         
-    def make_path(self, original_directory, original_extension):
+    def make_path(self, original_directory, original_extension=None):
         if isinstance(original_extension, list):
             for o in original_extension:
                 file_name = os.path.join(original_directory, self.path + o)
@@ -26,6 +26,11 @@ class CBSR_NIR_VIS_2BioFile(FaceBioFile):
             raise ValueError("File {0} not found".format(str(file_name)))
         else:
             return super(FaceBioFile, self).make_path(original_directory, original_extension)
+
+
+    @property
+    def modality(self):
+        return self.f.modality
 
 
 class CBSR_NIR_VIS_2BioDatabase(ZTBioDatabase):
@@ -42,6 +47,15 @@ class CBSR_NIR_VIS_2BioDatabase(ZTBioDatabase):
 
         from bob.db.cbsr_nir_vis_2.query import Database as LowLevelDatabase
         self.db = LowLevelDatabase()
+
+    @property
+    def modality_separator(self):
+        return self.db.modality_separator
+
+    @property
+    def modalities(self):
+        return self.db.modalities
+        
 
     def model_ids_with_protocol(self, groups=None, protocol="view2_1", **kwargs):
         return self.db.model_ids(groups=groups, protocol=protocol)

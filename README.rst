@@ -2,6 +2,17 @@
 .. Sat Aug 20 07:33:55 CEST 2016
 
 
+
+.. image:: http://img.shields.io/badge/docs-stable-yellow.png
+   :target: http://beatubulatest.lab.idiap.ch/private/docs/bob/bob.bio.htface/stable/index.html
+.. image:: http://img.shields.io/badge/docs-latest-orange.png
+   :target: http://beatubulatest.lab.idiap.ch/private/docs/bob/bob.bio.htface/master/index.html
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.htface/badges/master/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.htface/commits/master
+.. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.htface
+
+
 ==============================================
  Run heterogeneous face recognition algorithms
 ==============================================

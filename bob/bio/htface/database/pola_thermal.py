@@ -42,7 +42,12 @@ class Pola_ThermalBioDatabase(BioDatabase):
 
     @property
     def modality_separator(self):
-        return "VIS"
+        return self.db.modality_separator
+
+    @property
+    def modalities(self):
+        return self.db.modalities
+
 
     def model_ids_with_protocol(self, groups=None, protocol="VIS-polarimetric-overall-split1", **kwargs):
         return self.db.model_ids(groups=groups, protocol=protocol)

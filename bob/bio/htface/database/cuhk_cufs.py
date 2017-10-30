@@ -59,6 +59,10 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
     def modality_separator(self):
         return self.db.modality_separator
 
+    @property
+    def modalities(self):
+        return self.db.modalities
+
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    
 

@@ -15,6 +15,10 @@ More info in:
 van der Maaten, L.J.P.; Hinton, G.E. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research 9:2579-2605, 2008.
 
 
+For information about <database> parameter plese do:
+  resources.py --type database
+
+
 Usage:
   plot_tsne.py  <database> <protocol> --database-original-directory=<arg>
                [--database-extension=<arg> --output-file=<arg>]
@@ -52,6 +56,8 @@ import bob.core
 import bob.bio.base
 from mpl_toolkits.mplot3d import Axes3D
 numpy.random.seed(10)
+
+from sklearn.preprocessing import normalize
 
 
 def main():
@@ -105,26 +111,26 @@ def main():
 
     # Keeping two lists for each modality. Will be useful to use the colors
     indexes_modality = dict()
-    indexes_modality[database.modality_separator] = []
-    indexes_modality["not_{0}".format(database.modality_separator)] = []
+    indexes_modality[database.modalities[0]] = []
+    indexes_modality[database.modalities[1]] = []
     #import bob.ip.color
-    
     for o, i in zip(original_datalist, range(len(original_datalist))):
 
         if o.modality == database.modality_separator:
-            indexes_modality[database.modality_separator].append(i)
+            indexes_modality[database.modalities[0]].append(i)
         else:
-            indexes_modality["not_{0}".format(database.modality_separator)].append(i)
+            indexes_modality[database.modalities[1]].append(i)
             
         raw_data = bob.io.base.load(o.make_path(database_original_directory) + database_extension)
-
         if raw_data.ndim==1:
             data.append(raw_data)
         else:
+            #data.append(numpy.reshape(raw_data, (numpy.prod(raw_data.shape))))
             data.append(numpy.reshape(raw_data, (numpy.prod(raw_data.shape))))
 
     data = numpy.array(data)
-    data = (data - numpy.mean(data, axis=0)) / numpy.std(data, axis=0)
+    std = numpy.array([max(i,10e-6) for i in numpy.std(data, axis=0)])
+    data = (data - numpy.mean(data, axis=0)) / std
 
     logger.debug("  >> Training TSNE with {0} ...".format(data.shape))
     model = TSNE(n_components=2, random_state=seed, perplexity=perplexity,
@@ -136,14 +142,15 @@ def main():
     fig = mpl.figure()
     #ax = mpl.subplot(111, projection='3d')
     ax = mpl.subplot(111)
+    
     mpl.title("T-SNE - '{0}'".format(database_name))
 
-    ax.scatter(projected_data[indexes_modality[database.modality_separator], 0],
-               projected_data[indexes_modality[database.modality_separator], 1],
+    ax.scatter(projected_data[indexes_modality[database.modalities[0]], 0],
+               projected_data[indexes_modality[database.modalities[0]], 1],
                c="cadetblue")
 
-    ax.scatter(projected_data[indexes_modality["not_{0}".format(database.modality_separator)], 0],
-               projected_data[indexes_modality["not_{0}".format(database.modality_separator)], 1],
+    ax.scatter(projected_data[indexes_modality[database.modalities[1]], 0],
+               projected_data[indexes_modality[database.modalities[1]], 1],
                c="indianred")
 
     """
@@ -158,7 +165,7 @@ def main():
                c="indianred")
     """
 
-    mpl.legend([database.modality_separator, "Not {0}".format(database.modality_separator)])
+    mpl.legend(database.modalities)
     fig.savefig(output_file)
 
     #pp.savefig(fig)

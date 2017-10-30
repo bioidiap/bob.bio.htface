@@ -103,8 +103,10 @@ setup(
 
         'bob.bio.database': [
             'cuhk-cufs    = bob.bio.htface.config.database.cuhk_cufs:database',
+            'cuhk-cufsf   = bob.bio.htface.config.database.cuhk_cufsf:database',
             'nivl         = bob.bio.htface.config.database.nivl:database',
             'pola_thermal = bob.bio.htface.config.database.pola_thermal:database',
+            'cbsr_nir_vis_2 = bob.bio.htface.config.database.cbsr_nir_vis_2:database'
         ],
         
         'console_scripts' : [

@@ -9,6 +9,19 @@
 
 
 ==========
+Databases
+==========
+
+This subsection describes the databases used in this work.
+
+.. toctree::
+   :maxdepth: 2
+
+   databases
+
+
+
+==========
 Hypotheses
 ==========
 
@@ -18,6 +31,17 @@ Hypotheses
    session_variability
    gfk
    transfer_learning
+
+
+==========
+User guide
+==========
+
+.. toctree::
+   :maxdepth: 2
+
+   user_guide
+
 
 ================
 Reference Manual
@@ -32,3 +56,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+.. toctree::
+   :maxdepth: 2
+
+   references
