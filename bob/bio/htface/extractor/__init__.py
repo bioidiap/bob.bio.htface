@@ -1,6 +1,5 @@
 from .CNNFeatureBlocks import CNNFeatureBlocks
 from .AugmentedDCTBlocks import AugmentedDCTBlocks
-from .LBPHS import LBPHS
 from .TensorflowEmbedding import TensorflowEmbedding
 
 # gets sphinx autodoc done right - don't remove it

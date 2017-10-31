@@ -1,6 +1,6 @@
 from bob.learn.tensorflow.network import inception_resnet_v2
 from bob.learn.tensorflow.estimators import LogitsCenterLoss
-from bob.learn.tensorflow.dataset.tfrecords import batch_data_and_labels, shuffle_data_and_labels_image_augmentation
+from bob.learn.tensorflow.dataset.tfrecords import batch_data_and_labels_image_augmentation, shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
 import os
 import tensorflow as tf
@@ -33,14 +33,14 @@ def train_input_fn():
     return shuffle_data_and_labels_image_augmentation(tfrecords_filename, data_shape, data_type, batch_size, epochs=epochs,
                                                       output_shape=output_shape,
                                                       random_flip=True,
-                                                      random_brightness=True,
-                                                      random_contrast=True,
-                                                      random_saturation=True,
+                                                      random_brightness=False,
+                                                      random_contrast=False,
+                                                      random_saturation=False,
                                                       per_image_normalization=True)
         
 
 def eval_input_fn():
-    return shuffle_data_and_labels_image_augmentation(tfrecords_filename_validation, data_shape, data_type, validation_batch_size, epochs=1,
+    return batch_data_and_labels_image_augmentation(tfrecords_filename_validation, data_shape, data_type, validation_batch_size, epochs=1,
                                                       output_shape=output_shape,
                                                       random_flip=False,
                                                       random_brightness=False,

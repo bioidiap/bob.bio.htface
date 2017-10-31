@@ -32,7 +32,7 @@ Finally in [Roy2016]_, since the method does not requires a background model, th
 Just by reading what is written in the paper (no source code available), we can claim that the evaluation is biased.
 
 For comparison reasons, we will follow the same strategy as in [Klare2013]_ and do a 5 fold cross-validation splitting the 606 identities in two sets with 404 identities for training and 202 for testing and use the average rank-1 identification rate, in the evaluation set as a metric.
-For reproducibility purposes, this evaluation protocol is published in a python package `format <https://pypi.python.org/pypi/bob.db.cuhk_cufs>`_`.
+For reproducibility purposes, this evaluation protocol is published in a python package `format <https://pypi.python.org/pypi/bob.db.cuhk_cufs>`_.
 In this way future researchers will be able to reproduce exactly the same tests with the same identities in each fold (which is not possible today).
 
 
