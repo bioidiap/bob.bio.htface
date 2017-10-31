@@ -27,3 +27,4 @@ bob.bio.base
 bob.bio.gmm
 bob.ip.caffe_extractor
 scikit-learn
+bob.learn.tensorflow
