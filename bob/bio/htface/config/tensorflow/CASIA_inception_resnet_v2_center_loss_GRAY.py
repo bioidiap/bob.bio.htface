@@ -6,7 +6,7 @@ import os
 import tensorflow as tf
 
 
-learning_rate = 0.1
+learning_rate = 0.01
 data_shape = (182, 182, 3)  # size of atnt images
 output_shape = (160, 160)
 data_type = tf.uint8
