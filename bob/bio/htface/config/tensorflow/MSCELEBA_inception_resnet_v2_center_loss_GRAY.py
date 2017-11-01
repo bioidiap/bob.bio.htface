@@ -20,7 +20,7 @@ alpha=0.95
 factor=0.02
 steps = 2000000
 
-model_dir = "/idiap/temp/tpereira/msceleb/new_tf_format/resnet_inception_v2/centerloss_alpha-0.95_factor-0.02_lr-0.01"
+model_dir = "/idiap/temp/tpereira/msceleb/new_tf_format/resnet_inception_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.01"
 tf_record_path = "/idiap/temp/tpereira/databases/MSCeleba/tfrecord_182x_newformat/"
 tf_record_path_validation = "/idiap/project/hface/databases/tfrecords/lfw/182x/"
 
