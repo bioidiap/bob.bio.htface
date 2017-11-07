@@ -81,7 +81,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'bob.learn.tensorflow'
+project = u'bob.bio.htface'
 import time
 copyright = u'%s, Idiap Research Institute' % time.strftime('%Y')
 
