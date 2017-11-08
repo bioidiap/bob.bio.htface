@@ -232,19 +232,19 @@ def main():
 
   d = 10
 
-  print "Loading data ..."
+  print("Loading data ...")
   source_files, target_files = split_modalities(database.objects(protocol=protocol, groups="world"), split_string)
 
   #source       = load_files_from_list(database, source_files, flatten=True)
   #target       = load_files_from_list(database, target_files, flatten=True)
   
   # Normalizing the data
-  print "Normalizing data ..."
+  print("Normalizing data ...")
   #source,_,_ = znorm(source[0:50])
   #target,_,_ = znorm(target[0:50])  
   
   #PCA for the source and the target
-  print "Computing subspaces..."  
+  print("Computing subspaces...")
   #Ps = make_pca(source, 50)
   #Pt = make_pca(target, 50)
   Ps = bob.io.base.load("source.hdf5")
@@ -256,8 +256,6 @@ def main():
   source_dev_files, target_dev_files = split_modalities(database.objects(protocol=protocol, groups="dev"), split_string)
   source_dev       = load_files_from_list(database, source_dev_files[0:10], flatten=True)
 
-  import ipdb; ipdb.set_trace()
-  
   
   #path = "/idiap/temp/tpereira/HTFace/CUHK-CUFS/GFK"
   #for s in source_dev_files:
@@ -275,11 +273,6 @@ def main():
   #  bob.io.base.create_directories_safe(os.path.dirname(output_path))
   #  bob.io.base.save(feature, output_path)
 
-  
-
-
-  x = 0
-  
 
 
 if __name__ == '__main__':
