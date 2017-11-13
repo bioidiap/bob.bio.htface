@@ -20,7 +20,7 @@ alpha=0.95
 factor=0.02
 steps = 2000000
 
-model_dir = "/idiap/temp/tpereira/casia_webface/new_tf_format/inception_resnet_v2/centerloss_alpha-0.95_factor-0.02_lr-0.1"
+model_dir = "/idiap/temp/tpereira/casia_webface/new_tf_format/inception_resnet_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.1"
 tf_record_path = "/idiap/project/hface/databases/tfrecords/casia_webface/182x/"
 tf_record_path_validation = "/idiap/project/hface/databases/tfrecords/lfw/182x/"
 
@@ -53,9 +53,12 @@ def eval_input_fn():
 
 run_config = tf.estimator.RunConfig()
 run_config = run_config.replace(save_checkpoints_steps=2000)
+
+#                             optimizer=tf.train.AdagradOptimizer(learning_rate),
+ 
 estimator = LogitsCenterLoss(model_dir=model_dir,
                              architecture=inception_resnet_v2,
-                             optimizer=tf.train.AdagradOptimizer(learning_rate),
+                             optimizer=tf.train.GradientDescentOptimizer(learning_rate),
                              n_classes=n_classes,
                              embedding_validation=embedding_validation,
                              validation_batch_size=validation_batch_size,

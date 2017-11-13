@@ -6,7 +6,7 @@ import os
 import tensorflow as tf
 
 
-learning_rate = 0.01
+learning_rate = 0.1
 data_shape = (182, 182, 3)  # size of atnt images
 output_shape = (160, 160)
 data_type = tf.uint8
@@ -20,8 +20,8 @@ alpha=0.95
 factor=0.02
 steps = 2000000
 
-model_dir = "/idiap/temp/tpereira/msceleb/new_tf_format/resnet_inception_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.01"
-tf_record_path = "/idiap/temp/tpereira/databases/MSCeleba/tfrecord_182x_newformat/"
+model_dir = "/idiap/temp/tpereira/msceleb/dbscan_face_prunning/resnet_inception_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.1"
+tf_record_path = "/idiap/project/hface/databases/tfrecords/msceleba/182x/"
 tf_record_path_validation = "/idiap/project/hface/databases/tfrecords/lfw/182x/"
 
 
