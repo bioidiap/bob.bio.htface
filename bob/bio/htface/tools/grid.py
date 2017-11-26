@@ -93,7 +93,7 @@ class GridSubmission:
     else:
       array = None
 
-    # submit the job to the job manager
+    # submit the job to the job manager    
     if not self.args.dry_run:
       if(self.env is not None):
         kwargs['env'] = self.env

@@ -40,6 +40,3 @@ preprocessor = bob.bio.face.preprocessor.FaceCrop(
 
 extractor = TensorflowEmbedding(bob.ip.tensorflow_extractor.Extractor(model_filename, inputs, embedding))
 
-
-algorithm = 'distance-cosine'
-

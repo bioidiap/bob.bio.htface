@@ -6,22 +6,55 @@
 import tensorflow as tf
 slim = tf.contrib.slim
 
-def transfer_graph(inputs, reuse=False, non_linearity_outputs=64, bottleneck_outputs=128):
+
+def build_transfer_graph(inputs, reuse=False, bottleneck_layers=[64], outputs=128):
+    """
+    Build a simple graph used for transfer learning transfer graph with an arbitrary size in the
+    output
+    
+    Parameters
+    ----------
+    
+      inputs:
+         The input tensor
+         
+      reuse: optional
+         Reuse Variables?
+       
+      bottleneck_layers: list, optional
+         Number of layers in the bottleneck. So far all will be RELY
+      
+      outputs:
+         Number of neurons in the output
+       
+    Returns
+    -------
+      
+      prelogits:
+         Output tensor
+      
+      end_points: dict
+         Dictionary containing the tensors for each endpoint
+    
+    """
 
     with tf.variable_scope('Transfer', reuse=reuse):
         end_points={}
-        prelogits = slim.fully_connected(inputs, non_linearity_outputs, activation_fn=tf.nn.relu, 
-                                         weights_initializer=tf.truncated_normal_initializer(stddev=0.1), 
-                                         weights_regularizer=slim.l2_regularizer(0.2),
-                                         scope='NonLinearity')
-        end_points['NonLinearity1'] = prelogits
+        
+        for n_outputs, i in zip(bottleneck_layers, range(len(bottleneck_layers))):
+            scope = "NonLinearity_{0}".format(i)
+            prelogits = slim.fully_connected(inputs, n_outputs, activation_fn=tf.nn.relu, 
+                                             weights_initializer=tf.truncated_normal_initializer(stddev=0.1),
+                                             weights_regularizer=slim.l2_regularizer(0.001),
+                                             scope=scope)
+            end_points[scope] = prelogits
 
         #prelogits = slim.batch_norm(prelogits,
         #                           decay=0.95,
         #                           epsilon= 0.001
         #                           )
 
-        prelogits = slim.fully_connected(prelogits, bottleneck_outputs, activation_fn=None, 
+        prelogits = slim.fully_connected(prelogits, outputs, activation_fn=None, 
                                          weights_initializer=tf.truncated_normal_initializer(stddev=0.1),
                                          scope='Bottleneck')
         end_points['Bottleneck2'] = prelogits

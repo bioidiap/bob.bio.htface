@@ -7,7 +7,7 @@
 
 .. [Szegedy2017] Szegedy, Christian, et al. "Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning." AAAI. 2017.
 
-.. [Zhang2016] Zhang, Kaipeng, et al. "Joint face detection and alignment using multitask cascaded convolutional networks." IEEE Signal Processing Letters 23.10 (2016): 1499-1503.
+#.. [Zhang2016] Zhang, Kaipeng, et al. "Joint face detection and alignment using multitask cascaded convolutional networks." IEEE Signal Processing Letters 23.10 (2016): 1499-1503.
 
 .. [Wang2009] Wang, Xiaogang, and Xiaoou Tang. "Face photo-sketch synthesis and recognition." IEEE Transactions on Pattern Analysis and Machine Intelligence 31.11 (2009): 1955-1967.
 

@@ -3,6 +3,7 @@ from . import algorithm
 from . import extractor
 from . import preprocessor
 from . import architectures
+from . import config
 
 def get_config():
   """Returns a string containing the configuration information.

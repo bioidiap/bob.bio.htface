@@ -30,7 +30,7 @@ Hypotheses
 
    session_variability
    gfk
-   transfer_learning
+   transfer_learning/transfer_learning
 
 
 ==========

@@ -9,6 +9,7 @@
 
 CUHK Face Sketch Database (CUFS)
 --------------------------------
+.. _db-CUHK-CUFS:
 
 
 CUHK Face Sketch database (`CUFS <http://mmlab.ie.cuhk.edu.hk/archive/facesketch.html>`_) is composed by viewed sketches.
@@ -53,6 +54,7 @@ The average rank-1 identification rate in the evaluation set (called view 2) is 
 
 CUHK Face Sketch FERET Database (CUFSF)
 ---------------------------------------
+.. _db-CUHK-CUFSF:
 
 The CUHK Face Sketch FERET Database (CUFSF) is composed by viewed sketches.
 It includes 1,194 face images from the `FERET database <http://www.itl.nist.gov/iad/humanid/feret/>`_ and theirs respectively sketch draw by an artist.
@@ -79,14 +81,33 @@ Long distance (over 60m) VIS images were collected during the daytime using a te
 For evaluation purposes, the authors of the database [Kang2014]_ defined a 10-fold cross validation with 90 subjects for training and 10 subjects for testing.
 ROC (Receiver Operating Characteristic) and CMC (Cumulative Match Characteristic) were used for comparison.
 
+
 Pola Thermal
 ------------
-
-Describe ...
-
+.. _db-polathermal:
 
 
+Near-Infrared and Visible-Light (NIVL) Dataset
+----------------------------------------------
+.. _db-nivl:
 
 
+Collected by University of Notre Dame, the NIVL contains VIS and NIR face images from the same subjects.
+The capturing process was carried out over the course of two semesters (fall 2011 and spring 2012).
+The VIS images were collected using a Nikon D90 camera.
+The Nikon D90 uses a :math:`23.6 \times 15.8` mm CMOS sensor and the resulting images have a :math:`4288 \times 2848` resolution.
+The images were acquired using automatic exposure and automatic focus settings.
+All images were acquired under normal indoor lighting at about a 5-foot standoff with frontal pose and a neutral facial expression.
+
+The NIR images were acquired using a Honeywell CFAIRS system.
+CFAIRS uses a modified Canon EOS 50D camera with a :math:`22.3 \times 14.9` CMOS sensor.
+The resulting images have a resolution of :math:`4770 \times 3177`.
+All images were acquired under normal indoor lighting with frontal pose and neutral facial expression.
+NIR images were acquired at both a 5ft and 7ft standoff.
+
+The dataset contains a total of 574 subjects.
+There are a total of 2,341 VIS images and 22,264 NIR images from the 574 subjects.
+A total of 402 subjects had both VIS and NIR images acquired during at least one session during both the fall and spring semesters.
+Both VIS and NIR images were acquired in the same session, although not simultaneously.
 
 

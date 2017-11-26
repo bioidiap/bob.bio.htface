@@ -20,6 +20,10 @@ class NIVLBioFile(FaceBioFile):
         super(NIVLBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
 
+    @property
+    def modality(self):
+        return self.f.modality
+
 
 class NIVLBioDatabase(ZTBioDatabase):
     """
@@ -56,4 +60,12 @@ class NIVLBioDatabase(ZTBioDatabase):
 
     def annotations(self, file_object):
         return file_object.f.annotations()
-        
+
+    @property
+    def modality_separator(self):
+        return self.db.modality_separator
+
+    @property
+    def modalities(self):
+        return self.db.modalities
+
