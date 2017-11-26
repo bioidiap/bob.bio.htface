@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,shadows}
+\usepackage{amsmath,bm,times}
+%%%<
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength\PreviewBorder{5pt}%
+
+\begin{document}
+
+\tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
+\tikzstyle{virtual} = [coordinate]
+
+\begin{tikzpicture}[auto, node distance=2cm]
+    % Place nodes
+    \node [virtual] at (0,0)                      (input_left)     {};
+    \node [block, right of=input_left] at (0,0)   (model_left)     {Resnet-v2};
+
+    \node [virtual] at (0,2)                       (input_right)     {};
+    \node [block, right of=input_right]   at (0,2) (model_right)     {Resnet-v2};
+
+    \node [block, right of=model_right, rotate=-90]   at (4,1) (loss)     {Contrastive loss};
+
+    \node [virtual] at (8,1)                      (loss_value)     {};
+
+    % Connect nodes
+    \draw [->] (input_left) -- node {$x_B$} (model_left);
+    \draw [->] (input_right) -- node {$x_A$} (model_right);
+    \draw [-] (model_left) -- node {$\theta_1$} (model_right);
+
+    \draw [->] (model_right) -- node {$\phi(x_A)$} (loss);
+    \draw [->] (model_left) -- node[below] {$\phi(x_B)$} (loss);
+
+    \draw [->] (loss) -- node[below] {$\mathcal{L}$} (loss_value);
+
+
+\end{tikzpicture}
+
+\end{document}
