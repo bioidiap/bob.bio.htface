@@ -11,3 +11,5 @@ src
 develop-eggs
 sphinx
 dist
+*.aux
+*.log

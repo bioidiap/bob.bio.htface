@@ -30,3 +30,5 @@
 .. [Lei2012] Lei, Zhen, et al. "Coupled discriminant analysis for heterogeneous face recognition." IEEE Transactions on Information Forensics and Security 7.6 (2012): 1707-1716.
 
 .. [Kang2014] Kang, Dongoh, et al. "Nighttime face recognition at large standoff: Cross-distance and cross-spectral matching." Pattern Recognition 47.12 (2014): 3750-3766.
+
+.. [Chopra2005] Chopra, Sumit, Raia Hadsell, and Yann LeCun. "Learning a similarity metric discriminatively, with application to face verification." Computer Vision and Pattern Recognition, 2005. CVPR 2005. IEEE Computer Society Conference on. Vol. 1. IEEE, 2005.

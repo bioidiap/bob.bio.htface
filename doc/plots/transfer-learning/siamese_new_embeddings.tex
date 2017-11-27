@@ -17,21 +17,31 @@
     % Place nodes
     \node [virtual] at (0,0)                      (input_left)     {};
     \node [block, right of=input_left, fill=blue!30] at (0,0)   (model_left)     {Resnet-v2};
+    \node [block, right of=model_left, fill=red!30] at (1.5,0)   (fc64_left)     {fc-64};
+    \node [block, right of=fc64_left, fill=red!30] at (2.75,0)   (fc128_left)     {fc-128};
+
+
 
     \node [virtual] at (0,2)                       (input_right)     {};
     \node [block, right of=input_right, fill=blue!30]   at (0,2) (model_right)     {Resnet-v2};
+    \node [block, right of=model_right, fill=red!30] at (1.5,2)   (fc64_right)     {fc-64};
+    \node [block, right of=fc64_right, fill=red!30] at (2.75,2)   (fc128_right)     {fc-128};
 
-    \node [block, right of=model_right, rotate=-90]   at (4,1) (loss)     {Contrastive loss};
 
-    \node [virtual] at (8,1)                      (loss_value)     {};
+    \node [block, right of=model_right, rotate=-90]   at (6,1) (loss)     {Contrastive loss};
+
+    \node [virtual] at (9,1)                      (loss_value)     {};
 
     % Connect nodes
-    \draw [->] (input_left) -- node {$x_B$} (model_left);
     \draw [->] (input_right) -- node {$x_A$} (model_right);
-    \draw [-] (model_left) -- node {$\theta_1$} (model_right);
+    \draw [->] (input_left) -- node {$x_B$} (model_left);
+    
+    \draw [-] (model_left) -- node {$\theta_{1}^{s}$} (model_right);
+    \draw [-] (fc64_left) -- node {$\theta_{2}^{t}$} (fc64_right);
+    \draw [-] (fc128_left) -- node {$\theta_{3}^{t}$} (fc128_right);
 
-    \draw [->] (model_right) -- node {$\phi(x_A)$} (loss);
-    \draw [->] (model_left) -- node[below] {$\phi(x_B)$} (loss);
+    \draw [->] (fc128_right) -- node[below] {$\phi(x_A)$} (loss);
+    \draw [->] (fc128_left) -- node[below] {$\phi(x_B)$} (loss);
 
     \draw [->] (loss) -- node[below] {$\mathcal{L}$} (loss_value);
 

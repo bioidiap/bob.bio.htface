@@ -1,0 +1,46 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,shadows,fit,calc}
+\usepackage{amsmath,bm,times}
+%%%<
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength\PreviewBorder{5pt}%
+
+\begin{document}
+
+\tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
+\tikzstyle{virtual} = [coordinate]
+
+\begin{tikzpicture}[auto, node distance=2cm]
+    % Place nodes
+    \node [virtual] at (0,0)                      (input_left)     {};
+    \node [block, right of=input_right, fill=red!40]   at (1.5,0) (conv1_left)     {Conv2d-1a-3x3};
+    \node [block, right of=conv1_left, fill=blue!40]   at (4.25,0) (model_left)     {Partial-Resnet-v2};
+
+
+    \node [virtual] at (0,2)                       (input_right)     {};
+    \node [block, right of=input_right, fill=red!40]   at (1.5,2) (conv1_right)     {Conv2d-1a-3x3};
+    \node [block, right of=conv1_right, fill=blue!40]   at (4.25,2) (model_right)     {Partial-Resnet-v2};
+
+    \node [block, right of=model_right, rotate=-90]   at (8.0,1) (loss)     {Contrastive loss};
+
+    \node [virtual] at (12,1)                      (loss_value)     {};
+
+    % Connect nodes
+    \draw [->] (input_right) -- node {$x_A$} (conv1_right);
+    \draw [->] (input_left) -- node {$x_B$} (conv1_left);
+
+    \draw [-] (conv1_left) -- node {$\theta_{1}^{t}$} (conv1_right);
+    \draw [-] (model_left) -- node {$\theta_{2}^{s}$} (model_right);    
+
+    \draw [->] (model_right) -- node[below] {$\phi(x_A)$} (loss);
+    \draw [->] (model_left) -- node[below] {$\phi(x_B)$} (loss);
+
+    \draw [->] (loss) -- node[below] {$\mathcal{L}$} (loss_value);
+
+
+\end{tikzpicture}
+
+\end{document}

@@ -13,6 +13,7 @@ It is expected that the distance is minimal when :math:`X_A` and :math:`X_B` bel
 
 First insights
 --------------
+.. _first-insights:
 
 
 Before jumping in ways to find this :math:`\phi` let's first do two different analysis.
@@ -245,7 +246,9 @@ The next subsections we present strategies on how to create a joint model :math:
 Siamese Networks
 ----------------
 
+.. toctree::
+   :maxdepth: 2
 
-
+   siamese
 
 
