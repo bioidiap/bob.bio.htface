@@ -20,7 +20,8 @@
 #done
 
 
-for step in 'preprocessing' 'extraction'
+for split in 'split1.py' 'split2.py' 'split3.py' 'split4.py' \
+           'split5.py'
 do
 
   # Just to have the training set done
@@ -29,11 +30,10 @@ do
   command_string+=" --temp-directory /idiap/temp/tpereira/HTFace/CUHK-CUFSF/idiap_inception_v2_gray--casia/ "
   command_string+=" --result-directory /idiap/temp/tpereira/HTFace/CUHK-CUFSF/idiap_inception_v2_gray--casia/ "
   command_string+=" -vvv "
-  command_string+=" -g demanding "
+  #command_string+=" -g demanding "
   command_string+=" --environment \"LD_LIBRARY_PATH=/idiap/user/tpereira/cuda/cuda-8.0/lib64:/idiap/user/tpereira/cuda/cudnn-8.0-linux-x64-v5.1/lib64:/idiap/user/tpereira/cuda/cuda-8.0/bin\""\
   command_string+=" --preprocessed-directory /idiap/temp/tpereira/HTFace/CUHK-CUFSF/idiap_inception_v2_gray--casia/split1/preprocessed "
-  command_string+=" --extracted-directory /idiap/temp/tpereira/HTFace/CUHK-CUFSF/idiap_inception_v2_gray--casia/split1/extracted "
-  command_string+=" -o $step "
+  command_string+=" -o preprocessing "
 
   $command_string
 

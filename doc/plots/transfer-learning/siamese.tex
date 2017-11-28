@@ -16,10 +16,10 @@
 \begin{tikzpicture}[auto, node distance=2cm]
     % Place nodes
     \node [virtual] at (0,0)                      (input_left)     {};
-    \node [block, right of=input_left, fill=blue!30] at (0,0)   (model_left)     {Resnet-v2};
+    \node [block, right of=input_left, fill=red!30] at (0,0)   (model_left)     {Resnet-v2};
 
     \node [virtual] at (0,2)                       (input_right)     {};
-    \node [block, right of=input_right, fill=blue!30]   at (0,2) (model_right)     {Resnet-v2};
+    \node [block, right of=input_right, fill=red!30]   at (0,2) (model_right)     {Resnet-v2};
 
     \node [block, right of=model_right, rotate=-90]   at (4,1) (loss)     {Contrastive loss};
 
@@ -28,7 +28,7 @@
     % Connect nodes
     \draw [->] (input_left) -- node {$x_B$} (model_left);
     \draw [->] (input_right) -- node {$x_A$} (model_right);
-    \draw [-] (model_left) -- node {$\theta_1$} (model_right);
+    \draw [-] (model_left) -- node {$\theta_{1}^{t}$} (model_right);
 
     \draw [->] (model_right) -- node {$\phi(x_A)$} (loss);
     \draw [->] (model_left) -- node[below] {$\phi(x_B)$} (loss);

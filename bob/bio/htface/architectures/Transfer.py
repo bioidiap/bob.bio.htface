@@ -49,11 +49,6 @@ def build_transfer_graph(inputs, reuse=False, bottleneck_layers=[64], outputs=12
                                              scope=scope)
             end_points[scope] = prelogits
 
-        #prelogits = slim.batch_norm(prelogits,
-        #                           decay=0.95,
-        #                           epsilon= 0.001
-        #                           )
-
         prelogits = slim.fully_connected(prelogits, outputs, activation_fn=None, 
                                          weights_initializer=tf.truncated_normal_initializer(stddev=0.1),
                                          scope='Bottleneck')

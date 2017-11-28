@@ -9,8 +9,15 @@ protocol = "search_split5_p2s"
 # Calling our base setup
 from bob.bio.htface.config.tensorflow.siamese_transfer_learning.cuhk_cufs.base_setup import *
 from bob.bio.htface.config.tensorflow.siamese_transfer_learning.cuhk_cufs.transfer_128_64_128.base_setup import *
+import bob.db.cuhk_cufs
 
-architecture = transfer_128_64_128
+# I know it's redundant, but I'm just making this explicit
+architecture = transfer_architecture
+
+# Sanity checks
+assert extra_checkpoint["trainable_variables"] == []
+assert isinstance(database, bob.db.cuhk_cufs.Database)
+
 
 def train_input_fn():
     return shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, data_type,
