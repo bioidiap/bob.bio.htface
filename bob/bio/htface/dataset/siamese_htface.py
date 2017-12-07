@@ -121,7 +121,7 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
         right_data.append(right)
         labels.append(label)
                            
-    client_ids = database.model_ids(protocol=protocol, groups=groups)
+    client_ids = database.model_ids_with_protocol(protocol=protocol, groups=groups)
                                               
     # List of samples from modality A
     samples_A = database.objects(protocol=protocol,

@@ -115,7 +115,9 @@ setup(
             'grassmann_test.py = bob.bio.htface.script.grassmann_test:main',
             'verify_ht.py = bob.bio.htface.script.verify_ht:main',
             'plot_tsne_modality.py = bob.bio.htface.script.plot_tsne_modality:main',
-            'evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main'
+            'evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main',
+            'bob_htface_baselines.py = bob.bio.htface.script.baselines:main',
+            'bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main',
         ],
 
     },

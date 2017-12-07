@@ -52,6 +52,12 @@ class CUHK_CUFSFBioDatabase(BioDatabase):
                                    original_extension=original_extension,
                                    feret_directory=feret_directory
                                    )
+
+        self.original_directory = original_directory
+        self.original_extension = original_extension
+        self.feret_directory = feret_directory
+
+                                   
     @property
     def modality_separator(self):
         return self.db.modality_separator
