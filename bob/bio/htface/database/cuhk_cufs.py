@@ -12,7 +12,7 @@
 from bob.bio.face.database import FaceBioFile
 from bob.bio.base.database import ZTBioDatabase, BioFile
 import bob.io.base
-
+import os
 
 class CUHK_CUFSBioFile(FaceBioFile):
 
@@ -21,11 +21,19 @@ class CUHK_CUFSBioFile(FaceBioFile):
         self.f = f
         self.db = db
 
+
     def load(self, directory=None, extension=""):
-        if directory is None:
-            return bob.io.base.load(self.db.original_file_name(self.f))
+        return bob.io.base.load(self.db.original_file_name(self.f))
+
+
+    def make_path(self, original_directory, original_extension=None):
+        if isinstance(original_extension, list):
+            #Hacking for the original data.
+            # The load funtion knows how to load this
+            return super(FaceBioFile, self).make_path(original_directory, original_extension[0])
         else:
-            return self.f.load(directory=directory, extension=extension)
+            return super(FaceBioFile, self).make_path(original_directory, original_extension)
+
 
     @property
     def modality(self):
@@ -54,6 +62,12 @@ class CUHK_CUFSBioDatabase(ZTBioDatabase):
                                    xm2vts_directory=xm2vts_database_dir,
                                    original_extension = original_extension
                                    )
+
+        self.original_directory = cufs_database_dir
+        self.arface_directory = arface_database_dir
+        self.xm2vts_directory = xm2vts_database_dir
+        self.original_extension = original_extension
+
 
     @property
     def modality_separator(self):

@@ -9,10 +9,13 @@ import os
 import bob.ip.tensorflow_extractor
 import tensorflow as tf
 from bob.learn.tensorflow.network import inception_resnet_v2
+from bob.bio.htface.utils import get_cnn_model_name
 
 # The model filename depends on the database and its protocol and those values are
 # chain loaded via database.py
-model_filename = os.path.join(inception_resnet_v2_adapt_layer_1[database.name], protocol)
+model_filename = get_cnn_model_name(temp_dir, "idiap_casia_inception_v2_gray_adapt_first_layer",
+                                    database.name, protocol)
+
 
 
 inputs = tf.placeholder(tf.float32, shape=(1, 160, 160, 1))

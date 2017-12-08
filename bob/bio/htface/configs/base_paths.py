@@ -9,7 +9,7 @@ results_dir = "/idiap/temp/tpereira/HTFace/"
 
 # Datsbase paths
 casia_nir_vis = {"data_path": "/idiap/resource/database/cbsr_nir_vis_2",
-                 "inception_resnet_v2_path":"",
+                 "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/casia_nir_vis/idiap_casia_inception_v2_gray/view2_1/preprocessed/",
                  "extension": ['.bmp', '.jpg']}
                   
 polathermal = {"data_path": "/idiap/project/hface/databases/polimetric_thermal_database/Registered",
@@ -17,14 +17,14 @@ polathermal = {"data_path": "/idiap/project/hface/databases/polimetric_thermal_d
                "extension": ".png"}
 
 nivl = {"data_path": "/idiap/resource/database/nivl/nivl-dataset-v1.0",
-        "inception_resnet_v2_path":"",
+        "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/nivl/idiap_casia_inception_v2_gray/idiap-search_VIS-NIR_split1/preprocessed/",
         "extension": ".png"}
 
 cuhk_cufs = {"cufs_path": "/idiap/resource/database/CUHK-CUFS",
              "arface_path": "/idiap/resource/database/AR_Face/images",
              "xm2vts_path": "/idiap/resource/database/xm2vtsdb/images",
-             "inception_resnet_v2_path":"",             
-             "extension": ".png"}
+             "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/cuhk_cufs/idiap_casia_inception_v2_gray/search_split1_p2s/preprocessed/",
+             "extension": ['.jpg', '.JPG', '.ppm']}
             
 cuhk_cufsf = {"cufsf_path": "/idiap/resource/database/CUHK-CUFSF/original_sketch/",
               "feret_path": "/idiap/project/hface/databases/feret_cuhk-cufsf/feret_photos/feret/",

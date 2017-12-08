@@ -17,7 +17,7 @@ from bob.bio.htface.utils import get_cnn_model_name
 
 
 # Training setup
-learning_rate = 0.01
+learning_rate = 0.1
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
@@ -40,10 +40,12 @@ run_config = run_config.replace(save_checkpoints_steps=500)
 # Preparing the prior
 extra_checkpoint = {"checkpoint_path": inception_resnet_v2_casia_webface_gray, 
                     "scopes": dict({"InceptionResnetV2/": "InceptionResnetV2/"}),
-                    "trainable_variables": ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3"]
+                    "trainable_variables": ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",
+                                            "Mixed_5b", "Block35", "Mixed_6a", "Block17", "Mixed_7a",
+                                            "Block8", "Conv2d_7b_1x1", "Bottleneck"]
                    }
 
-model_dir = get_cnn_model_name(temp_dir, "inception_resnet_v2_adapt_layers_1_2",
+model_dir = get_cnn_model_name(temp_dir, "inception_resnet_v2_adapt_all_layers",
                                database.name, protocol)
 
 

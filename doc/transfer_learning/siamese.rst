@@ -41,7 +41,7 @@ With the input signal going deeper into the architecture, the feature detectors 
 At this point we have some research questions here.
 
 1. Are our prior :math:`\phi` (trained with visual light images) too modality specific? 
-Can we train a modality specific embedding this prior?
+Can we train a modality specific embedding on top of this prior?
 
 This question is quite tempting. If our current feature detectors preserve some information
 about the image modality, we could train a simple shallow network to model that.
@@ -83,43 +83,136 @@ Next subsections we describe recognition rate results in the same fashion as in 
 POLA THERMAL
 ############
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 11.798% (1.556)   |
- +------------+--------------+--------+-------------------+
- | 160 x 160  | 128-64-128   |        | 6.964% (1.37)     |
- +------------+--------------+--------+-------------------+
+  Follow bellow the results in terms of Rank-1 recognition rate under this assumption using 
+  the thermograms database.
+
+ +----------------+------------------+---------+-------------------+
+ | Image size     | ML               | Feat.   | Rank-1            |
+ +================+==================+=========+===================+
+ | 160 x 160      | Resnet-Gray      |         | 11.798% (1.556)   |
+ +----------------+------------------+---------+-------------------+
+ | **160 x 160**  | **128-64-128**   |         | **6.964% (1.37)** |
+ +----------------+-------------------+--------+-------------------+
+
+It's possible to observe a decrease in the recognition rate using this assumption suggesting that it's
+not possible to learn a modality map using the embeddings of our prior :math:`\phi`.
+ 
+The following steps train and evaluate such CNN::
+
+ $ bob_htface_train_cnn.py  --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases pola_thermal
+ $ bob_htface_cnn_baselines.py --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases pola_thermal
+
 
 
 CUHK-CUFS
 #########
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 64.158% (3.424)   |
- +------------+--------------+--------+-------------------+
- | 160 x 160  | 128-64-128   |        | 22.178% (5.534)   |
- +------------+--------------+--------+-------------------+
+  Follow bellow the results in terms of Rank-1 recognition rate under this assumption using 
+  the viewable sketch database .
+
+ +----------------+------------------+--------+-----------------------+
+ | Image size     | ML               | Feat.  | Rank-1                |
+ +================+==================+========+=======================+
+ | 160 x 160      | Resnet-Gray      |        | 64.158% (3.424)       |
+ +----------------+------------------+--------+-----------------------+
+ | **160 x 160**  | **128-64-128**   |        | **22.178% (5.534)**   |
+ +----------------+------------------+--------+-----------------------+
+
+It's possible to observe a severe decrease in the recognition rate using this assumption suggesting that it's
+not possible to learn a modality map using the embeddings or our prior :math:`\phi`.
+ 
+The following steps train and evaluate such CNN::
+
+ $ bob_htface_train_cnn.py  --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufs
+ $ bob_htface_cnn_baselines.py --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufs
+
 
 
 CUHK-CUFSF
 ##########
+
+  Follow bellow the results in terms of Rank-1 recognition rate under this assumption using 
+  the viewable sketch database .
+
+ +----------------+------------------+--------+------------------+
+ | Image size     | ML               | Feat.  | Rank-1           |
+ +================+==================+========+==================+
+ | 160 x 160      | Resnet-Gray      |        | 16.518%(1.394)   |
+ +----------------+------------------+--------+------------------+
+ | **160 x 160**  | **128-64-128**   |        | **7.085(0.64)**  |
+ +----------------+------------------+--------+------------------+
+
+It's possible to observe a severe decrease in the recognition rate using this assumption suggesting that it's
+not possible to learn a modality map using the embeddings or our prior :math:`\phi`.
+ 
+The following steps train and evaluate such CNN::
+
+ $ bob_htface_train_cnn.py  --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufsf
+ $ bob_htface_cnn_baselines.py --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufsf
+
 
 
 
 CASIA NIR-VIS
 #############
 
+  Follow bellow the results in terms of Rank-1 recognition rate under this assumption using 
+  the NIR baseline.
+
+ +----------------+------------------+--------+------------------+
+ | Image size     | ML               | Feat.  | Rank-1           |
+ +================+==================+========+==================+
+ | 160 x 160      | Resnet-Gray      |        | 44.031%(0.999)   |
+ +----------------+------------------+--------+------------------+
+ | **160 x 160**  | **128-64-128**   |        | **30.716(0.8)**  |
+ +----------------+------------------+--------+------------------+
+
+It's possible to observe a severe decrease in the recognition rate using this assumption suggesting that it's
+not possible to learn a modality map using the embeddings or our prior :math:`\phi`.
+ 
+The following steps train and evaluate such CNN::
+
+ $ bob_htface_train_cnn.py  --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases casia_nir_vis
+ $ bob_htface_cnn_baselines.py --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases casia_nir_vis
+
+
 
 NIVL
 ####
 
 
+  Follow bellow the results in terms of Rank-1 recognition rate under this assumption using 
+  the NIR baseline.
+
+ +----------------+------------------+--------+-----------------------+
+ | Image size     | ML               | Feat.  | Rank-1                |
+ +================+==================+========+=======================+
+ | 160 x 160      | Resnet-Gray      |        | 60.009% (2.518)       |
+ +----------------+------------------+--------+-----------------------+
+ | **160 x 160**  | **128-64-128**   |        | **31.772 (1.061)**    |
+ +----------------+------------------+--------+-----------------------+
+
+It's possible to observe a severe decrease in the recognition rate using this assumption suggesting that it's
+not possible to learn a modality map using the embeddings or our prior :math:`\phi`.
+ 
+The following steps train and evaluate such CNN::
+
+ $ bob_htface_train_cnn.py  --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufsf
+ $ bob_htface_cnn_baselines.py --baselines idiap_casia_inception_v2_gray_transfer_64_128 --databases cuhk_cufsf
+
+
+
 Final Discussions
 #################
 
+In this sections we tried to answer the question if it is possible to model modality specific embeddings on top of 
+our prior :math:`\phi`.
+The results, in terms of recognition rate, were very conclusive showing that :math:`\phi` degrades the modality input signal
+in such a way that is not possible to do a modality map on top of the embedding **VERY BAD TEXT**.
+
+.. Todo:: Can we visually inspect that??
+
+.. Todo:: Shall I try different classifiers on top of it?
 
 
 
@@ -137,8 +230,118 @@ specializing the first :math:`n` layers of :math:`\phi`.
 
 
 
-
-
 Adapting layer by layer
 -----------------------
+
+
+POLA THERMAL
+############
+
+
+ +----------------+------------------+-------------------+
+ | Image size     | ML               | Rank-1            |
+ +================+==================+===================+
+ | 160 x 160      | Resnet-Gray      | 11.798% (1.556)   |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt first**  | **12.738% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **17.143% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **29.286% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **33.095% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt All**    | **-    % (    )** |
+ +----------------+------------------+-------------------+
+
+
+
+CUHK-CUFS
+#########
+
+ +----------------+------------------+-------------------+
+ | Image size     | ML               | Rank-1            |
+ +================+==================+===================+
+ | 160 x 160      | Resnet-Gray      | 64.158% (3.424)   |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt first**  | **63.366% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **64.851% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **78.713% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **83.168% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt All**    | **23.762% (    )**|
+ +----------------+------------------+-------------------+
+
+
+
+CUHK-CUFSF
+##########
+
+
+ +----------------+------------------+-------------------+
+ | Image size     | ML               | Rank-1            |
+ +================+==================+===================+
+ | 160 x 160      | Resnet-Gray      | 16.518%(1.394)    |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt first**  | **15.182% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **18.623% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **36.235% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **41.093% (    )**|
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt All**    | **-    % (    )** |
+ +----------------+------------------+-------------------+
+ 
+
+CASIA NIR-VIS
+#############
+
+ +----------------+------------------+-------------------+
+ | Image size     | ML               | Rank-1            |
+ +================+==================+===================+
+ | 160 x 160      | Resnet-Gray      | 44.031%(1.394)    |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt first**  | **40.206-% (   )**|
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **54.832% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **------% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **------% (    )**|
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt All**    | **-    % (    )** |
+ +----------------+------------------+-------------------+
+
+
+
+
+NIVL
+####
+
+
+ +----------------+------------------+-------------------+
+ | Image size     | ML               | Rank-1            |
+ +================+==================+===================+
+ | 160 x 160      | Resnet-Gray      | 60.009%(2.518)    |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt first**  | **66.974% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **79.666% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **86.386% (   )** |
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **81.796% (    )**|
+ +----------------+------------------+-------------------+
+ | **160 x 160**  | **Adapt All**    | **-    % (    )** |
+ +----------------+------------------+-------------------+
+ 
+
+
+
+
 

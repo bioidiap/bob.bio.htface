@@ -21,11 +21,19 @@ class CUHK_CUFSFBioFile(FaceBioFile):
         self.f = f
         self.db  = db
 
+
     def load(self, directory=None, extension=""):
-        #if directory is None:
         return bob.io.base.load(self.db.original_file_name(self.f))
-        #else:
-        #    return self.f.load(directory=directory, extension=extension)
+
+
+    def make_path(self, original_directory, original_extension=None):
+        if isinstance(original_extension, list):
+            #Hacking for the original data.
+            # The load funtion knows how to load this
+            return super(FaceBioFile, self).make_path(original_directory, original_extension[0])
+        else:
+            return super(FaceBioFile, self).make_path(original_directory, original_extension)
+
 
     @property
     def modality(self):

@@ -7,7 +7,10 @@ import pkg_resources
 all_baselines = ["idiap_casia_inception_v2_gray",
                  "idiap_casia_inception_v2_gray_transfer_64_128",
                  "idiap_casia_inception_v2_gray_adapt_first_layer",
-                 "idiap_casia_inception_v2_gray_adapt_layers_1_2"]
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_2",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_4",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_5",
+                 "idiap_casia_inception_v2_gray_adapt_all_layers"]
 
 resources = dict()
 
@@ -86,9 +89,46 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["estimator"] = pkg_r
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
- 
 
- 
- 
+# INCEPTION_V2 + first and forth layers
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["name"] = "idiap_casia_inception_v2_gray_adapt_layers_1_4"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/extractor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/estimator.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+
+
+# INCEPTION_V2 + first and fifth layers
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["name"] = "idiap_casia_inception_v2_gray_adapt_layers_1_5"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_5/extractor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_5/estimator.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+
+
+# INCEPTION_V2 + ALL LAYERS
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["name"] = "idiap_casia_inception_v2_gray_adapt_all_layers"
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_all_layers/extractor.py")
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_all_layers/estimator.py")
+resources["idiap_casia_inception_v2_gray_adapt_all_layers"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
 
 

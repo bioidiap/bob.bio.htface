@@ -19,7 +19,7 @@ This command line will run all the registed baselines using all databases regist
 
 
 Usage:
-  bob_htface_baselines.py  --baselines=<arg> --databases=<arg>
+  bob_htface_baselines.py  --baselines=<arg> --databases=<arg>  [--protocol=<arg>]
   bob_htface_baselines.py  --list
   bob_htface_baselines.py -h | --help
 
@@ -28,6 +28,7 @@ Options:
   --databases=<arg>                   Database name [default: all]
   --list                              List all the registered baselines
   -h --help                           Show this screen.
+  -p, --protocol=<arg>                Protocol name  (If not set, all the protocols from a particular database will be triggered)
 """
 
 
@@ -49,7 +50,7 @@ from .registered_baselines import all_baselines, resources
 def trigger_verify(preprocessor, extractor, database, groups, sub_directory, protocol=None,
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
     
-    configs  = load([base_paths])
+    configs  = load([base_paths])    
     
     parameters = [
         base_paths,
@@ -58,8 +59,8 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         preprocessor,
         extractor,
         '-a', "distance-cosine",
-        '-vvv',
         '-g', 'demanding',
+        '-vvv',
         '--temp-directory', configs.temp_dir,
         '--result-directory', configs.results_dir,
         '--sub-directory', sub_directory,
@@ -95,7 +96,7 @@ def write_protocol(file_name, protocol):
     open(file_name, "w").write("protocol=\"%s\""%protocol)
     
 
-def run_cnn_baseline(baseline, databases=resources["databases"].keys(), reuse_extractor=False):
+def run_cnn_baseline(baseline, databases=resources["databases"].keys(), reuse_extractor=False, protocol=None):
     configs  = load([base_paths])
         
     for d in databases:        
@@ -109,7 +110,12 @@ def run_cnn_baseline(baseline, databases=resources["databases"].keys(), reuse_ex
             extracted_directory=os.path.join(configs.temp_dir, first_subdir, "extracted")
         
         # Iterate over the protocols
-        for p in resources["databases"][d]["protocols"]:
+        if protocol is None:
+            protocols = resources["databases"][d]["protocols"]
+        else:
+            protocols = [protocol]
+            
+        for p in protocols:
         
             import tensorflow as tf
             tf.reset_default_graph()
@@ -162,9 +168,9 @@ def main():
 
     if args["--baselines"] == "all":
         for b in all_baselines:
-            run_cnn_baseline(baseline=b, database=database)
+            run_cnn_baseline(baseline=b, database=database, protocol=args["--protocol"])
     else:
-        run_cnn_baseline(baseline=args["--baselines"], databases=database)
+        run_cnn_baseline(baseline=args["--baselines"], databases=database, protocol=args["--protocol"])
 
 
 if __name__ == "__main__":
