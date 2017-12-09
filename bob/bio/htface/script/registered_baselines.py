@@ -10,6 +10,7 @@ all_baselines = ["idiap_casia_inception_v2_gray",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_2",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_6",
                  "idiap_casia_inception_v2_gray_adapt_all_layers"]
 
 resources = dict()
@@ -114,6 +115,19 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["reuse_extractor"] =
 ## To train the cnn
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_5/estimator.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_5"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+# INCEPTION_V2 + first and sixth layers
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["name"] = "idiap_casia_inception_v2_gray_adapt_layers_1_6"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_6/extractor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_6/estimator.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_6"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
 
 
 
