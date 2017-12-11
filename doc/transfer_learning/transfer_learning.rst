@@ -42,6 +42,13 @@ Such set of tests were conducted under several datasets and they are bellow.
   - ...
 
 
+The Resnet v2 architecture
+--------------------------
+
+.. Todo:: Describe the resnet v2 architecture
+
+
+
 POLA THERMAL
 ============
 

@@ -17,7 +17,7 @@ from bob.bio.htface.utils import get_cnn_model_name
 
 
 # Training setup
-learning_rate = 0.01
+learning_rate = 0.1
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
