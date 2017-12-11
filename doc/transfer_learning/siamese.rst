@@ -19,10 +19,6 @@ In this section we will explore strategies on how to use such prior and adapt ou
             :math:`\theta` is trainable (boxes filled with red). The superscript :math:`s` (:math:`\theta^s`) means that such 
             :math:`\theta` is **not** trainable (boxes filled in blue).
 
-
-.. Todo:: Decribe the setup for triplets
-
-
 One commom wisdom about convolutional neural networks states that feature detectors from the first layers of the network are more
 general (edge detectors, color blobs, etc..), and upper layers handle high level entities (such as eyes, nose, etc..).
 Some researchers systematically noticed some tendencies in this level, such as, Gabor filters, color blobs, edge detector [Yosinski2014]_.
@@ -38,15 +34,17 @@ At this point we have some research questions here.
 Can we train a modality specific embedding on top of this prior?
 
 If our current feature detectors preserve some information about the image modality, 
-will invalidate our base hypothesis and we to approach the taks we could just train a shallow network on top of this prior (or other classifier).
+it invalidates our base hypothesis and we could approach the taks by just training a shallow
+network on top of this prior (or other classifier).
 
 
 2. If the first question is a negative, it suggests that information about the image modality carried in the
-input signal is suppresed by the deep set of feature detectors. The question here is, can we retrain a 
+input signal is suppressed by the deep set of feature detectors. The question here is, can we retrain a
 subset of the first layers in order to preserve the modality information?
 
+To approach those two questions we designed two set of experiments.
 
-To approch those two questions we designed two set of experiments.
+.. Todo Describe the motivation of Siamese and triplets
 
 
 Siamese Networks
