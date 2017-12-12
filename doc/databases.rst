@@ -66,6 +66,8 @@ Unfortunately the file names for each set was not distributed.
 The Verification Rate (**VR**) considering a False Acceptance Rate ($FAR$) of 0.1\% is used as a performance measure.
 In [Lei2012]_ the authors split the 1,194 identities in two sets with 700 identities for training and 494 for testing.
 The rank-1 identification rate is used as performance measures.
+We also organized this protocol in the same way as for CUFS database and it is also freely available for download `(bob.db.cuhk_cufsf) <https://pypi.python.org/pypi/bob.db.cuhk_cufsf>`_.
+
 
 
 Long Distance Heterogeneous Face Database
@@ -80,11 +82,24 @@ Long distance (over 60m) VIS images were collected during the daytime using a te
 
 For evaluation purposes, the authors of the database [Kang2014]_ defined a 10-fold cross validation with 90 subjects for training and 10 subjects for testing.
 ROC (Receiver Operating Characteristic) and CMC (Cumulative Match Characteristic) were used for comparison.
+For reproducibility purposes, the evaluation protocols of this database is freelly available in a python package `(bob.db.ldhf) <https://pypi.python.org/pypi/bob.db.ldhf>`_.
 
 
 Pola Thermal
 ------------
 .. _db-polathermal:
+
+Collected by the U.S. Army Research Laboratory (ARL), the Polarimetric Thermal Face Database (first of this kind), contains polarimetric LWIR (longwave infrared) imagery and simultaneously acquired visible spectrum imagery from a set of 60 distinct subjects.
+
+For the data collection, each subject was asked to sit in a chair and remove his or her glasses. 
+A floor lamp with a compact fluorescent light bulb rated at 1550 lumens was placed 2m in front of the chair to illuminate the scene for 
+the visible cameras and a uniform background was placed approximately 0.1m behind the chair.
+Data was collected at three distances: Range 1 (2.5m), Range 2 (5m), and Range 3 (7.5m).
+At each range, a baseline condition is first acquired where the subject is asked to maintain a neutral expression looking at the polarimetric thermal imager.
+A second condition, which is referred as the "expressions" condition, was collected where the subject is asked to count out loud numerically from one upwards.
+Counting orally results in a continuous range of motions of the mouth, and to some extent, the eyes, which can be recorded to produce variations in the facial imagery.
+For each acquisition, 500 frames are recorded with the polarimeter (duration of 8.33 s at 60 fps), while 300 frames are recorded with each visible spectrum camera (duration of 10s at 30 fps).
+For reproducibility purposes, the evaluation protocols of this database is freelly available in a python package `(bob.db.pola_thermal) <https://pypi.python.org/pypi/bob.db.pola_thermal>`_.
 
 
 Near-Infrared and Visible-Light (NIVL) Dataset
@@ -109,5 +124,50 @@ The dataset contains a total of 574 subjects.
 There are a total of 2,341 VIS images and 22,264 NIR images from the 574 subjects.
 A total of 402 subjects had both VIS and NIR images acquired during at least one session during both the fall and spring semesters.
 Both VIS and NIR images were acquired in the same session, although not simultaneously.
+For reproducibility purposes, the evaluation protocols of this database is freelly available in a python package `(bob.db.nivl) <https://pypi.python.org/pypi/bob.db.nivl>`_.
+
+
+Cross Eye
+---------
+.. _db-cross-eye:
+
+Collected by University of Reading, the Cross-Spectrum Iris/Periocular contains VIS and NIR periocular images from the same subjects form the left and right eyes.
+The databseset contains data from only 20 subjects and has the following image distribution:
+
+ - 8 VIS captures from the left eye
+ - 8 NIR captures from the left eye
+ - 8 VIS captures from the right eye
+ - 8 NIR captures from the right eye
+
+Such dataset was used in the context of the "2nd Cross-Spectrum Iris/Periocular Recognition Competition" and for that only the training set is released.
+The test is in the possession of the owners in order to independently run evaluations.
+Since we don't have access to the test set, we created our own evaluation protocols with the data available and such protocols are freelly available in a python package `(bob.db.pericrosseye) <https://pypi.python.org/pypi/bob.db.pericrosseyel>`_
+
+
+The UoM-SGFS Database
+---------------------
+
+The UoM-SGFS database contains software generated sketches of 300 subjects in the Color-FERET database, created using the `EFIT-V <http://www.visionmetric.com/products/about-efit-v/>`_ software which is commonly used by law enforcement agencies.
+The EFIT-V operator was trained by a qualified forensic scientist from the Malta Police Force so as to ensure that practices adopted in real-life were also used in the creation of the UoM-SGFS database.
+
+This database contains two viewed sketches for each of the 300 subjects considered, and is thus partitioned into two sets, where each contains the sketch of one subject.
+Set A contains those sketches created using EFIT-V where the number of steps performed in the program was minimised so as to lower the risk of producing composites that are overly similar to the original photo.
+The average time taken to create sketches varied between approximately 30 to 45 minutes.
+The sketches in Set A were then edited using the Corel PaintShop Pro X7 Image editing software to fine-tune details which cannot be easily modified with EFIT-V, yielding Set B. 
+Consequently, sketches in Set B are generally closer in appearance to the original face-photos.
+On average, editing spanned approximately 15 to 30 minutes only, to retain inaccuracies as found in real-life forensic sketches.
+The Corel software was also used for sketches in Set A, but only to modify the hair component.
+The EFIT-V software also allows the depiction of shoulders in the sketch, which can indicate the type of clothes that the perpetrator was wearing and the physique (e.g. fat, muscular, etc.).
+While the type of clothing is important, more emphasis was given to correctly representing the physique of the subject since it provides more salient information.
+In addition, any accessories such as jewellery and hats are generally slightly different to those shown in the original photograph and sometimes omitted in the UoM-SGFS sketches to mimic memory loss effect of eyewitnesses.
+
+
+E-PRIP Database
+---------------
+
+The E-PRIP database contains 123 pairs of composite sketches and photographs taken from on from the AR Face dataset.
+The composite sketches are split in four sets, which one created by a different subject.
+One set is created by an American artist using `FACES <http://www.iqbiometrix.com/products_faces_40.html>`_ software, two sets of databases are created by Asian artist using both FACES and `Identi-Kit <http://identikit.net/>`_ tools, and one set is created by an Indian
+artist using FACES software.
 
 

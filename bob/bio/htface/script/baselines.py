@@ -60,6 +60,7 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         extractor,
         '-a', "distance-cosine",
         '-g', 'demanding',
+        '-G', 'submitted_2.sql3',
         '-vvv',
         '--temp-directory', configs.temp_dir,
         '--result-directory', configs.results_dir,

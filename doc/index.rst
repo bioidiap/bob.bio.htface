@@ -39,11 +39,11 @@ Follow below how this file looks like.
    :language: python
    :caption: "base_paths.py"
 
-==========
-The tasks
-==========
+========
+The task
+========
 
-.. Todo:: Describe the task
+.. Todo:: Describe what heterogeneous face recognition is about
 
 
 ==========
@@ -66,6 +66,7 @@ Hypotheses
 .. toctree::
    :maxdepth: 2
 
+   crafted_features
    session_variability
    gfk
    transfer_learning/transfer_learning

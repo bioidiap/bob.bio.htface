@@ -183,7 +183,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=18, position=Non
 
   # open new page for current plot
 
-  figure = pyplot.figure()
+  figure = pyplot.figure(dpi=600)
   offset = 0
   step   = int(len(cmcs)/len(labels))
   params = {'legend.fontsize': int(fontsize)}
@@ -267,7 +267,7 @@ def main(command_line_parameters=None):
     colors = [cmap(i) for i in numpy.linspace(0, 1.0, len(args.dev_files)/len(args.legends)+1)]
 
   #Creating a multipage PDF
-  pdf = PdfPages(args.report_name)
+  #pdf = PdfPages(args.report_name)
 
   ################ PLOTING CMC ##############
   logger.info("Loading CMC data on the development ")
@@ -277,7 +277,9 @@ def main(command_line_parameters=None):
 
   try:
     # create a separate figure for dev and eval
-    pdf.savefig(_plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax))
+    #pdf.savefig()
+    fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
+    fig.savefig("xuxa.png")
 
   except RuntimeError as e:
     raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
@@ -314,5 +316,5 @@ def main(command_line_parameters=None):
       except RuntimeError as e:
         raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
 
-  pdf.close()
+  #pdf.close()
 
