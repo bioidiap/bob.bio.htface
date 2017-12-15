@@ -26,13 +26,13 @@ class CUHK_CUFSFBioFile(FaceBioFile):
         return bob.io.base.load(self.db.original_file_name(self.f))
 
 
-    def make_path(self, original_directory, original_extension=None):
+    def make_path(self, directory, extension=None):
         if isinstance(original_extension, list):
             #Hacking for the original data.
             # The load funtion knows how to load this
-            return super(FaceBioFile, self).make_path(original_directory, original_extension[0])
+            return super(FaceBioFile, self).make_path(directory, extension[0])
         else:
-            return super(FaceBioFile, self).make_path(original_directory, original_extension)
+            return super(FaceBioFile, self).make_path(directory, extension)
 
 
     @property
