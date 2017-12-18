@@ -428,23 +428,24 @@ Follow bellow the results in terms of Rank-1 recognition rate under this assumpt
 a NIR database.
 
 
- +----------------+------------------+-------------------+
- | Image size     | CNN              | Rank-1            |
- +================+==================+===================+
- | 160 x 160      | Inception V2     | 44.031%(1.394)    |
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt first**  | **42.959 (1.923)**|
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-2**    | **63.667(4.528)** |
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-4**    | **77.515(0.398)** |
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-5**    | **62.263(1.444)** |
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-6**    | **21.907(0.0)   **|
- +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt All**    | **-    % (    )** |
- +----------------+------------------+-------------------+
+ +----------------+------------------+--------------------+
+ | Image size     | CNN              | Rank-1             |
+ +================+==================+====================+
+ | 160 x 160      | Inception V2     | 44.031% (1.394)    |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt first**  | **42.959%(1.923)** |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt 1-2**    | **63.667%(4.528)** |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt 1-4**    | **77.515%(0.398)** |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt 1-5**    | **62.263%(1.444)** |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt 1-6**    | **19.249%(1.780)** |
+ +----------------+------------------+--------------------+
+ | **160 x 160**  | **Adapt All**    | **7.099 (0.498)**  |
+ +----------------+------------------+--------------------+
+ 
 
 
 The same trends as before can be observed.
@@ -490,7 +491,7 @@ a NIR database.
  +================+==================+===================+
  | 160 x 160      | Inception V2     | 60.009%(2.518)    |
  +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt first**  | **69.796% (   )** |
+ | **160 x 160**  | **Adapt first**  | **69.393(1.847)** |
  +----------------+------------------+-------------------+
  | **160 x 160**  | **Adapt 1-2**    | **82.74% (    )** |
  +----------------+------------------+-------------------+
@@ -547,9 +548,18 @@ For the thermogram database, we could observe the saturation from layer 6 (**Ada
 For the sketch databases, points of saturation were obseved from layer 5 (**Adapt 1-5**).
 For the NIR databases, points of saturation were obseved from layer 4 (**Adapt 1-4**).
 
-.. Todo:: **What can we hypothesize about the last observation?** Follow below an idea:
-          With such observations, we could hypothesize that for different image modalities, high level elements cannot be detected at certain stages of the network, vanishing the input signal.
-          Let's try to understand that with an analogy; imagine that the first layer of :math:`\phi` contains a set of high pass filters (edge detectors) that are very suitable for VIS images.     Providing themograms to this network (which is poor in high frequency elements) leads to zero signal right in the begining of the network. The same is not true for sketch database, which is very rich in high frequency components (adding lots of noise in the signal). We clearlly need to readapt those feature detectors, in order to deliver better high level features to the following layers. The question is; can we design an experiment to observe this phenomena?
+**What can we hypothesize about the last observation?**
+With such observations, we could hypothesize that for different image modalities, high level elements cannot be detected at certain stages of the network, vanishing the input signal.
+Using an analogy we could interpret this as the following; imagine that the first layer of :math:`\phi` contains a set of high pass filters (edge detectors) that are very suitable for VIS images.
+Providing themograms to this network (which are poor in high frequency elements) the signal is vanished right in the begining of the network.
+The same is not true for sketch database, which is very rich in high frequency components and this may adding lots of noise into signal.
+We clearlly need to readapt those feature detectors, in order to deliver better low level features to the following layers.
+
+One possible exercise that we can do to observe such phenomena is to observe the signal of :math:`x_A` and :math:`x_B` in terms of Fourier decomposition after every convolution with our
+orignal :math:`\phi` and the :math:`\phi` after the adaptation as can be observed in the figure below.
+
+
+.. The question is; can we design an experiment to observe this phenomena?
           
           
 Triplet Networks

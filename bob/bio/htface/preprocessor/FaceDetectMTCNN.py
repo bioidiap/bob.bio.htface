@@ -63,8 +63,8 @@ class FaceDetectMTCNN(Base):
     """
     
     #TODO: I need two preprocessors, one for the color and one for the gray
-    #color_channel = "rgb"
-    color_channel = "gray"
+    color_channel = "rgb"
+    #color_channel = "gray"
 
     # Loading the thing
     if self.extractor is None:
