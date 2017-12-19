@@ -493,9 +493,9 @@ a NIR database.
  +----------------+------------------+-------------------+
  | **160 x 160**  | **Adapt first**  | **69.393(1.847)** |
  +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-2**    | **82.74% (    )** |
+ | **160 x 160**  | **Adapt 1-2**    | **85.19%(1.906)** |
  +----------------+------------------+-------------------+
- | **160 x 160**  | **Adapt 1-4**    | **85.123% (   )** |
+ | **160 x 160**  | **Adapt 1-4**    | **86.777%(1.908)**|
  +----------------+------------------+-------------------+
  | **160 x 160**  | **Adapt 1-5**    | **76.713% (    )**|
  +----------------+------------------+-------------------+
@@ -556,11 +556,76 @@ The same is not true for sketch database, which is very rich in high frequency c
 We clearlly need to readapt those feature detectors, in order to deliver better low level features to the following layers.
 
 One possible exercise that we can do to observe such phenomena is to observe the signal of :math:`x_A` and :math:`x_B` in terms of Fourier decomposition after every convolution with our
-orignal :math:`\phi` and the :math:`\phi` after the adaptation as can be observed in the figure below.
+**orignal** :math:`\phi` and the :math:`\phi` **after the adaptation** as can be observed in the figure below for the CUHK_CUFS database.
+
+|pic1| |pic2|
+
+|pic3| |pic4|
+
+.. |pic1| image:: ../plots/transfer-learning/cuhk_cufs/adaptation_pictures/cuhk_cufs_photo_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic2| image:: ../plots/transfer-learning/cuhk_cufs/adaptation_pictures/cuhk_cufs_photo_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
+   
+.. |pic3| image:: ../plots/transfer-learning/cuhk_cufs/adaptation_pictures/cuhk_cufs_sketch_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic4| image:: ../plots/transfer-learning/cuhk_cufs/adaptation_pictures/cuhk_cufs_sketch_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
+
+We can observe a boosting for some convolved signals in the adapted network (for this particular pair of signals) in comparison with the non adapted ones.
+
+Let's do the same exploratory analysis for the CASIA NIR VIS database.
+
+|pic5| |pic6|
+
+|pic7| |pic8|
+   
+.. |pic5| image:: ../plots/transfer-learning/casia_nir_vis/adaptation_pictures/casia_nir_vis_VIS_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic6| image:: ../plots/transfer-learning/casia_nir_vis/adaptation_pictures/casia_nir_vis_VIS_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
+
+.. |pic7| image:: ../plots/transfer-learning/casia_nir_vis/adaptation_pictures/casia_nir_vis_NIR_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic8| image:: ../plots/transfer-learning/casia_nir_vis/adaptation_pictures/casia_nir_vis_NIR_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
 
 
-.. The question is; can we design an experiment to observe this phenomena?
-          
+Now the same analysis for the PolaThermal.
+
+Let's do the same exploratory analysis for the CASIA NIR VIS database.
+
+|pic5| |pic6|
+
+|pic7| |pic8|
+   
+.. |pic9| image:: ../plots/transfer-learning/pola_thermal/adaptation_pictures/pola_thermal_VIS_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic10| image:: ../plots/transfer-learning/pola_thermal/adaptation_pictures/pola_thermal_VIS_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
+
+.. |pic11| image:: ../plots/transfer-learning/pola_thermal/adaptation_pictures/pola_thermal_THERMAL_idiap_casia_inception_v2_gray.png
+   :width: 45%
+   
+.. |pic12| image:: ../plots/transfer-learning/pola_thermal/adaptation_pictures/pola_thermal_THERMAL_idiap_casia_inception_v2_gray_adapt_layers_1_6.png
+   :width: 45%
+
+
+
+In order to make a more summarized analysis of this phenomena in the whole dataset, we represent every convolved signal by the sum of its FFTs.
+Hence, every image showed above is represented by a scalar which is accumulated for whole dataset.
+The next pdfs shows this summarized representation for each dataset.
+
+ - :download:`CUHK CUFS <../plots/transfer-learning/cuhk_cufs/adaptation_pictures/resnet_0-6_cufs_norm.pdf>`
+ - :download:`Polathermal <../plots/transfer-learning/pola_thermal/adaptation_pictures/resnet_0-6_pola_norm.pdf>`
+ - :download:`CUHK CUFSF <../plots/transfer-learning/cuhk_cufsf/adaptation_pictures/0-6_cufsf_norm.pdf>`
+
+
           
 Triplet Networks
 ----------------

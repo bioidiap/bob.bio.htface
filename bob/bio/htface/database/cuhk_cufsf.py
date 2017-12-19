@@ -27,7 +27,7 @@ class CUHK_CUFSFBioFile(FaceBioFile):
 
 
     def make_path(self, directory, extension=None):
-        if isinstance(original_extension, list):
+        if isinstance(extension, list):
             #Hacking for the original data.
             # The load funtion knows how to load this
             return super(FaceBioFile, self).make_path(directory, extension[0])

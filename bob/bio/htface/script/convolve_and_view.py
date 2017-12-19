@@ -23,6 +23,8 @@ import os
 from docopt import docopt
 from bob.learn.tensorflow.network import inception_resnet_v2
 import tensorflow as tf
+import matplotlib
+matplotlib.pyplot.switch_backend('agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy
@@ -133,7 +135,6 @@ def run_demo_mode(baselines, layers, database_name, config_base_path, output_pat
         # getting the first sample only for the plot
         model_ids = None
         for modality in database.modalities:
-        
             file_object = database.objects(protocol=resources["databases"][database_name]["protocols"][0], groups="world", modality=[modality], model_ids=model_ids)[0]
             model_ids = [file_object.client_id]
             path = file_object.make_path(database.original_directory, ".hdf5")
