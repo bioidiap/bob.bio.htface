@@ -176,6 +176,7 @@ def main():
     #layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3"]
     layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",  "Mixed_5b", "Block35"]
     #layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3"]
+    #layers = ["Conv2d_1a_3x3"]
     
     # Checking if demo mode
     if args["--demo"]:
@@ -249,8 +250,13 @@ def main():
 
             max_lim = max(numpy.max(hist_modality_A/counter_A), numpy.max(hist_modality_B/counter_B))
             
-            plt.plot(hist_modality_A/counter_A, '-', linewidth=0.5, label=database.modalities[0] +"_" + baseline)
-            plt.plot(hist_modality_B/counter_B, '--', linewidth=0.5, label=database.modalities[1] +"_" + baseline)
+            plt.plot(hist_modality_A/counter_A, '^', linewidth=0.0, label=database.modalities[0] +"_" + baseline, alpha=0.30)
+            plt.plot(hist_modality_B/counter_B, 's', linewidth=0.0, label=database.modalities[1] +"_" + baseline, alpha=0.30)
+
+            #import ipdb; ipdb.set_trace()
+            for i in range(hist_modality_A.shape[0]):
+                plt.plot([i, i], [hist_modality_A[i]/counter_A, hist_modality_B[i]/counter_B], 'k-', lw=0.5, alpha=0.5)
+            
             tf.reset_default_graph()
 
         plt.grid(True)  
