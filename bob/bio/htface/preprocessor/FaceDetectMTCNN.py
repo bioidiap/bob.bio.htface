@@ -78,10 +78,11 @@ class FaceDetectMTCNN(Base):
     #cropped_image = self.extractor.detect_crop_align(image, final_image_size=self.image_size)
         
     if cropped_image is None:
-        logger.warning("Face not found!!")
-        return None
-        #cropped_image = numpy.zeros(shape=( ([3] + list(self.image_size) )))
-        #bob.ip.base.scale(image, cropped_image)
+        logger.warning("Face not found!! Retuning full image rescaled")
+
+        #return None
+        cropped_image = numpy.zeros(shape=( ([3] + list(self.image_size) )))
+        bob.ip.base.scale(image, cropped_image)
       
     if color_channel == "gray":
         return self.tan_triggs(bob.ip.color.rgb_to_gray(cropped_image.astype("uint8")))

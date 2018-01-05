@@ -6,9 +6,15 @@ import pkg_resources
 
 all_baselines = ["idiap_casia_inception_v2_gray",
                  "idiap_casia_inception_v2_gray_transfer_64_128",
+
                  "idiap_casia_inception_v2_gray_adapt_first_layer",
+                 "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared",
+                 
                  "idiap_casia_inception_v2_gray_adapt_layers_1_2",
+
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared",
+                 
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6",
                  "idiap_casia_inception_v2_gray_adapt_all_layers"]
@@ -66,8 +72,11 @@ resources["idiap_casia_inception_v2_gray_transfer_64_128"]["estimator"] = pkg_re
 resources["idiap_casia_inception_v2_gray_transfer_64_128"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
+##########################
+# First Layer adaptation
+##########################
 
-# INCEPTION_V2 + first layer
+# SHARED
 resources["idiap_casia_inception_v2_gray_adapt_first_layer"] = dict()
 resources["idiap_casia_inception_v2_gray_adapt_first_layer"]["name"] = "idiap_casia_inception_v2_gray_adapt_first_layer"
 resources["idiap_casia_inception_v2_gray_adapt_first_layer"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor.py")
@@ -79,6 +88,21 @@ resources["idiap_casia_inception_v2_gray_adapt_first_layer"]["estimator"] = pkg_
 resources["idiap_casia_inception_v2_gray_adapt_first_layer"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
+# NON SHARED
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["name"] = "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_first_layer/estimator_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+##########################
+# LAYERS 1-2
+##########################
 
 # INCEPTION_V2 + first and second layers
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"] = dict()
@@ -92,17 +116,32 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["estimator"] = pkg_r
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
+##########################
+# LAYERS 1-4
+##########################
 
 # INCEPTION_V2 + first and forth layers
+# SHARED
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"] = dict()
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["name"] = "inception_resnet_v2_adapt_layers_1_4"
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/extractor.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["reuse_extractor"] = False
 
-## To train the cnn
+# NON SHARED
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/estimator.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["name"] = "inception_resnet_v2_adapt_layers_1_4_nonshared"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/estimator_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
 

@@ -1,6 +1,8 @@
 from .CNNFeatureBlocks import CNNFeatureBlocks
 from .AugmentedDCTBlocks import AugmentedDCTBlocks
 from .TensorflowEmbedding import TensorflowEmbedding
+from .SiameseEmbedding import SiameseEmbedding
+
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):

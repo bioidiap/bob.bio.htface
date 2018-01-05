@@ -3,19 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.learn.tensorflow.network import inception_resnet_v2
+from bob.bio.htface.architectures import inception_resnet_v2_adapt_layers_1_4_head
 
 import os
 import tensorflow as tf
 from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils import reproducible
-#from bob.learn.tensorflow.estimators import Siamese
-from bob.bio.htface
+from bob.bio.htface.estimators import SiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
 from bob.learn.tensorflow.loss import contrastive_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name
 
+
+architecture = inception_resnet_v2_adapt_layers_1_4_head
 
 # Training setup
 learning_rate = 0.1
@@ -38,13 +39,37 @@ run_config = run_config.replace(save_checkpoints_steps=500)
 #             "Mixed_5b", "Block35", "Mixed_6a", "Block17", "Mixed_7a",
 #             "Block8", "Conv2d_7b_1x1", "Bottleneck"]
 
+
+# Preparing the checkpoint loading
+left_scope = dict()
+left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_left/"
+left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_left/"
+left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_left/"
+left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_left/"
+left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_left/"
+left_scope['InceptionResnetV2/Mixed_5b/'] = "InceptionResnetV2/Mixed_5b/"
+left_scope['InceptionResnetV2/Block35/'] = "InceptionResnetV2/Block35/"
+left_scope['InceptionResnetV2/Mixed_6a/'] = "InceptionResnetV2/Mixed_6a/"
+left_scope['InceptionResnetV2/Block17/'] = "InceptionResnetV2/Block17/"
+left_scope['InceptionResnetV2/Mixed_7a/'] = "InceptionResnetV2/Mixed_7a/"
+left_scope['InceptionResnetV2/Block8/'] = "InceptionResnetV2/Block8/"
+left_scope['InceptionResnetV2/Conv2d_7b_1x1/'] = "InceptionResnetV2/Conv2d_7b_1x1/"
+left_scope['InceptionResnetV2/Bottleneck/'] = "InceptionResnetV2/Bottleneck/"
+
+right_scope = dict()
+right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_right/"
+right_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_right/"
+right_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_right/"
+right_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_right/"
+right_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_right/"
+
+
 # Preparing the prior
 extra_checkpoint = {"checkpoint_path": inception_resnet_v2_casia_webface_gray, 
-                    "scopes": dict({"InceptionResnetV2/": "InceptionResnetV2/"}),
-                    "trainable_variables": ["Conv2d_1a_3x3"]
+                    "scopes": [left_scope, right_scope]
                    }
 
-model_dir = get_cnn_model_name(temp_dir, "idiap_casia_inception_v2_gray_adapt_first_layer",
+model_dir = get_cnn_model_name(temp_dir, "inception_resnet_v2_adapt_layers_1_4_nonshared",
                                database.name, protocol)
 
 
@@ -61,13 +86,15 @@ def train_input_fn():
                                                       extension="hdf5")
 
 # Defining our estimator
-estimator = Siamese(model_dir=model_dir,
-                    architecture=inception_resnet_v2,
-                    optimizer=tf.train.AdagradOptimizer(learning_rate),
-                    validation_batch_size=validation_batch_size,
-                    config=run_config,
-                    loss_op=contrastive_loss,
-                    extra_checkpoint=extra_checkpoint)
+optimizer = tf.train.AdagradOptimizer(learning_rate)
+#optimizer = tf.train.RMSPropOptimizer(learning_rate, decay=0.9, momentum=0.9, epsilon=1.0)
+estimator = SiameseAdaptation(model_dir=model_dir,
+                              architecture=architecture,
+                              optimizer=optimizer,
+                              validation_batch_size=validation_batch_size,
+                              config=run_config,
+                              loss_op=contrastive_loss,
+                              extra_checkpoint=extra_checkpoint)
 
 # Defining our hook mechanism
 hooks = [LoggerHookEstimator(estimator, 16, 1),

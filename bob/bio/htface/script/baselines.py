@@ -46,6 +46,7 @@ base_paths = pkg_resources.resource_filename("bob.bio.htface",
 
 from .registered_baselines import all_baselines, resources
 
+#        '-g', 'demanding',
 
 def trigger_verify(preprocessor, extractor, database, groups, sub_directory, protocol=None,
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
@@ -59,7 +60,6 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         preprocessor,
         extractor,
         '-a', "distance-cosine",
-        '-g', 'demanding',
         '-vvv',
         '--temp-directory', configs.temp_dir,
         '--result-directory', configs.results_dir,

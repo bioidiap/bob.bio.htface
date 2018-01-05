@@ -36,5 +36,9 @@ cuhk_cufsf = {"cufsf_path": "/idiap/resource/database/CUHK-CUFSF/original_sketch
 # Background model paths
 
 ## STUFF BASED ON CASIA WEBFACE ##
-inception_resnet_v2_casia_webface_gray = "/idiap/temp/tpereira/casia_webface/new_tf_format/official_checkpoints/inception_resnet_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.1/"
+
+inception_resnet_v2_casia_webface_gray = "/idiap/temp/tpereira/casia_webface/new_tf_format/inception_resnet_v2_gray/centerloss_alpha-0.95_factor-0.02_lr-0.1/"
+#inception_resnet_v2_casia_webface_gray = "/idiap/temp/tpereira/casia_webface/new_tf_format/inception_resnet_v2_gray/centerloss_alpha-0.90_factor-0.02/"
+                                          
+
 
