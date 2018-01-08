@@ -4,9 +4,54 @@
 
 import tensorflow as tf
 from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
+from bob.bio.htface.dataset.triplet_htface import triplet_htface_generator
 from bob.learn.tensorflow.utils import reproducible
 
-def test_siamease_dataset_cuhk_cufs():
+
+def test_triplet_dataset_cuhk_cufs():
+
+    from bob.db.cuhk_cufs.query import Database
+    database = Database(original_directory="", original_extension="", arface_directory="", xm2vts_directory="")
+    protocol="search_split1_p2s"
+    
+    anchor_data, positive_data, negative_data = triplet_htface_generator(database,
+                                                                         protocol,
+                                                                         groups="world",
+                                                                         purposes="train",
+                                                                         get_objects=True)
+
+    # Checking the first 100 triplets
+    for i in range(100):
+        assert anchor_data[i].client_id == positive_data[i].client_id
+        assert anchor_data[i].client_id != negative_data[i].client_id
+
+        assert anchor_data[i].modality != positive_data[i].modality
+        assert positive_data[i].modality == negative_data[i].modality
+
+
+def test_triplet_dataset_polathermal():
+
+    from bob.db.pola_thermal.query import Database
+    database = Database(original_directory="", original_extension="")
+    protocol="VIS-polarimetric-overall-split1"
+    
+    anchor_data, positive_data, negative_data = triplet_htface_generator(database,
+                                                                         protocol,
+                                                                         groups="world",
+                                                                         purposes="train",
+                                                                         get_objects=True)
+
+    # Checking the first 100 triplets
+    for i in range(100):
+        assert anchor_data[i].client_id == positive_data[i].client_id
+        assert anchor_data[i].client_id != negative_data[i].client_id
+
+        assert anchor_data[i].modality != positive_data[i].modality
+        assert positive_data[i].modality == negative_data[i].modality
+
+
+
+def test_siamese_dataset_cuhk_cufs():
     """
     from bob.db.cuhk_cufs.query import Database
     database = Database(original_directory="/idiap/temp/tpereira/HTFace/CUHK-CUFS/RESNET_GRAY/INITIAL_CHECKPOINT/split1/preprocessed/",
@@ -44,7 +89,7 @@ def test_siamease_dataset_cuhk_cufs():
     assert True
 
 
-def test_siamease_dataset_polathermal():
+def test_siamese_dataset_polathermal():
     """
     from bob.db.pola_thermal.query import Database
     database = Database(original_directory="/idiap/temp/tpereira/HTFace/POLA_THERMAL/RESNET_GRAY/CASIA_WEBFACE/INITIAL_CHECKPOINT/split1/preprocessed/",

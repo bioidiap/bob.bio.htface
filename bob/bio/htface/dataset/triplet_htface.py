@@ -97,69 +97,82 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                  per_image_normalization=per_image_normalization,
                  extension=extension)
 
-    left_data, right_data, siamese_labels = siamese_htface_generator(database, protocol, groups, purposes)
-    dataset = tf.contrib.data.Dataset.from_tensor_slices((left_data, right_data, siamese_labels))
+    anchor_data, positive_data, negative_data = triplet_htface_generator(database, protocol, groups, purposes)
+    dataset = tf.contrib.data.Dataset.from_tensor_slices((anchor_data, positive_data, negative_data))
     dataset = dataset.map(parser)
 
     # Shuffling
     dataset = dataset.shuffle(buffer_size).batch(batch_size).repeat(epochs)
     #dataset = dataset.prefetch(1) TODO: FOR THE r1.4
-    data, labels = dataset.make_one_shot_iterator().get_next()
-    return data, labels
+    data  = dataset.make_one_shot_iterator().get_next()
+    return data
 
 
-def siamese_htface_generator(database, protocol, groups="world", purposes="train"):
+def triplet_htface_generator(database, protocol, groups="world", purposes="train", get_objects=False):
+    """
+    Triplet generator for Heterogeneous databases.
+    Given two modalities A and B, the triplets are formed as the following:
+    
+    anchor = modality A
+    positive = modality B
+    negative = modality B
+    
+    Paramters
+    ---------
+    database:
+    protocol:
+    groups:
+    purposes:
+    get_objects:
+    """
                  
-    left_data = []
-    right_data = []
-    labels = []
-    def append(left, right, label):
+    anchor_data = []
+    positive_data = []
+    negative_data = []
+    def append(anchor, positive, negative):
         """
         Just appending one element in each list
         """
-        left_data.append(left)
-        right_data.append(right)
-        labels.append(label)
+        anchor_data.append(anchor)
+        positive_data.append(positive)
+        negative_data.append(negative)
                            
-    client_ids = database.model_ids_with_protocol(protocol=protocol, groups=groups)
-                                              
     # List of samples from modality A
-    samples_A = database.objects(protocol=protocol,
+    samples_anchor = database.objects(protocol=protocol,
                                  groups=groups,
                                  purposes=purposes,
                                  modality=database.modalities[0])
 
-    # Samples from modality B sorted by identiy
-    samples_B = list_2_dict(database.objects(protocol=protocol,
-                            groups=groups,
-                            purposes=purposes,
-                            modality=database.modalities[1]))
+    samples_modality_b = database.objects(protocol=protocol,
+                                    groups=groups,
+                                    purposes=purposes,
+                                    modality=database.modalities[1])
+    numpy.random.shuffle(samples_modality_b)
 
     genuine = True
-    for o in samples_A:
+    for a in samples_anchor:
+        reference_identity = a.client_id
 
-        reference_identity = o.client_id
-        left = o.make_path(database.original_directory, database.original_extension)
-        if genuine:
-            # Loading genuine pair
-            right_object = samples_B[reference_identity].get_object()
-            label = 0
-        else:
-            # Loading impostor pair
-            label = 1
-            while True:
-                index = numpy.random.randint(len(samples_B.keys()))
-                if samples_B.keys()[index] != o.client_id:
-                    right_object = samples_B[samples_B.keys()[index]].get_object()
-                    break    
-                                              
-        right = right_object.make_path(database.original_directory, database.original_extension)
-        genuine = not genuine
+        # Getting the positive pair from modality B
+        i = 0
+        while samples_modality_b[i].client_id != reference_identity:
+            i += 1
+        p = samples_modality_b[i]
 
-        #yield left, right, label
-        append(left, right, label)
+        # Getting the negative pair from modality B
+        i = 0
+        while samples_modality_b[i].client_id == reference_identity:
+            i += 1
+        n = samples_modality_b[i]
 
-    return left_data, right_data, labels
+        if not get_objects:
+            a = a.make_path(database.original_directory, database.original_extension)
+            p = p.make_path(database.original_directory, database.original_extension)
+            n = n.make_path(database.original_directory, database.original_extension)        
+        
+        append(a, p, n)
+
+    return anchor_data, positive_data, negative_data
 
 
 

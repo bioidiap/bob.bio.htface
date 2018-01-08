@@ -11,6 +11,7 @@ all_baselines = ["idiap_casia_inception_v2_gray",
                  "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_2",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared",
 
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared",
@@ -116,6 +117,18 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["estimator"] = pkg_r
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_2"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
+# NON SHARED
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["name"] = "idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_2/extractor_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_2/estimator_nonshared.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_2_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
 ##########################
 # LAYERS 1-4
 ##########################
@@ -128,10 +141,11 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["extractor"] = pkg_r
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["reuse_extractor"] = False
 
-# NON SHARED
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/estimator.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
+
+# NON SHARED
 
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"] = dict()
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["name"] = "inception_resnet_v2_adapt_layers_1_4_nonshared"

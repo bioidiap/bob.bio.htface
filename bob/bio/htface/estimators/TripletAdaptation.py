@@ -12,9 +12,9 @@ import logging
 logger = logging.getLogger("bob.learn")
 
 
-class SiameseAdaptation(estimator.Estimator):
+class TripletAdaptation(estimator.Estimator):
     """
-    NN estimator for Siamese networks.
+    NN estimator for Triplet networks.
     This particular structure admits that parts of the Siamese are non shared
 
     The **architecture** function should follow the following pattern:
@@ -113,18 +113,18 @@ class SiameseAdaptation(estimator.Estimator):
 
         def _model_fn(features, labels, mode, params, config):
 
-            # Building one graph, by default everything is trainable
-            # The input function needs to have dictionary pair with the `left` and `right` keys
-            if 'left' not in features.keys(
-            ) or 'right' not in features.keys():
+            # The input function needs to have dictionary of triplets whose keys are the `anchor`, `positive` and `negative`
+            if 'anchor' not in features.keys() or \
+                            'positive' not in features.keys() or \
+                            'negative' not in features.keys():
                 raise ValueError(
-                    "The input function needs to contain a dictionary with the keys `left` and `right` "
-                )
+                    "The input function needs to contain a dictionary with the "
+                    "keys `anchor`, `positive` and `negative` ")
             
 
             # For this part, nothing is trainable
-            prelogits_left, end_points_left = self.architecture(
-                features['left'],
+            prelogits_anchor,_ = self.architecture(
+                features['anchor'],
                 mode=mode,
                 reuse=False,
                 trainable_variables=[],

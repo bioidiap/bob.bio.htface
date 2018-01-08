@@ -21,7 +21,7 @@ import os
 
 # matplotlib stuff
 
-import matplotlib; matplotlib.use('pdf') #avoids TkInter threaded start
+import matplotlib; matplotlib.use('agg') #avoids TkInter threaded start
 from matplotlib import pyplot
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -275,14 +275,14 @@ def main(command_line_parameters=None):
   cmcs_dev = [cmc_parser(f) for f in args.dev_files]
   logger.info("Plotting CMC curves")
 
-  try:
+  #try:
     # create a separate figure for dev and eval
     #pdf.savefig()
-    fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
-    fig.savefig("xuxa.png")
+    #fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
+    #fig.savefig("xuxa.png")
 
-  except RuntimeError as e:
-    raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
+  #except RuntimeError as e:
+  #  raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
 
   ################ Computing recognition rate ##############
   if args.rr:

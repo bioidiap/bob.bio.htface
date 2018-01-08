@@ -326,14 +326,19 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
                 name = compute_layer_name(name, is_left)
                 net = slim.conv2d(
-                    net, 64, 3, scope=name, trainable=is_trainable, reuse=reuse)
+                    net,
+                    64,
+                    3,
+                    scope=name,
+                    trainable=is_trainable,
+                    reuse=False)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -356,7 +361,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
             # NON ADAPTABLE PART
@@ -551,14 +556,19 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
                 name = compute_layer_name(name, is_left)
                 net = slim.conv2d(
-                    net, 64, 3, scope=name, trainable=is_trainable, reuse=reuse)
+                    net,
+                    64,
+                    3,
+                    scope=name,
+                    trainable=is_trainable,
+                    reuse=False)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -581,7 +591,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 71 x 71 x 192
@@ -594,7 +604,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
 
@@ -778,14 +788,19 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
                 name = compute_layer_name(name, is_left)
                 net = slim.conv2d(
-                    net, 64, 3, scope=name, trainable=is_trainable, reuse=reuse)
+                    net,
+                    64,
+                    3,
+                    scope=name,
+                    trainable=is_trainable,
+                    reuse=False)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -808,7 +823,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 71 x 71 x 192
@@ -821,7 +836,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 35 x 35 x 192
@@ -840,7 +855,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_1'):
                         tower_conv1_0 = slim.conv2d(
                             net,
@@ -848,14 +863,14 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv1_1 = slim.conv2d(
                             tower_conv1_0,
                             64,
                             5,
                             scope='Conv2d_0b_5x5',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_2'):
                         tower_conv2_0 = slim.conv2d(
                             net,
@@ -863,21 +878,21 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv2_1 = slim.conv2d(
                             tower_conv2_0,
                             96,
                             3,
                             scope='Conv2d_0b_3x3',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv2_2 = slim.conv2d(
                             tower_conv2_1,
                             96,
                             3,
                             scope='Conv2d_0c_3x3',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_3'):
                         tower_pool = slim.avg_pool2d(
                             net,
@@ -891,7 +906,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0b_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     net = tf.concat([
                         tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
                     ], 3)
@@ -1006,14 +1021,19 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
                 name = compute_layer_name(name, is_left)
                 net = slim.conv2d(
-                    net, 64, 3, scope=name, trainable=is_trainable, reuse=reuse)
+                    net,
+                    64,
+                    3,
+                    scope=name,
+                    trainable=is_trainable,
+                    reuse=False)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -1036,7 +1056,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 71 x 71 x 192
@@ -1049,7 +1069,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=reuse)
+                    reuse=False)
                 end_points[name] = net
 
                 # 35 x 35 x 192
@@ -1068,7 +1088,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_1'):
                         tower_conv1_0 = slim.conv2d(
                             net,
@@ -1076,14 +1096,14 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv1_1 = slim.conv2d(
                             tower_conv1_0,
                             64,
                             5,
                             scope='Conv2d_0b_5x5',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_2'):
                         tower_conv2_0 = slim.conv2d(
                             net,
@@ -1091,21 +1111,21 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv2_1 = slim.conv2d(
                             tower_conv2_0,
                             96,
                             3,
                             scope='Conv2d_0b_3x3',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                         tower_conv2_2 = slim.conv2d(
                             tower_conv2_1,
                             96,
                             3,
                             scope='Conv2d_0c_3x3',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     with tf.variable_scope('Branch_3'):
                         tower_pool = slim.avg_pool2d(
                             net,
@@ -1119,7 +1139,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0b_1x1',
                             trainable=is_trainable,
-                            reuse=reuse)
+                            reuse=False)
                     net = tf.concat([
                         tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
                     ], 3)
@@ -1136,7 +1156,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     scale=0.17,
                     trainable_variables=is_trainable,
                     scope=name,
-                    reuse=reuse
+                    reuse=False
                 )
 
                 net = inception_resnet_v2_core(

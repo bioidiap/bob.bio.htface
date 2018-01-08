@@ -8,11 +8,11 @@ import os
 
 import bob.ip.tensorflow_extractor
 import tensorflow as tf
-from bob.bio.htface.architectures import inception_resnet_v2_adapt_layers_1_4_head
+from bob.bio.htface.architectures import inception_resnet_v2_adapt_layers_1_5_head
 from bob.bio.htface.utils import get_cnn_model_name
 
-architecture = inception_resnet_v2_adapt_layers_1_4_head
-model = "inception_resnet_v2_adapt_layers_1_4_nonshared"
+architecture = inception_resnet_v2_adapt_layers_1_5_head
+model = "inception_resnet_v2_adapt_layers_1_5_nonshared"
 
 
 # The model filename depends on the database and its protocol and those values are
