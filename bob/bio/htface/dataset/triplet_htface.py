@@ -6,7 +6,7 @@ import numpy
 import bob.core
 from functools import partial
 import tensorflow as tf
-from bob.learn.tensorflow.dataset.siamese_image import image_augmentation_parser
+from bob.learn.tensorflow.dataset.triplet_image import image_augmentation_parser
 
 numpy.random.seed(10)
 logger = bob.core.log.setup("bob.learn.tensorflow")
@@ -27,12 +27,9 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
     Dump random batches for siamese networks using heterogeneous face databases
     
     The batches returned with tf.Session.run() with be in the following format:
-    **data** a dictionary containing the keys ['left', 'right'], each one representing 
-    one element of the pair and **labels** which is [0, 1] where 0 is the genuine pair
-    and 1 is the impostor pair.
+    **data** a dictionary containing the keys ['anchor', 'right'], each one representing 
+    one element of the branch of the triplet
     
-    The left side will be with modality `0` and the right side will be with modality `1`
-
     **Parameters**
 
        database:

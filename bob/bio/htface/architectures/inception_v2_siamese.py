@@ -14,13 +14,57 @@ from .utils import inception_resnet_v2_core
 import tensorflow.contrib.slim as slim
 
 
-def compute_layer_name(name, is_left):
-    if is_left:
-        name = name + "_left"
+def compute_layer_name(name, is_left, is_siamese=True):
+    """
+    Compute the layer name for a siamese/triplet
+    """
+    if is_siamese:
+        # Siamese is either left or right
+        if is_left:
+            name = name + "_left"
+        else:
+            name = name + "_right"
     else:
-        name = name + "_right"
-        
+       # if is not siamese is triplet.
+        if is_left:
+            # Left is the anchor
+            name = name + "_anchor"
+        else:
+            # now we need to decide if it is positive or negative
+            name = name + "_positive-negative"
+            
     return name
+
+
+def is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN):
+    """    
+    Defining if it's trainable or not
+    """
+
+    # Left is never trainable    
+    return mode == tf.estimator.ModeKeys.TRAIN and not is_left
+
+
+def is_reusable_variable(is_siamese, is_left):
+    """    
+    Defining if is reusable or not
+    """
+
+    # Left is NEVER reusable
+    if is_left:
+        return False
+    else:
+        if is_siamese:
+            # The right part of siamese is never reusable
+            return False
+        else:
+            # If it's triplet and either posibe and negative branch is already declared,
+            # it is reusable 
+            for v in tf.global_variables():
+                if "_positive-negative" in v.name:
+                    return True
+
+            return False
 
 
 def inception_resnet_v2_adapt_first_head(inputs,
@@ -30,6 +74,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                          scope='InceptionResnetV2',
                                          mode=tf.estimator.ModeKeys.TRAIN,
                                          trainable_variables=None,
+                                         is_siamese=True,
                                          is_left = True,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the FIRST LAYER.
@@ -48,16 +93,18 @@ def inception_resnet_v2_adapt_first_head(inputs,
       trainable_variables: list
         List of variables to be trainable=True
       
+      is_siamese: bool
+        If True is Siamese, otherwise is triplet
+
       is_left: bool
         Is the left side of the Siamese?
-      
+              
     **Returns**:
     
       logits: the logits outputs of the model.
       end_points: the set of end_points from the inception model.
     """
-                                         
-                                          
+
     end_points = dict()
 
     with tf.variable_scope(scope, 'InceptionResnetV2', [inputs]):
@@ -65,20 +112,10 @@ def inception_resnet_v2_adapt_first_head(inputs,
         with slim.arg_scope([slim.conv2d, slim.max_pool2d, slim.avg_pool2d],
                              stride=1,
                              padding='SAME'):
-            
-            if mode == tf.estimator.ModeKeys.TRAIN:
-                # Initializing             
-                is_trainable = True
-                if is_left:
-                    # Shut down the batch normalization                
-                    batch_norm_params.pop("variables_collections")
-                    batch_norm_params['trainable'] =  False
-                    is_trainable = False
-            else:
-                #LEFT is NON trainable and  right is TRAINABLE            
-                is_trainable = False
-                batch_norm_params.pop("variables_collections")
-                batch_norm_params['trainable'] =  False
+
+            # Defining if the branches are reusable or not            
+            is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
+            is_reusable = is_reusable_variable(is_siamese, is_left)
             
             with slim.arg_scope([slim.batch_norm, slim.dropout],is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
@@ -86,7 +123,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                 
                 # 149 x 149 x 32
                 name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     inputs,
                     32,
@@ -95,7 +132,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                                               
                 end_points[name] = net
 
@@ -251,6 +288,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                                          scope='InceptionResnetV2',
                                          mode=tf.estimator.ModeKeys.TRAIN,
                                          trainable_variables=None,
+                                         is_siamese=True,
                                          is_left = True,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
@@ -270,6 +308,9 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
       trainable_variables: list
         List of variables to be trainable=True
 
+      is_siamese: bool
+        If True is Siamese, otherwise is triplet
+
       is_left: bool
         Is the left side of the Siamese?
 
@@ -288,14 +329,9 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                              stride=1,
                              padding='SAME'):
 
-            if mode == tf.estimator.ModeKeys.TRAIN:
-                # Initializing
-                is_trainable = True
-                if is_left:
-                    is_trainable = False
-            else:
-                # LEFT is NON trainable and  right is TRAINABLE
-                is_trainable = False
+            # Defining if the branches are reusable or not            
+            is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
+            is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
@@ -304,7 +340,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
 
                 # 149 x 149 x 32
                 name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     inputs,
                     32,
@@ -313,12 +349,12 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 32
                 name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     32,
@@ -326,19 +362,19 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     64,
                     3,
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -353,7 +389,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
 
                 # 73 x 73 x 80
                 name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     80,
@@ -361,7 +397,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
             # NON ADAPTABLE PART
@@ -482,6 +518,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                                          scope='InceptionResnetV2',
                                          mode=tf.estimator.ModeKeys.TRAIN,
                                          trainable_variables=None,
+                                         is_siamese=True,
                                          is_left = True,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
@@ -501,6 +538,9 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
       trainable_variables: list
         List of variables to be trainable=True
 
+      is_siamese: bool
+        If True is Siamese, otherwise is triplet
+
       is_left: bool
         Is the left side of the Siamese?
 
@@ -518,14 +558,9 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                              stride=1,
                              padding='SAME'):
 
-            if mode == tf.estimator.ModeKeys.TRAIN:
-                # Initializing
-                is_trainable = True
-                if is_left:
-                    is_trainable = False
-            else:
-                # LEFT is NON trainable and  right is TRAINABLE
-                is_trainable = False
+            # Defining if the branches are reusable or not            
+            is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
+            is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
@@ -534,7 +569,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
 
                 # 149 x 149 x 32
                 name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     inputs,
                     32,
@@ -543,12 +578,12 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 32
                 name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     32,
@@ -556,19 +591,19 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     64,
                     3,
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -583,7 +618,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
 
                 # 73 x 73 x 80
                 name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     80,
@@ -591,12 +626,12 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 71 x 71 x 192
                 name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     192,
@@ -604,7 +639,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
 
@@ -714,6 +749,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                          scope='InceptionResnetV2',
                                          mode=tf.estimator.ModeKeys.TRAIN,
                                          trainable_variables=None,
+                                         is_siamese=True,
                                          is_left = True,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
@@ -733,6 +769,9 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
       trainable_variables: list
         List of variables to be trainable=True
 
+      is_siamese: bool
+        If True is Siamese, otherwise is triplet
+
       is_left: bool
         Is the left side of the Siamese?
 
@@ -750,14 +789,9 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                              stride=1,
                              padding='SAME'):
 
-            if mode == tf.estimator.ModeKeys.TRAIN:
-                # Initializing
-                is_trainable = True
-                if is_left:
-                    is_trainable = False
-            else:
-                # LEFT is NON trainable and  right is TRAINABLE
-                is_trainable = False
+            # Defining if the branches are reusable or not            
+            is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
+            is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
@@ -766,7 +800,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
                 # 149 x 149 x 32
                 name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     inputs,
                     32,
@@ -775,12 +809,12 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 32
                 name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     32,
@@ -788,19 +822,19 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     64,
                     3,
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -815,7 +849,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
                 # 73 x 73 x 80
                 name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     80,
@@ -823,12 +857,12 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 71 x 71 x 192
                 name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     192,
@@ -836,7 +870,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 35 x 35 x 192
@@ -846,7 +880,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
                 # 35 x 35 x 320
                 name = "Mixed_5b"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 with tf.variable_scope(name):
                     with tf.variable_scope('Branch_0'):
                         tower_conv = slim.conv2d(
@@ -855,7 +889,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_1'):
                         tower_conv1_0 = slim.conv2d(
                             net,
@@ -863,14 +897,14 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv1_1 = slim.conv2d(
                             tower_conv1_0,
                             64,
                             5,
                             scope='Conv2d_0b_5x5',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_2'):
                         tower_conv2_0 = slim.conv2d(
                             net,
@@ -878,21 +912,21 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv2_1 = slim.conv2d(
                             tower_conv2_0,
                             96,
                             3,
                             scope='Conv2d_0b_3x3',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv2_2 = slim.conv2d(
                             tower_conv2_1,
                             96,
                             3,
                             scope='Conv2d_0c_3x3',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_3'):
                         tower_pool = slim.avg_pool2d(
                             net,
@@ -906,7 +940,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                             1,
                             scope='Conv2d_0b_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     net = tf.concat([
                         tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
                     ], 3)
@@ -947,6 +981,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                               scope='InceptionResnetV2',
                                               mode=tf.estimator.ModeKeys.TRAIN,
                                               trainable_variables=None,
+                                              is_siamese=True,
                                               is_left=True,
                                               **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
@@ -966,6 +1001,9 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
       trainable_variables: list
         List of variables to be trainable=True
 
+      is_siamese: bool
+        If True is Siamese, otherwise is triplet
+
       is_left: bool
         Is the left side of the Siamese?
 
@@ -983,14 +1021,9 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                              stride=1,
                              padding='SAME'):
 
-            if mode == tf.estimator.ModeKeys.TRAIN:
-                # Initializing
-                is_trainable = True
-                if is_left:
-                    is_trainable = False
-            else:
-                # LEFT is NON trainable and  right is TRAINABLE
-                is_trainable = False
+            # Defining if the branches are reusable or not            
+            is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
+            is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
@@ -999,7 +1032,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
                 # 149 x 149 x 32
                 name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     inputs,
                     32,
@@ -1008,12 +1041,12 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 32
                 name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     32,
@@ -1021,19 +1054,19 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 147 x 147 x 64
                 name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     64,
                     3,
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 73 x 73 x 64
@@ -1048,7 +1081,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
                 # 73 x 73 x 80
                 name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     80,
@@ -1056,12 +1089,12 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 71 x 71 x 192
                 name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.conv2d(
                     net,
                     192,
@@ -1069,7 +1102,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     padding='VALID',
                     scope=name,
                     trainable=is_trainable,
-                    reuse=False)
+                    reuse=is_reusable)
                 end_points[name] = net
 
                 # 35 x 35 x 192
@@ -1079,7 +1112,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
                 # 35 x 35 x 320
                 name = "Mixed_5b"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 with tf.variable_scope(name):
                     with tf.variable_scope('Branch_0'):
                         tower_conv = slim.conv2d(
@@ -1088,7 +1121,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_1'):
                         tower_conv1_0 = slim.conv2d(
                             net,
@@ -1096,14 +1129,14 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv1_1 = slim.conv2d(
                             tower_conv1_0,
                             64,
                             5,
                             scope='Conv2d_0b_5x5',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_2'):
                         tower_conv2_0 = slim.conv2d(
                             net,
@@ -1111,21 +1144,21 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0a_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv2_1 = slim.conv2d(
                             tower_conv2_0,
                             96,
                             3,
                             scope='Conv2d_0b_3x3',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                         tower_conv2_2 = slim.conv2d(
                             tower_conv2_1,
                             96,
                             3,
                             scope='Conv2d_0c_3x3',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     with tf.variable_scope('Branch_3'):
                         tower_pool = slim.avg_pool2d(
                             net,
@@ -1139,7 +1172,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                             1,
                             scope='Conv2d_0b_1x1',
                             trainable=is_trainable,
-                            reuse=False)
+                            reuse=is_reusable)
                     net = tf.concat([
                         tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
                     ], 3)
@@ -1148,7 +1181,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
                 # BLOCK 35
                 name = "Block35"
-                name = compute_layer_name(name, is_left)
+                name = compute_layer_name(name, is_left, is_siamese)
                 net = slim.repeat(
                     net,
                     10,
@@ -1156,7 +1189,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                     scale=0.17,
                     trainable_variables=is_trainable,
                     scope=name,
-                    reuse=False
+                    reuse=is_reusable
                 )
 
                 net = inception_resnet_v2_core(

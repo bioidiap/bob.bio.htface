@@ -128,18 +128,29 @@ class TripletAdaptation(estimator.Estimator):
                 mode=mode,
                 reuse=False,
                 trainable_variables=[],
+                is_siamese=False,
                 is_left = True)
 
-            prelogits_right, end_points_right = self.architecture(
-                features['right'],
+            prelogits_positive,_= self.architecture(
+                features['positive'],
                 reuse=True,
                 mode=mode,
                 trainable_variables=[],
+                is_siamese=False,
                 is_left = False
                 )
+                
+            prelogits_negative,_= self.architecture(
+                features['negative'],
+                reuse=True,
+                mode=mode,
+                trainable_variables=[],
+                is_siamese=False,
+                is_left = False
+                )                
 
             for v in tf.all_variables():
-                if "left" in v.name or "right" in v.name:
+                if "anchor" in v.name or "positive-negative" in v.name:
                     tf.summary.histogram(v.name, v)
                 
             if mode == tf.estimator.ModeKeys.TRAIN:
@@ -161,8 +172,8 @@ class TripletAdaptation(estimator.Estimator):
                         
 
                 # Compute Loss (for both TRAIN and EVAL modes)
-                self.loss = self.loss_op(prelogits_left, prelogits_right,
-                                         labels)
+                self.loss = self.loss_op(prelogits_anchor, prelogits_positive,
+                                         prelogits_negative)
 
                 # Configure the Training Op (for TRAIN mode)
                 global_step = tf.train.get_or_create_global_step()
@@ -174,11 +185,13 @@ class TripletAdaptation(estimator.Estimator):
                     mode=mode, loss=self.loss, train_op=train_op)
 
             # Compute the embeddings
-            embeddings_left = tf.nn.l2_normalize(prelogits_left, 1)
-            embeddings_right = tf.nn.l2_normalize(prelogits_right, 1)
+            embeddings_anchor = tf.nn.l2_normalize(prelogits_anchor, 1)
+            embeddings_positive = tf.nn.l2_normalize(prelogits_positive, 1)
+            embeddings_negative = tf.nn.l2_normalize(prelogits_negative, 1)
             
-            predictions = {"embeddings_left": embeddings_left,
-                           "embeddings_right": embeddings_right}
+            predictions = {"embeddings_anchor": embeddings_anchor,
+                           "embeddings_positive": embeddings_positive,
+                           "embeddings_negative": embeddings_negative}
 
             # Prediction mode return the embeddings
             if mode == tf.estimator.ModeKeys.PREDICT:
@@ -189,7 +202,7 @@ class TripletAdaptation(estimator.Estimator):
             raise NotImplemented("Validation not implemented")
 
 
-        super(SiameseAdaptation, self).__init__(
+        super(TripletAdaptation, self).__init__(
             model_fn=_model_fn,
             model_dir=model_dir,
             params=params,

@@ -16,9 +16,10 @@ import bob.io.base
 
 class Pola_ThermalBioFile(FaceBioFile):
 
-    def __init__(self, f):
+    def __init__(self, f, db):
         super(Pola_ThermalBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
+        self.db = db
 
     @property
     def modality(self):
@@ -54,7 +55,7 @@ class Pola_ThermalBioDatabase(BioDatabase):
 
     def objects(self, groups=None, protocol="VIS-polarimetric-overall-split1", purposes=None, model_ids=None, **kwargs):
         retval = self.db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [Pola_ThermalBioFile(f) for f in retval]
+        return [Pola_ThermalBioFile(f, self.db) for f in retval]
 
     def annotations(self, file_object):
         return file_object.f.annotations()
