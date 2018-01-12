@@ -16,6 +16,7 @@ all_baselines = ["idiap_casia_inception_v2_gray",
 
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared",
+                 "triplet_inceptionv2_layers_1_4_nonshared",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared",
@@ -180,6 +181,20 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["reuse_ext
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/estimator_nonshared.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
+
+ ###### TRIPLET #####
+
+# NON SHARED
+resources["triplet_inceptionv2_layers_1_4_nonshared"] = dict()
+
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["name"] = "triplet_inceptionv2_layers_1_4_nonshared"
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/triplet_extractor_nonshared.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv2_layers_1_4/estimator_nonshared.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
 

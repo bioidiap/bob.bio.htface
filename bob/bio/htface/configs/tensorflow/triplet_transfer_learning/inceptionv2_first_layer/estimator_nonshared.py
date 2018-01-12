@@ -16,15 +16,22 @@ from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name
 
 
+# UPDATE YOUR NAMES HERE
+architecture = inception_resnet_v2_adapt_first_head
+model_name = "triplet_inceptionv2_first_layer_nonshared"
+
+
 # Training setup
-learning_rate = 0.1
+learning_rate_values=[0.1, 0.01, 0.01]
+learning_rate_boundaries=[2500, 3500, 3500]
+
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
 
 batch_size = 16
 validation_batch_size = 250
-epochs = 100
+epochs = 200
 embedding_validation = True
 steps = 2000000
 
@@ -69,7 +76,7 @@ extra_checkpoint = {"checkpoint_path": inception_resnet_v2_casia_webface_gray,
                     "scopes": [left_scope, right_scope]
                    }
 
-model_dir = get_cnn_model_name(temp_dir, "triplet_inceptionv2_first_layer_nonshared",
+model_dir = get_cnn_model_name(temp_dir, model_name,
                                database.name, protocol)
 
 
@@ -86,15 +93,18 @@ def train_input_fn():
                                                       extension="hdf5")
 
 # Defining our estimator
-optimizer = tf.train.AdagradOptimizer(learning_rate)
+optimizer = tf.train.AdagradOptimizer
 #optimizer = tf.train.RMSPropOptimizer(learning_rate, decay=0.9, momentum=0.9, epsilon=1.0)
 estimator = TripletAdaptation(model_dir=model_dir,
-                              architecture=inception_resnet_v2_adapt_first_head,
+                              architecture=architecture,
                               optimizer=optimizer,
                               validation_batch_size=validation_batch_size,
                               config=run_config,
                               loss_op=triplet_loss,
-                              extra_checkpoint=extra_checkpoint)
+                              extra_checkpoint=extra_checkpoint,
+                              learning_rate_values=learning_rate_values,
+                              learning_rate_boundaries=learning_rate_boundaries,
+                              )
 
 # Defining our hook mechanism
 hooks = [LoggerHookEstimator(estimator, 16, 1),
