@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures import inception_resnet_v2_adapt_first_head
+from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_first_head
 
 import os
 import tensorflow as tf
@@ -17,14 +17,14 @@ from bob.bio.htface.utils import get_cnn_model_name
 
 
 # Training setup
-learning_rate_values=[0.1, 0.01, 0.01]
-learning_rate_boundaries=[1500, 2500, 2500]
+learning_rate_values=[0.1, 0.01, 0.001]
+learning_rate_boundaries=[400, 700, 700]
 
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
 
-batch_size = 16
+batch_size = 90
 validation_batch_size = 250
 epochs = 200
 embedding_validation = True

@@ -8,7 +8,7 @@ import os
 
 import bob.ip.tensorflow_extractor
 import tensorflow as tf
-from bob.bio.htface.architectures import inception_resnet_v2_adapt_layers_1_2_head
+from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_layers_1_2_head
 from bob.bio.htface.utils import get_cnn_model_name
 
 # UPDATE YOUR NAMES HERE

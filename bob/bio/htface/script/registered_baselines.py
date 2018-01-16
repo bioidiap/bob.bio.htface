@@ -5,10 +5,12 @@
 import pkg_resources
 
 all_baselines = ["idiap_casia_inception_v2_gray",
+                 "idiap_casia_inception_v2_gray_batch_norm",
                  "idiap_casia_inception_v2_gray_transfer_64_128",
 
                  "idiap_casia_inception_v2_gray_adapt_first_layer",
                  "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared",
+                 "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm",                 
                  "triplet_inceptionv2_first_layer_nonshared",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_2",
@@ -20,6 +22,9 @@ all_baselines = ["idiap_casia_inception_v2_gray",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared",
+                 "idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"
+                 "triplet_inceptionv2_layers_1_5_nonshared",
+                 "triplet_inceptionv2_layers_1_5_nonshared_batch_norm",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6_nonshared",
@@ -33,7 +38,7 @@ resources = dict()
 resources["databases"] = dict()
 resources["databases"]["cuhk_cufs"] = dict()
 resources["databases"]["cuhk_cufs"]["config"] = pkg_resources.resource_filename("bob.bio.htface", "configs/databases/cuhk_cufs.py")
-resources["databases"]["cuhk_cufs"]["protocols"] = ["search_split1_p2s", "search_split2_p2s", "search_split3_p2s", "search_split4_p2s", "search_split5_p2s"]
+resources["databases"]["cuhk_cufs"]["protocols"] = ["search_split1_p2s", "search_split2_p2s", "search_split3_p2s", "search_split4_p2s", "search_split5_p2s", "cuhk_p2s", "arface_p2s", "xm2vts_p2s"]
 resources["databases"]["cuhk_cufs"]["groups"] = ["dev"]
 
 resources["databases"]["cuhk_cufsf"] = dict()
@@ -66,6 +71,17 @@ resources["idiap_casia_inception_v2_gray"]["extractor"] = pkg_resources.resource
 resources["idiap_casia_inception_v2_gray"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
 resources["idiap_casia_inception_v2_gray"]["reuse_extractor"] = True
 resources["idiap_casia_inception_v2_gray"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+####
+# idiap_casia_inception_v2_gray_batch_norm
+resources["idiap_casia_inception_v2_gray_batch_norm"] = dict()
+resources["idiap_casia_inception_v2_gray_batch_norm"]["name"] = "idiap_casia_inception_v2_gray_batch_norm"
+resources["idiap_casia_inception_v2_gray_batch_norm"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/extractor_batch_norm.py")
+resources["idiap_casia_inception_v2_gray_batch_norm"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_batch_norm"]["reuse_extractor"] = True
+resources["idiap_casia_inception_v2_gray_batch_norm"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
 
 
 # INCEPTION_V2 + transfer 64-128
@@ -108,6 +124,19 @@ resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["reuse_ex
 ## To train the cnn
 resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_first_layer/estimator_nonshared.py")
 resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+# NON SHARED BATCH NORM
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["name"] = "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_batch_norm.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_first_layer/estimator_nonshared_batch_norm.py")
+resources["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
 
  ###### TRIPLET #####
 
@@ -188,7 +217,7 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_4_nonshared"]["preproces
 resources["triplet_inceptionv2_layers_1_4_nonshared"] = dict()
 
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["name"] = "triplet_inceptionv2_layers_1_4_nonshared"
-resources["triplet_inceptionv2_layers_1_4_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/triplet_extractor_nonshared.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/triplet_extractor_nonshared.py")
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["reuse_extractor"] = False
 
@@ -196,6 +225,10 @@ resources["triplet_inceptionv2_layers_1_4_nonshared"]["reuse_extractor"] = False
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv2_layers_1_4/estimator_nonshared.py")
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
+
+##########################
+# LAYERS 1-5
+##########################
 
 
 # INCEPTION_V2 + first and fifth layers
@@ -220,6 +253,52 @@ resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared"]["reuse_ext
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_5/estimator_nonshared.py")
 resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
+
+# NON SHARED BATCH NORM
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"] = dict()
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["name"] = "inception_resnet_v2_adapt_layers_1_5_nonshared_batch_norm"
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_5/extractor_nonshared_batch_norm.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_5/estimator_nonshared_batch_norm.py")
+resources["idiap_casia_inception_v2_gray_adapt_layers_1_5_nonshared_batch_norm"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+
+ ###### TRIPLET #####
+
+# NON SHARED
+resources["triplet_inceptionv2_layers_1_5_nonshared"] = dict()
+
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["name"] = "triplet_inceptionv2_layers_1_5_nonshared"
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_5/triplet_extractor_nonshared.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv2_layers_1_5/estimator_nonshared.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+# NON SHARED BATCH NORM
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"] = dict()
+
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["name"] = "triplet_inceptionv2_layers_1_5_nonshared_batch_norm"
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_5/triplet_extractor_nonshared_batch_norm.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["reuse_extractor"] = False
+
+## To train the cnn
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv2_layers_1_5/estimator_nonshared_batch_norm.py")
+resources["triplet_inceptionv2_layers_1_5_nonshared_batch_norm"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+
+##########################
+# LAYERS 1-6
+##########################
 
 
 # INCEPTION_V2 + first and sixth layers

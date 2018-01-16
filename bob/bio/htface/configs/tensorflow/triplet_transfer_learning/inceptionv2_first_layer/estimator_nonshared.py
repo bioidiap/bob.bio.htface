@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures import inception_resnet_v2_adapt_first_head
+from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_first_head
 
 import os
 import tensorflow as tf

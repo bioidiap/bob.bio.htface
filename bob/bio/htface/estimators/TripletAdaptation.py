@@ -178,7 +178,7 @@ class TripletAdaptation(estimator.Estimator):
                 global_step = tf.train.get_or_create_global_step()
 
                 # Compute the moving average of all individual losses and the total loss.
-                variable_averages = tf.train.ExponentialMovingAverage(0.99, global_step)
+                variable_averages = tf.train.ExponentialMovingAverage(0.9999, global_step)
                 variable_averages_op = variable_averages.apply(tf.trainable_variables())
 
                 with tf.control_dependencies([variable_averages_op]):
@@ -188,7 +188,7 @@ class TripletAdaptation(estimator.Estimator):
                                              prelogits_negative)
 
                     # Compute the moving average of all individual losses and the total loss.
-                    loss_averages = tf.train.ExponentialMovingAverage(0.99, name='avg')
+                    loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')
                     loss_averages_op = loss_averages.apply(tf.get_collection(tf.GraphKeys.LOSSES))
                     
                     # Defining the learning rate

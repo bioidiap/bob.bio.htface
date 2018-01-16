@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
-# Thu 12 Nov 2015 16:35:08 CET 
-#
-
 
 from __future__ import print_function
-
 
 """This script evaluates the given score files and computes EER, HTER.
 It also is able to plot CMC and ROC curves."""
@@ -16,8 +12,6 @@ import bob.measure
 import argparse
 import numpy, math
 import os
-
-
 
 # matplotlib stuff
 
@@ -52,8 +46,8 @@ def command_line_arguments(command_line_parameters):
 
   parser.add_argument('-c', '--colors', nargs='+', help = "A list of line colors for the ROC, CMC and DET plots.")  
   parser.add_argument('-t', '--title', type=str, default='', help = "Title of the plot")
-  parser.add_argument('-m', '--xmin', type=float, default=50, help = "Lower bound for the XAxis")
-  parser.add_argument('-a', '--xmax', type=float, default=50, help = "Upper bound for the XAxis")  
+  parser.add_argument('-m', '--xmin', type=float, default=0, help = "Lower bound for the XAxis")
+  parser.add_argument('-a', '--xmax', type=float, default=100, help = "Upper bound for the XAxis")  
 
   parser.add_argument('-F', '--legend-font-size', type=int, default=8, help = "Set the font size of the legends.")
   parser.add_argument('-P', '--legend-position', type=int, help = "Set the font size of the legends.")
@@ -267,7 +261,7 @@ def main(command_line_parameters=None):
     colors = [cmap(i) for i in numpy.linspace(0, 1.0, len(args.dev_files)/len(args.legends)+1)]
 
   #Creating a multipage PDF
-  #pdf = PdfPages(args.report_name)
+  pdf = PdfPages(args.report_name)
 
   ################ PLOTING CMC ##############
   logger.info("Loading CMC data on the development ")
@@ -275,14 +269,14 @@ def main(command_line_parameters=None):
   cmcs_dev = [cmc_parser(f) for f in args.dev_files]
   logger.info("Plotting CMC curves")
 
-  #try:
+  try:
     # create a separate figure for dev and eval
-    #pdf.savefig()
-    #fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
+    fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
+    pdf.savefig(fig)    
     #fig.savefig("xuxa.png")
 
-  #except RuntimeError as e:
-  #  raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
+  except RuntimeError as e:
+    raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
 
   ################ Computing recognition rate ##############
   if args.rr:
@@ -316,5 +310,5 @@ def main(command_line_parameters=None):
       except RuntimeError as e:
         raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
 
-  #pdf.close()
+  pdf.close()
 
