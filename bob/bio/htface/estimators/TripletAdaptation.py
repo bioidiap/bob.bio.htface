@@ -91,6 +91,8 @@ class TripletAdaptation(estimator.Estimator):
                  model_dir="",
                  validation_batch_size=None,
                  params=None,
+                 learning_rate_values=[0.1],
+                 learning_rate_boundaries=[],
                  extra_checkpoint=None):
 
         self.architecture = architecture
@@ -98,6 +100,9 @@ class TripletAdaptation(estimator.Estimator):
         self.loss_op = loss_op
         self.loss = None
         self.extra_checkpoint = extra_checkpoint
+        self.learning_rate_boundaries = learning_rate_boundaries
+        self.learning_rate_values = learning_rate_values
+        
 
         if self.architecture is None:
             raise ValueError(
@@ -121,7 +126,7 @@ class TripletAdaptation(estimator.Estimator):
                     "The input function needs to contain a dictionary with the "
                     "keys `anchor`, `positive` and `negative` ")
             
-
+            
             # For this part, nothing is trainable
             prelogits_anchor,_ = self.architecture(
                 features['anchor'],
@@ -169,17 +174,35 @@ class TripletAdaptation(estimator.Estimator):
                         self.extra_checkpoint["checkpoint_path"],
                         right_scope
                         )
-                        
 
-                # Compute Loss (for both TRAIN and EVAL modes)
-                self.loss = self.loss_op(prelogits_anchor, prelogits_positive,
-                                         prelogits_negative)
-
-                # Configure the Training Op (for TRAIN mode)
                 global_step = tf.train.get_or_create_global_step()
-                
-                train_op = self.optimizer.minimize(
-                    self.loss, global_step=global_step)
+
+                # Compute the moving average of all individual losses and the total loss.
+                variable_averages = tf.train.ExponentialMovingAverage(0.9999, global_step)
+                variable_averages_op = variable_averages.apply(tf.trainable_variables())
+
+                with tf.control_dependencies([variable_averages_op]):
+
+                    # Compute Loss (for both TRAIN and EVAL modes)
+                    self.loss = self.loss_op(prelogits_anchor, prelogits_positive,
+                                             prelogits_negative)
+
+                    # Compute the moving average of all individual losses and the total loss.
+                    loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')
+                    loss_averages_op = loss_averages.apply(tf.get_collection(tf.GraphKeys.LOSSES))
+                    
+                    # Defining the learning rate
+                    learning_rate = tf.train.piecewise_constant(global_step,
+                                                                self.learning_rate_boundaries,
+                                                                self.learning_rate_values,
+                                                                name="learning_rate")
+                    tf.summary.scalar('learning_rate', learning_rate)
+                                                                                    
+                    # Bootstraping the solver
+                    optimizer = self.optimizer(learning_rate)
+                    
+                    train_op = tf.group(optimizer.minimize(self.loss, global_step=global_step),
+                                        variable_averages_op, loss_averages_op)
 
                 return tf.estimator.EstimatorSpec(
                     mode=mode, loss=self.loss, train_op=train_op)

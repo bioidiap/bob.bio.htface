@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures import inception_resnet_v2_adapt_layers_1_5_head
+from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_layers_1_5_head
 
 import os
 import tensorflow as tf
@@ -17,18 +17,22 @@ from bob.bio.htface.utils import get_cnn_model_name
 
 
 architecture = inception_resnet_v2_adapt_layers_1_5_head
+model_name = "inception_resnet_v2_adapt_layers_1_5_nonshared"
 
 # Training setup
-learning_rate = 0.01
+learning_rate_values=[0.1, 0.01, 0.001]
+learning_rate_boundaries=[400, 700, 700]
+
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
 
-batch_size = 16
+batch_size = 90
 validation_batch_size = 250
 epochs = 200
 embedding_validation = True
 steps = 2000000
+
 
 
 run_config = tf.estimator.RunConfig()
@@ -77,7 +81,7 @@ extra_checkpoint = {"checkpoint_path": inception_resnet_v2_casia_webface_gray,
                     "scopes": [left_scope, right_scope]
                    }
 
-model_dir = get_cnn_model_name(temp_dir, "inception_resnet_v2_adapt_layers_1_5_nonshared",
+model_dir = get_cnn_model_name(temp_dir, model_name,
                                database.name, protocol)
 
 
@@ -94,16 +98,18 @@ def train_input_fn():
                                                       extension="hdf5")
 
 # Defining our estimator
-optimizer = tf.train.AdagradOptimizer(learning_rate)
 #optimizer = tf.train.RMSPropOptimizer(learning_rate, decay=0.9, momentum=0.9, epsilon=1.0)
+optimizer = tf.train.AdagradOptimizer
 estimator = SiameseAdaptation(model_dir=model_dir,
                               architecture=architecture,
                               optimizer=optimizer,
                               validation_batch_size=validation_batch_size,
                               config=run_config,
                               loss_op=contrastive_loss,
-                              extra_checkpoint=extra_checkpoint)
-
+                              extra_checkpoint=extra_checkpoint,
+                              learning_rate_values=learning_rate_values,
+                              learning_rate_boundaries=learning_rate_boundaries,
+                              )
 # Defining our hook mechanism
 hooks = [LoggerHookEstimator(estimator, 16, 1),
          tf.train.SummarySaverHook(save_steps=5,

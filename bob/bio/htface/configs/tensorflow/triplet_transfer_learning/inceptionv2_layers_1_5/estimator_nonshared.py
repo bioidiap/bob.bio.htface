@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_first_head
+from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_layers_1_5_head
 
 import os
 import tensorflow as tf
@@ -15,10 +15,9 @@ from bob.learn.tensorflow.loss import triplet_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name
 
-
 # UPDATE YOUR NAMES HERE
-architecture = inception_resnet_v2_adapt_first_head
-model_name = "triplet_inceptionv2_first_layer_nonshared"
+architecture = inception_resnet_v2_adapt_layers_1_5_head
+model_name = "triplet_inceptionv2_layers_1_5_nonshared"
 
 
 # Training setup
@@ -48,16 +47,18 @@ run_config = run_config.replace(save_checkpoints_steps=500)
 # Preparing the checkpoint loading
 left_scope = dict()
 left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_anchor/"
-left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3/"
-left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3/"
-left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1/"
-left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3/"
+left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_anchor/"
+left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_anchor/"
+left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_anchor/"
+left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_anchor/"
+left_scope['InceptionResnetV2/Mixed_5b/'] = "InceptionResnetV2/Mixed_5b_anchor/"
+
+
 left_scope['InceptionResnetV2/Repeat/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat
 left_scope['InceptionResnetV2/Repeat_1/'] = "InceptionResnetV2/Repeat_1/" # TF-SLIM ADD the prefix repeat unde each repeat  
 left_scope['InceptionResnetV2/Repeat_2/'] = "InceptionResnetV2/Repeat_2/" # TF-SLIM ADD the prefix repeat unde each repeat    
 
 # JUst to be sure
-left_scope['InceptionResnetV2/Mixed_5b/'] = "InceptionResnetV2/Mixed_5b/"
 left_scope['InceptionResnetV2/Block35/'] = "InceptionResnetV2/Block35/"
 left_scope['InceptionResnetV2/Mixed_6a/'] = "InceptionResnetV2/Mixed_6a/"
 left_scope['InceptionResnetV2/Block17/'] = "InceptionResnetV2/Block17/"
@@ -69,7 +70,11 @@ left_scope['InceptionResnetV2/Logits/'] = "InceptionResnetV2/Logits/"
 
 right_scope = dict()
 right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_positive-negative/"
-
+right_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_positive-negative/"
+right_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_positive-negative/"
+right_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_positive-negative/"
+right_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_positive-negative/"
+right_scope['InceptionResnetV2/Mixed_5b/']      = "InceptionResnetV2/Mixed_5b_positive-negative/"
 
 # Preparing the prior
 extra_checkpoint = {"checkpoint_path": inception_resnet_v2_casia_webface_gray, 

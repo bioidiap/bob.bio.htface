@@ -117,26 +117,27 @@ def inception_resnet_v2_adapt_first_head(inputs,
             is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
             is_reusable = is_reusable_variable(is_siamese, is_left)
             
-            with slim.arg_scope([slim.batch_norm, slim.dropout],is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                # CORE OF THE THE ADAPTATION                    
-                
-                # 149 x 149 x 32
-                name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    inputs,
-                    32,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                                              
-                end_points[name] = net
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                    # CORE OF THE THE ADAPTATION                    
+                    
+                    # 149 x 149 x 32
+                    name = "Conv2d_1a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        inputs,
+                        32,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                                                  
+                    end_points[name] = net
 
-            with slim.arg_scope([slim.batch_norm],is_training=False):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                     # 147 x 147 x 32
                     name = "Conv2d_2a_3x3"
@@ -334,74 +335,76 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
             is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                # CORE OF THE THE ADAPTATION
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                # 149 x 149 x 32
-                name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    inputs,
-                    32,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # CORE OF THE THE ADAPTATION
 
-                # 147 x 147 x 32
-                name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    32,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 149 x 149 x 32
+                    name = "Conv2d_1a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        inputs,
+                        32,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 64
-                name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    64,
-                    3,
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 32
+                    name = "Conv2d_2a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        32,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 73 x 73 x 64
-                net = slim.max_pool2d(
-                    net,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope='MaxPool_3a_3x3')
+                    # 147 x 147 x 64
+                    name = "Conv2d_2b_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        64,
+                        3,
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                end_points['MaxPool_3a_3x3'] = net
+                    # 73 x 73 x 64
+                    net = slim.max_pool2d(
+                        net,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope='MaxPool_3a_3x3')
 
-                # 73 x 73 x 80
-                name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    80,
-                    1,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    end_points['MaxPool_3a_3x3'] = net
+
+                    # 73 x 73 x 80
+                    name = "Conv2d_3b_1x1"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        80,
+                        1,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], is_training=False):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                     # 71 x 71 x 192
                     name = "Conv2d_4a_3x3"
@@ -563,88 +566,89 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
             is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                # CORE OF THE THE ADAPTATION
 
-                # 149 x 149 x 32
-                name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    inputs,
-                    32,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                    # CORE OF THE THE ADAPTATION
+                    # 149 x 149 x 32
+                    name = "Conv2d_1a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        inputs,
+                        32,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 32
-                name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    32,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 32
+                    name = "Conv2d_2a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        32,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 64
-                name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    64,
-                    3,
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 64
+                    name = "Conv2d_2b_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        64,
+                        3,
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 73 x 73 x 64
-                net = slim.max_pool2d(
-                    net,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope='MaxPool_3a_3x3')
+                    # 73 x 73 x 64
+                    net = slim.max_pool2d(
+                        net,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope='MaxPool_3a_3x3')
 
-                end_points['MaxPool_3a_3x3'] = net
+                    end_points['MaxPool_3a_3x3'] = net
 
-                # 73 x 73 x 80
-                name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    80,
-                    1,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 73 x 73 x 80
+                    name = "Conv2d_3b_1x1"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        80,
+                        1,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 71 x 71 x 192
-                name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    192,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 71 x 71 x 192
+                    name = "Conv2d_4a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        192,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], is_training=False):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                     # 35 x 35 x 192
                     net = slim.max_pool2d(
@@ -794,161 +798,161 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
             is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                 # CORE OF THE THE ADAPTATION
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                    # 149 x 149 x 32
+                    name = "Conv2d_1a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        inputs,
+                        32,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 149 x 149 x 32
-                name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    inputs,
-                    32,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 32
+                    name = "Conv2d_2a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        32,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 32
-                name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    32,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 64
+                    name = "Conv2d_2b_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        64,
+                        3,
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 64
-                name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    64,
-                    3,
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 73 x 73 x 64
+                    net = slim.max_pool2d(
+                        net,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope='MaxPool_3a_3x3')
 
-                # 73 x 73 x 64
-                net = slim.max_pool2d(
-                    net,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope='MaxPool_3a_3x3')
+                    end_points['MaxPool_3a_3x3'] = net
 
-                end_points['MaxPool_3a_3x3'] = net
+                    # 73 x 73 x 80
+                    name = "Conv2d_3b_1x1"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        80,
+                        1,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 73 x 73 x 80
-                name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    80,
-                    1,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 71 x 71 x 192
+                    name = "Conv2d_4a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        192,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 71 x 71 x 192
-                name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    192,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 35 x 35 x 192
+                    net = slim.max_pool2d(
+                        net, 3, stride=2, padding='VALID', scope='MaxPool_5a_3x3')
+                    end_points['MaxPool_5a_3x3'] = net
 
-                # 35 x 35 x 192
-                net = slim.max_pool2d(
-                    net, 3, stride=2, padding='VALID', scope='MaxPool_5a_3x3')
-                end_points['MaxPool_5a_3x3'] = net
-
-                # 35 x 35 x 320
-                name = "Mixed_5b"
-                name = compute_layer_name(name, is_left, is_siamese)
-                with tf.variable_scope(name):
-                    with tf.variable_scope('Branch_0'):
-                        tower_conv = slim.conv2d(
-                            net,
-                            96,
-                            1,
-                            scope='Conv2d_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_1'):
-                        tower_conv1_0 = slim.conv2d(
-                            net,
-                            48,
-                            1,
-                            scope='Conv2d_0a_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv1_1 = slim.conv2d(
-                            tower_conv1_0,
-                            64,
-                            5,
-                            scope='Conv2d_0b_5x5',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_2'):
-                        tower_conv2_0 = slim.conv2d(
-                            net,
-                            64,
-                            1,
-                            scope='Conv2d_0a_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv2_1 = slim.conv2d(
-                            tower_conv2_0,
-                            96,
-                            3,
-                            scope='Conv2d_0b_3x3',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv2_2 = slim.conv2d(
-                            tower_conv2_1,
-                            96,
-                            3,
-                            scope='Conv2d_0c_3x3',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_3'):
-                        tower_pool = slim.avg_pool2d(
-                            net,
-                            3,
-                            stride=1,
-                            padding='SAME',
-                            scope='AvgPool_0a_3x3')
-                        tower_pool_1 = slim.conv2d(
-                            tower_pool,
-                            64,
-                            1,
-                            scope='Conv2d_0b_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    net = tf.concat([
-                        tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
-                    ], 3)
-                end_points[name] = net
+                    # 35 x 35 x 320
+                    name = "Mixed_5b"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    with tf.variable_scope(name):
+                        with tf.variable_scope('Branch_0'):
+                            tower_conv = slim.conv2d(
+                                net,
+                                96,
+                                1,
+                                scope='Conv2d_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_1'):
+                            tower_conv1_0 = slim.conv2d(
+                                net,
+                                48,
+                                1,
+                                scope='Conv2d_0a_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv1_1 = slim.conv2d(
+                                tower_conv1_0,
+                                64,
+                                5,
+                                scope='Conv2d_0b_5x5',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_2'):
+                            tower_conv2_0 = slim.conv2d(
+                                net,
+                                64,
+                                1,
+                                scope='Conv2d_0a_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv2_1 = slim.conv2d(
+                                tower_conv2_0,
+                                96,
+                                3,
+                                scope='Conv2d_0b_3x3',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv2_2 = slim.conv2d(
+                                tower_conv2_1,
+                                96,
+                                3,
+                                scope='Conv2d_0c_3x3',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_3'):
+                            tower_pool = slim.avg_pool2d(
+                                net,
+                                3,
+                                stride=1,
+                                padding='SAME',
+                                scope='AvgPool_0a_3x3')
+                            tower_pool_1 = slim.conv2d(
+                                tower_pool,
+                                64,
+                                1,
+                                scope='Conv2d_0b_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        net = tf.concat([
+                            tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
+                        ], 3)
+                    end_points[name] = net
 
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], is_training=False):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                     # BLOCK 35
                     name = "Block35"
@@ -1026,171 +1030,171 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
             is_reusable = is_reusable_variable(is_siamese, is_left)
 
             # ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm, slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                 # CORE OF THE THE ADAPTATION
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                    # 149 x 149 x 32
+                    name = "Conv2d_1a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        inputs,
+                        32,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 149 x 149 x 32
-                name = "Conv2d_1a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    inputs,
-                    32,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 32
+                    name = "Conv2d_2a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        32,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 32
-                name = "Conv2d_2a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    32,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 147 x 147 x 64
+                    name = "Conv2d_2b_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        64,
+                        3,
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 147 x 147 x 64
-                name = "Conv2d_2b_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    64,
-                    3,
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 73 x 73 x 64
+                    net = slim.max_pool2d(
+                        net,
+                        3,
+                        stride=2,
+                        padding='VALID',
+                        scope='MaxPool_3a_3x3')
 
-                # 73 x 73 x 64
-                net = slim.max_pool2d(
-                    net,
-                    3,
-                    stride=2,
-                    padding='VALID',
-                    scope='MaxPool_3a_3x3')
+                    end_points['MaxPool_3a_3x3'] = net
 
-                end_points['MaxPool_3a_3x3'] = net
+                    # 73 x 73 x 80
+                    name = "Conv2d_3b_1x1"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        80,
+                        1,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 73 x 73 x 80
-                name = "Conv2d_3b_1x1"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    80,
-                    1,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 71 x 71 x 192
+                    name = "Conv2d_4a_3x3"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.conv2d(
+                        net,
+                        192,
+                        3,
+                        padding='VALID',
+                        scope=name,
+                        trainable=is_trainable,
+                        reuse=is_reusable)
+                    end_points[name] = net
 
-                # 71 x 71 x 192
-                name = "Conv2d_4a_3x3"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.conv2d(
-                    net,
-                    192,
-                    3,
-                    padding='VALID',
-                    scope=name,
-                    trainable=is_trainable,
-                    reuse=is_reusable)
-                end_points[name] = net
+                    # 35 x 35 x 192
+                    net = slim.max_pool2d(
+                        net, 3, stride=2, padding='VALID', scope='MaxPool_5a_3x3')
+                    end_points['MaxPool_5a_3x3'] = net
 
-                # 35 x 35 x 192
-                net = slim.max_pool2d(
-                    net, 3, stride=2, padding='VALID', scope='MaxPool_5a_3x3')
-                end_points['MaxPool_5a_3x3'] = net
-
-                # 35 x 35 x 320
-                name = "Mixed_5b"
-                name = compute_layer_name(name, is_left, is_siamese)
-                with tf.variable_scope(name):
-                    with tf.variable_scope('Branch_0'):
-                        tower_conv = slim.conv2d(
-                            net,
-                            96,
-                            1,
-                            scope='Conv2d_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_1'):
-                        tower_conv1_0 = slim.conv2d(
-                            net,
-                            48,
-                            1,
-                            scope='Conv2d_0a_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv1_1 = slim.conv2d(
-                            tower_conv1_0,
-                            64,
-                            5,
-                            scope='Conv2d_0b_5x5',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_2'):
-                        tower_conv2_0 = slim.conv2d(
-                            net,
-                            64,
-                            1,
-                            scope='Conv2d_0a_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv2_1 = slim.conv2d(
-                            tower_conv2_0,
-                            96,
-                            3,
-                            scope='Conv2d_0b_3x3',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                        tower_conv2_2 = slim.conv2d(
-                            tower_conv2_1,
-                            96,
-                            3,
-                            scope='Conv2d_0c_3x3',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    with tf.variable_scope('Branch_3'):
-                        tower_pool = slim.avg_pool2d(
-                            net,
-                            3,
-                            stride=1,
-                            padding='SAME',
-                            scope='AvgPool_0a_3x3')
-                        tower_pool_1 = slim.conv2d(
-                            tower_pool,
-                            64,
-                            1,
-                            scope='Conv2d_0b_1x1',
-                            trainable=is_trainable,
-                            reuse=is_reusable)
-                    net = tf.concat([
-                        tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
-                    ], 3)
-                end_points[name] = net
+                    # 35 x 35 x 320
+                    name = "Mixed_5b"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    with tf.variable_scope(name):
+                        with tf.variable_scope('Branch_0'):
+                            tower_conv = slim.conv2d(
+                                net,
+                                96,
+                                1,
+                                scope='Conv2d_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_1'):
+                            tower_conv1_0 = slim.conv2d(
+                                net,
+                                48,
+                                1,
+                                scope='Conv2d_0a_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv1_1 = slim.conv2d(
+                                tower_conv1_0,
+                                64,
+                                5,
+                                scope='Conv2d_0b_5x5',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_2'):
+                            tower_conv2_0 = slim.conv2d(
+                                net,
+                                64,
+                                1,
+                                scope='Conv2d_0a_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv2_1 = slim.conv2d(
+                                tower_conv2_0,
+                                96,
+                                3,
+                                scope='Conv2d_0b_3x3',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                            tower_conv2_2 = slim.conv2d(
+                                tower_conv2_1,
+                                96,
+                                3,
+                                scope='Conv2d_0c_3x3',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        with tf.variable_scope('Branch_3'):
+                            tower_pool = slim.avg_pool2d(
+                                net,
+                                3,
+                                stride=1,
+                                padding='SAME',
+                                scope='AvgPool_0a_3x3')
+                            tower_pool_1 = slim.conv2d(
+                                tower_pool,
+                                64,
+                                1,
+                                scope='Conv2d_0b_1x1',
+                                trainable=is_trainable,
+                                reuse=is_reusable)
+                        net = tf.concat([
+                            tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
+                        ], 3)
+                    end_points[name] = net
 
 
-                # BLOCK 35
-                name = "Block35"
-                name = compute_layer_name(name, is_left, is_siamese)
-                net = slim.repeat(
-                    net,
-                    10,
-                    block35,
-                    scale=0.17,
-                    trainable_variables=is_trainable,
-                    scope=name,
-                    reuse=is_reusable
-                )
+                    # BLOCK 35
+                    name = "Block35"
+                    name = compute_layer_name(name, is_left, is_siamese)
+                    net = slim.repeat(
+                        net,
+                        10,
+                        block35,
+                        scale=0.17,
+                        trainable_variables=is_trainable,
+                        scope=name,
+                        reuse=is_reusable
+                    )
 
                 net = inception_resnet_v2_core(
                                      net,

@@ -4,19 +4,20 @@
 
 
 import tensorflow as tf
-from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_first_head,\
+from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_first_head,\
                                                       inception_resnet_v2_adapt_layers_1_2_head,\
                                                       inception_resnet_v2_adapt_layers_1_4_head,\
-                                                      inception_resnet_v2_adapt_layers_1_5_head,\
+                                                      inception_resnet_v2_adapt_layers_1_5_head
 
 def test_inceptionv2_siamese():
 
+    
     # Elements for checking
     functions = [inception_resnet_v2_adapt_first_head,
                  inception_resnet_v2_adapt_layers_1_2_head,
                  inception_resnet_v2_adapt_layers_1_4_head,
-                 inception_resnet_v2_adapt_layers_1_5_head,
-                 inception_resnet_v2_adapt_layers_1_6_head]
+                 inception_resnet_v2_adapt_layers_1_5_head]
+    
     n_trainable_variables = [2, 8, 10, 24, 24 + 14*10]
 
     for function, n, in zip(functions, n_trainable_variables):    
@@ -56,8 +57,7 @@ def test_inceptionv2_triplet():
     functions = [inception_resnet_v2_adapt_first_head,
                  inception_resnet_v2_adapt_layers_1_2_head,
                  inception_resnet_v2_adapt_layers_1_4_head,
-                 inception_resnet_v2_adapt_layers_1_5_head,
-                 inception_resnet_v2_adapt_layers_1_6_head]
+                 inception_resnet_v2_adapt_layers_1_5_head]
     n_trainable_variables = [2, 8, 10, 24, 24 + 14*10]
 
 
