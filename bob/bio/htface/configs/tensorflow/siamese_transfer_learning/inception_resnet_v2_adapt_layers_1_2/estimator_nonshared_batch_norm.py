@@ -13,21 +13,24 @@ from bob.bio.htface.estimators import SiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
 from bob.learn.tensorflow.loss import contrastive_loss
 from bob.learn.tensorflow.utils import reproducible
-from bob.bio.htface.utils import get_cnn_model_name
+from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
 
 # Training setup
-learning_rate = 0.1
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
 
-batch_size = 16
+batch_size = 90
 validation_batch_size = 250
 epochs = 100
 embedding_validation = True
 steps = 2000000
 
+learning_rate_values=[0.1, 0.01, 0.001]
+
+# Let's do 75% with 0.1 - 15% with 0.01 and 10% with 0.001
+learning_rate_boundaries = get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs)
 
 run_config = tf.estimator.RunConfig()
 run_config = run_config.replace(save_checkpoints_steps=500)

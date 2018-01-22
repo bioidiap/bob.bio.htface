@@ -8,3 +8,5 @@ database = Pola_ThermalBioDatabase(original_directory=polathermal["data_path"],
                                 protocol='VIS-polarimetric-overall-split1',
                                 models_depend_on_protocol = True)
 
+# Estimated training size
+samples_per_epoch = 400 * 5

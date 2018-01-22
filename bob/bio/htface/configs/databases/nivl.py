@@ -8,3 +8,5 @@ database = NIVLBioDatabase(original_directory=nivl["data_path"],
                                 protocol='idiap-search_VIS-NIR_split1',
                                 models_depend_on_protocol = True)
 
+# Estimated training size
+samples_per_epoch = 1387 * 5

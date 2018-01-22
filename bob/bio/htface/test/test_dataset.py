@@ -3,7 +3,7 @@
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 import tensorflow as tf
-from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
+from bob.bio.htface.dataset.siamese_htface import siamese_htface_generator
 from bob.bio.htface.dataset.triplet_htface import triplet_htface_generator
 from bob.learn.tensorflow.utils import reproducible
 
@@ -52,7 +52,32 @@ def test_triplet_dataset_polathermal():
 
 
 def test_siamese_dataset_cuhk_cufs():
-    """
+
+    #from bob.db.cuhk_cufs.query import Database
+    from bob.bio.htface.database import CUHK_CUFSBioDatabase as Database
+    database = Database(cufs_database_dir="", original_extension="", arface_database_dir="", xm2vts_database_dir="")
+    protocol="search_split1_p2s"
+    
+    left_data, right_data, labels = siamese_htface_generator(database,
+                                                                         protocol,
+                                                                         groups="world",
+                                                                         purposes="train",
+                                                                         get_objects=True)
+    
+    # Checking the first 100 pairs
+    for i in range(100):
+        # Genuine pair
+        if labels[i]==0:
+            assert left_data[i].client_id == right_data[i].client_id
+        else:
+            assert left_data[i].client_id != right_data[i].client_id
+
+        assert left_data[i].modality != right_data[i].modality
+
+
+"""
+def test_siamese_dataset_cuhk_cufs():
+
     from bob.db.cuhk_cufs.query import Database
     database = Database(original_directory="/idiap/temp/tpereira/HTFace/CUHK-CUFS/RESNET_GRAY/INITIAL_CHECKPOINT/split1/preprocessed/",
                         original_extension=".hdf5",
@@ -84,13 +109,13 @@ def test_siamese_dataset_cuhk_cufs():
     #bob.io.base.save(batch[0][0]['left'][3,:,:,0].astype("uint8"), "1_left.png")    
 
     print batch[0][1]
-    """
+
     
     assert True
 
 
 def test_siamese_dataset_polathermal():
-    """
+
     from bob.db.pola_thermal.query import Database
     database = Database(original_directory="/idiap/temp/tpereira/HTFace/POLA_THERMAL/RESNET_GRAY/CASIA_WEBFACE/INITIAL_CHECKPOINT/split1/preprocessed/",
                         original_extension=".hdf5")
@@ -128,6 +153,6 @@ def test_siamese_dataset_polathermal():
     #bob.io.base.save(batch[0][0]['right'][1,:,:,0].astype("uint16"), "1_right.png")
     #bob.io.base.save(batch[0][0]['left'][1,:,:,0].astype("uint16"), "1_left.png")    
     #print batch[0][1]
-    """    
+    
     assert True
-
+"""

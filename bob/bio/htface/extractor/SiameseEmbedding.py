@@ -78,7 +78,6 @@ class SiameseEmbedding(Extractor):
                                         feed_dict={self.input_left: image, self.input_right:image})
 
         #import ipdb; ipdb.set_trace()
-
         # Returning the embidding according to the modality
         if metadata.db.modalities[0] == metadata.modality:
             return features_left

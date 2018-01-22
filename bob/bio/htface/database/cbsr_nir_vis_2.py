@@ -12,9 +12,10 @@ import os
 
 class CBSR_NIR_VIS_2BioFile(FaceBioFile):
 
-    def __init__(self, f):
+    def __init__(self, f, db):
         super(CBSR_NIR_VIS_2BioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
+        self.db = db
         
         
     def make_path(self, original_directory, original_extension=None):
@@ -65,15 +66,15 @@ class CBSR_NIR_VIS_2BioDatabase(ZTBioDatabase):
 
     def objects(self, groups=None, protocol="view2_1", purposes=None, model_ids=None, **kwargs):
         retval = self.db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [CBSR_NIR_VIS_2BioFile(f) for f in retval]
+        return [CBSR_NIR_VIS_2BioFile(f, self.db) for f in retval]
 
     def tobjects(self, groups=None, protocol="view2_1", model_ids=None, **kwargs):
         retval = self.db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [CBSR_NIR_VIS_2BioFile(f) for f in retval]
+        return [CBSR_NIR_VIS_2BioFile(f, self.db) for f in retval]
 
     def zobjects(self, groups=None, protocol="view2_1", **kwargs):
         retval = self.db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [CBSR_NIR_VIS_2BioFile(f) for f in retval]
+        return [CBSR_NIR_VIS_2BioFile(f, self.db) for f in retval]
 
     def annotations(self, file_object):
         return file_object.f.annotations()

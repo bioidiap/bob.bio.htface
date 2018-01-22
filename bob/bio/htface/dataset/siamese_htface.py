@@ -108,7 +108,7 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
     return data, labels
 
 
-def siamese_htface_generator(database, protocol, groups="world", purposes="train"):
+def siamese_htface_generator(database, protocol, groups="world", purposes="train", get_objects=False):
                  
     left_data = []
     right_data = []
@@ -136,28 +136,38 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
                             modality=database.modalities[1]))
 
     genuine = True
-    for o in samples_A:
+    rounds = 5
+    # Doing several rounds to variate the number of negative pairs for each left side
+    for _ in range(rounds):
+        for o in samples_A:
 
-        reference_identity = o.client_id
-        left = o.make_path(database.original_directory, database.original_extension)
-        if genuine:
-            # Loading genuine pair
-            right_object = samples_B[reference_identity].get_object()
-            label = 0
-        else:
-            # Loading impostor pair
-            label = 1
-            while True:
-                index = numpy.random.randint(len(samples_B.keys()))
-                if samples_B.keys()[index] != o.client_id:
-                    right_object = samples_B[samples_B.keys()[index]].get_object()
-                    break    
-                                              
-        right = right_object.make_path(database.original_directory, database.original_extension)
-        genuine = not genuine
+            reference_identity = o.client_id
+            if not get_objects:
+                left = o.make_path(database.original_directory, database.original_extension)
+            else:
+                left = o
+            if genuine:
+                # Loading genuine pair
+                right_object = samples_B[reference_identity].get_object()
+                label = 0
+            else:
+                # Loading impostor pair
+                label = 1
+                while True:
+                    index = numpy.random.randint(len(samples_B.keys()))
+                    if samples_B.keys()[index] != o.client_id:
+                        right_object = samples_B[samples_B.keys()[index]].get_object()
+                        break    
 
-        #yield left, right, label
-        append(left, right, label)
+            if not get_objects:                                                  
+                right = right_object.make_path(database.original_directory, database.original_extension)
+            else:
+                right = right_object
+                
+            genuine = not genuine
+
+            #yield left, right, label
+            append(left, right, label)
 
     return left_data, right_data, labels
 

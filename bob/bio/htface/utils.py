@@ -39,3 +39,13 @@ def get_cnn_model_name(base_path, baseline_name, database_name, protocol):
     
     return os.path.join(base_path, "cnn", baseline_name, database_name, protocol)
 
+
+def get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs):
+
+    batches_per_epoch = samples_per_epoch // batch_size
+    iterations = batches_per_epoch * epochs
+    
+    run_01 = int(iterations*0.75)
+    run_001 = run_01 + int(iterations*0.15)
+    
+    return [run_01, run_001, run_001]

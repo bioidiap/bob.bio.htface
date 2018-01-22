@@ -10,4 +10,5 @@ database = CUHK_CUFSBioDatabase(cufs_database_dir=cuhk_cufs["cufs_path"],
                                 original_extension=cuhk_cufs["extension"],
                                 models_depend_on_protocol = True
                                 )
-
+# Estimated training size
+samples_per_epoch = 404 * 5

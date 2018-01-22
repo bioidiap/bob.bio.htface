@@ -16,9 +16,10 @@ import bob.io.base
 
 class NIVLBioFile(FaceBioFile):
 
-    def __init__(self, f):
+    def __init__(self, f, db):
         super(NIVLBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self.f = f
+        self.db = db
 
     @property
     def modality(self):
@@ -48,15 +49,15 @@ class NIVLBioDatabase(ZTBioDatabase):
 
     def objects(self, groups=None, protocol="idiap-search_VIS-NIR_split1", purposes=None, model_ids=None, **kwargs):
         retval = self.db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [NIVLBioFile(f) for f in retval]
+        return [NIVLBioFile(f, self.db) for f in retval]
 
     def tobjects(self, groups=None, protocol="idiap-search_VIS-NIR_split1", model_ids=None, **kwargs):
         retval = self.db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [NIVLBioFile(f) for f in retval]
+        return [NIVLBioFile(f, self.db) for f in retval]
 
     def zobjects(self, groups=None, protocol="idiap-search_VIS-NIR_split1", **kwargs):
         retval = self.db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [NIVLBioFile(f) for f in retval]
+        return [NIVLBioFile(f, self.db) for f in retval]
 
     def annotations(self, file_object):
         return file_object.f.annotations()

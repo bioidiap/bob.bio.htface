@@ -144,30 +144,34 @@ def triplet_htface_generator(database, protocol, groups="world", purposes="train
                                     groups=groups,
                                     purposes=purposes,
                                     modality=database.modalities[1])
-    numpy.random.shuffle(samples_modality_b)
 
-    genuine = True
-    for a in samples_anchor:
-        reference_identity = a.client_id
-
-        # Getting the positive pair from modality B
-        i = 0
-        while samples_modality_b[i].client_id != reference_identity:
-            i += 1
-        p = samples_modality_b[i]
-
-        # Getting the negative pair from modality B
-        i = 0
-        while samples_modality_b[i].client_id == reference_identity:
-            i += 1
-        n = samples_modality_b[i]
-
-        if not get_objects:
-            a = a.make_path(database.original_directory, database.original_extension)
-            p = p.make_path(database.original_directory, database.original_extension)
-            n = n.make_path(database.original_directory, database.original_extension)        
+    rounds = 5                                    
+    # Doing several rounds to variate the number of negative pairs for each left side
+    for _ in range(rounds):
         
-        append(a, p, n)
+        numpy.random.shuffle(samples_modality_b)
+        genuine = True
+        for a in samples_anchor:
+            reference_identity = a.client_id
+
+            # Getting the positive pair from modality B
+            i = 0
+            while samples_modality_b[i].client_id != reference_identity:
+                i += 1
+            p = samples_modality_b[i]
+
+            # Getting the negative pair from modality B
+            i = 0
+            while samples_modality_b[i].client_id == reference_identity:
+                i += 1
+            n = samples_modality_b[i]
+
+            if not get_objects:
+                a = a.make_path(database.original_directory, database.original_extension)
+                p = p.make_path(database.original_directory, database.original_extension)
+                n = n.make_path(database.original_directory, database.original_extension)        
+            
+            append(a, p, n)
 
     return anchor_data, positive_data, negative_data
 

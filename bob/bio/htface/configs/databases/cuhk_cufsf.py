@@ -10,3 +10,6 @@ database = CUHK_CUFSFBioDatabase(original_directory=cuhk_cufsf["cufsf_path"],
                                 models_depend_on_protocol = True
                                 )
 
+
+# Estimated training size
+samples_per_epoch = 700 * 5

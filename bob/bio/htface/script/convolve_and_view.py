@@ -21,7 +21,9 @@ import bob.io.image
 import bob.sp
 import os
 from docopt import docopt
-from bob.learn.tensorflow.network import inception_resnet_v2
+#from bob.learn.tensorflow.network import inception_resnet_v2, inception_resnet_v2_batch_norm
+from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_first_head
+
 import tensorflow as tf
 import matplotlib
 matplotlib.pyplot.switch_backend('agg')
@@ -68,7 +70,7 @@ def plot_images(raw_image, convolved_image, n_columns = 5):
         norm_factor = numpy.max(img) - numpy.min(img)
         return (255 * ((img - numpy.min(img)) / (norm_factor))).astype("uint8")
 
-    n_rows = int(numpy.ceil(convolved_image.shape[3]/float(n_columns)) + 1)
+    n_rows = int(numpy.ceil(len(convolved_image)/float(n_columns)) + 1)
 
     # Normalized convolved image 
     #norm_factor = numpy.sum((raw_image - numpy.mean(raw_image)) / numpy.std(raw_image))
@@ -76,16 +78,16 @@ def plot_images(raw_image, convolved_image, n_columns = 5):
 
     fig = plt.figure()
     plt.subplot(n_rows, n_columns, 1)
-    plt.imshow(raw_image[0,:,:,0], cmap='gray')
+    plt.imshow(raw_image, cmap='gray')
     plt.axis('off')    
-    for i in range(convolved_image.shape[3]):
+    for i in range(len(convolved_image)):
         plt.subplot(n_rows, n_columns, i+2)
 
         #if numpy.sum(convolved_image[0,:,:,i]) < 1e-10:
         #    for_printing = convolved_image[0,:,:,i]
         #else:
         #    for_printing = normalize4save(do_fft(convolved_image[0,:,:,i]))
-        for_printing = normalize4save(do_fft(convolved_image[0,:,:,i]))
+        for_printing = normalize4save(do_fft(convolved_image[0]))
         
         plt.imshow(for_printing)
         plt.axis('off')
@@ -93,15 +95,48 @@ def plot_images(raw_image, convolved_image, n_columns = 5):
     return fig
 
 
+def dump_and_convolve(input_image, session, layer_name):
+
+    def prewhiten(img):
+        mean = numpy.mean(img)
+        std = numpy.std(img)
+        std_adj = numpy.maximum(std, 1.0 / numpy.sqrt(img.size))
+        y = numpy.multiply(numpy.subtract(img, mean), 1 / std_adj)
+        return y
+    
+    import scipy
+    
+    weights = session.graph.get_tensor_by_name(layer_name + "weights:0").eval(session=session)
+    beta = session.graph.get_tensor_by_name(layer_name + "BatchNorm/beta:0").eval(session=session)
+    mu = session.graph.get_tensor_by_name(layer_name + "BatchNorm/moving_mean:0").eval(session=session)
+    std = session.graph.get_tensor_by_name(layer_name + "BatchNorm/moving_variance:0").eval(session=session)
+
+    convolved_images = []
+    convolved_images_bias = []
+    for i in range(weights.shape[3]):
+        input_image = prewhiten(input_image)
+        convolved = scipy.ndimage.filters.convolve(input_image, weights[:,:,0, i])
+        
+        convolved_images.append(convolved)
+        convolved_images_bias.append(beta[i] + (mu[i]-convolved)/std[i] )
+        
+    return convolved_images, convolved_images_bias
+
+
 def run_demo_mode(baselines, layers, database_name, config_base_path, output_path):
     """
     Plot the subfigures for the demo mode
     """
 
+    ####### TODO: ADD AS A PARAMETER
+    architecture = inception_resnet_v2_adapt_first_head
+
     logger.info("Demo mode !!!")
     
     baseline = baselines[0]
-    layer = layers[0]
+    #layer = layers[0]
+    layers = ["InceptionResnetV2/Conv2d_1a_3x3_left/",
+              "InceptionResnetV2/Conv2d_1a_3x3_right/"]
 
     # Loading the configuration setup
     config_preprocessing = os.path.join(resources[baseline]["preprocessed_data"], database_name+".py")
@@ -121,8 +156,8 @@ def run_demo_mode(baselines, layers, database_name, config_base_path, output_pat
         inputs = tf.placeholder(tf.float32, shape=(1, 160, 160, 1))
 
         # Getting the end_points
-        prelogits, end_points = inception_resnet_v2(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]),
-                                                    mode=tf.estimator.ModeKeys.PREDICT)
+        architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = True)
+        architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = False, reuse=True)
         
         session = tf.Session()
         session.run(tf.global_variables_initializer())
@@ -132,18 +167,29 @@ def run_demo_mode(baselines, layers, database_name, config_base_path, output_pat
             model_dir = config.inception_resnet_v2_casia_webface_gray
         saver.restore(session, tf.train.latest_checkpoint(model_dir))
 
+
         # getting the first sample only for the plot
         model_ids = None
-        for modality in database.modalities:
+        
+        import ipdb; ipdb.set_trace();
+        for modality, layer in zip(database.modalities, layers):
             file_object = database.objects(protocol=resources["databases"][database_name]["protocols"][0], groups="world", modality=[modality], model_ids=model_ids)[0]
             model_ids = [file_object.client_id]
             path = file_object.make_path(database.original_directory, ".hdf5")
-            raw_image =  numpy.reshape(bob.io.base.load(path).astype("float32"), (1, 160, 160, 1))
+            raw_image =  bob.io.base.load(path).astype("float32")
+            #raw_image =  numpy.reshape(bob.io.base.load(path).astype("float32"), (1, 160, 160, 1))
+
+            convolved_images, convolved_images_bias = dump_and_convolve(raw_image, session, layer)
 
             # Convolving the first layer
-            convolved_image = session.run(end_points[layer], feed_dict={inputs: raw_image})
-            fig = plot_images(raw_image, convolved_image)
+            #convolved_image = session.run(end_points[layer], feed_dict={inputs: raw_image})
+            fig = plot_images(raw_image, convolved_images)
             fig.savefig(os.path.join(output_path,"{0}_{1}_{2}.png").format(database_name, modality, baseline))
+        
+            fig = plot_images(raw_image, convolved_images_bias)
+            fig.savefig(os.path.join(output_path,"{0}_{1}_{2}_bias.png").format(database_name, modality, baseline))
+
+
         tf.reset_default_graph()
 
 
@@ -163,9 +209,13 @@ def main():
     #             "idiap_casia_inception_v2_gray_adapt_all_layers"]
 
 
-    baselines = ["idiap_casia_inception_v2_gray",
-                 "idiap_casia_inception_v2_gray_adapt_layers_1_6"]
+    #baselines = ["idiap_casia_inception_v2_gray",
+    #             "idiap_casia_inception_v2_gray_adapt_layers_1_6"]
 
+    #baselines = ["idiap_casia_inception_v2_gray",
+    #             "idiap_casia_inception_v2_gray_adapt_layers_1_6"]
+
+    baselines = ["idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"]
 
     # Loading base paths
     config_base_path = pkg_resources.resource_filename("bob.bio.htface",
@@ -174,9 +224,9 @@ def main():
 
     pdf = PdfPages(output_file_name)
     #layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3"]
-    layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",  "Mixed_5b", "Block35"]
+    #layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",  "Mixed_5b", "Block35"]
     #layers = ["Conv2d_1a_3x3", "Conv2d_2a_3x3"]
-    #layers = ["Conv2d_1a_3x3"]
+    layers = ["Conv2d_1a_3x3"]
     
     # Checking if demo mode
     if args["--demo"]:

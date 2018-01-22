@@ -119,7 +119,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
             
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
                     # CORE OF THE THE ADAPTATION                    
                     
                     # 149 x 149 x 32
@@ -137,7 +137,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                                   
                     end_points[name] = net
 
-            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
 
                     # 147 x 147 x 32
                     name = "Conv2d_2a_3x3"
@@ -337,7 +337,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
             # ADAPTABLE PART
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
-                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
 
                     # CORE OF THE THE ADAPTATION
 
@@ -404,7 +404,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                     end_points[name] = net
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
 
                     # 71 x 71 x 192
                     name = "Conv2d_4a_3x3"
@@ -569,7 +569,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
 
-                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
                     # CORE OF THE THE ADAPTATION
                     # 149 x 149 x 32
                     name = "Conv2d_1a_3x3"
@@ -648,7 +648,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
 
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
 
                     # 35 x 35 x 192
                     net = slim.max_pool2d(
@@ -801,7 +801,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                 # CORE OF THE THE ADAPTATION
-                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
                     # 149 x 149 x 32
                     name = "Conv2d_1a_3x3"
                     name = compute_layer_name(name, is_left, is_siamese)
@@ -952,7 +952,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
 
             # NON ADAPTABLE PART
-            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+            with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
 
                     # BLOCK 35
                     name = "Block35"
@@ -1033,7 +1033,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                 # CORE OF THE THE ADAPTATION
-                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
+                with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
                     # 149 x 149 x 32
                     name = "Conv2d_1a_3x3"
                     name = compute_layer_name(name, is_left, is_siamese)
@@ -1196,15 +1196,17 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         reuse=is_reusable
                     )
 
-                net = inception_resnet_v2_core(
-                                     net,
-                                     dropout_keep_prob=0.8,
-                                     bottleneck_layer_size=128,
-                                     reuse=reuse,
-                                     scope='InceptionResnetV2',
-                                     mode=mode,
-                                     trainable_variables=None,
-                                     **kwargs
-                    )
+                # CORE OF THE THE ADAPTATION
+                with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
+
+                    net = inception_resnet_v2_core(
+                                         net,
+                                         dropout_keep_prob=0.8,
+                                         bottleneck_layer_size=128,
+                                         reuse=reuse,
+                                         scope='InceptionResnetV2',
+                                         mode=mode,
+                                         trainable_variables=None,
+                                         **kwargs)
 
     return net, end_points

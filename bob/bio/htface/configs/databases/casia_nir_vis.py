@@ -8,3 +8,5 @@ database = CBSR_NIR_VIS_2BioDatabase(original_directory=casia_nir_vis["data_path
                                 protocol='view2_1',
                                 models_depend_on_protocol = True)
 
+# Estimated training size
+samples_per_epoch = 2480 * 5
