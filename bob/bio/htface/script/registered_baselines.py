@@ -278,6 +278,18 @@ resources["triplet_inceptionv2_layers_1_4_nonshared"]["estimator"] = pkg_resourc
 resources["triplet_inceptionv2_layers_1_4_nonshared"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
 
+# NON SHARED - BATCH-NORM
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"] = dict()
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["name"] = "triplet_inceptionv2_layers_1_4_nonshared_batch_norm"
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["extractor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/triplet_extractor_nonshared_batch_norm.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["preprocessor"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["reuse_extractor"] = False
+## To train the cnn
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["estimator"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv2_layers_1_4/estimator_nonshared_batch_norm.py")
+resources["triplet_inceptionv2_layers_1_4_nonshared_batch_norm"]["preprocessed_data"] = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+
+
 ##########################
 # LAYERS 1-5
 ##########################
