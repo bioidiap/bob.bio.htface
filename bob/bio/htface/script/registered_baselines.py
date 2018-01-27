@@ -33,13 +33,9 @@ all_baselines = ["idiap_casia_inception_v2_gray",
                  
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6",
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6_nonshared",
-<<<<<<< Updated upstream
                  "triplet_inceptionv2_layers_1_6_nonshared_batch_norm",
-=======
                  "idiap_casia_inception_v2_gray_adapt_layers_1_6_nonshared_batch_norm",
->>>>>>> Stashed changes
-                 
-                 
+                  
                  "idiap_casia_inception_v2_gray_adapt_all_layers"]
 
 resources = dict()
