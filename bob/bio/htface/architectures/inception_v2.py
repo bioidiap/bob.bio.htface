@@ -1184,17 +1184,18 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
 
                     # BLOCK 35
-                    name = "Block35"
+                    name = "block35"
                     name = compute_layer_name(name, is_left, is_siamese)
                     net = slim.repeat(
                         net,
                         10,
                         block35,
                         scale=0.17,
-                        trainable_variables=is_trainable,
                         scope=name,
+                        trainable_variables=is_trainable,
                         reuse=is_reusable
                     )
+                    end_points[name] = net
 
                 # CORE OF THE THE ADAPTATION
                 with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):

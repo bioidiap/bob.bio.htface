@@ -7,7 +7,8 @@ import tensorflow as tf
 from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_first_head,\
                                                       inception_resnet_v2_adapt_layers_1_2_head,\
                                                       inception_resnet_v2_adapt_layers_1_4_head,\
-                                                      inception_resnet_v2_adapt_layers_1_5_head
+                                                      inception_resnet_v2_adapt_layers_1_5_head,\
+                                                      inception_resnet_v2_adapt_layers_1_6_head
 
 def test_inceptionv2_siamese():
 
@@ -16,7 +17,8 @@ def test_inceptionv2_siamese():
     functions = [inception_resnet_v2_adapt_first_head,
                  inception_resnet_v2_adapt_layers_1_2_head,
                  inception_resnet_v2_adapt_layers_1_4_head,
-                 inception_resnet_v2_adapt_layers_1_5_head]
+                 inception_resnet_v2_adapt_layers_1_5_head,
+                 inception_resnet_v2_adapt_layers_1_6_head]
     
     n_trainable_variables = [2, 8, 10, 24, 24 + 14*10]
 
@@ -57,7 +59,8 @@ def test_inceptionv2_triplet():
     functions = [inception_resnet_v2_adapt_first_head,
                  inception_resnet_v2_adapt_layers_1_2_head,
                  inception_resnet_v2_adapt_layers_1_4_head,
-                 inception_resnet_v2_adapt_layers_1_5_head]
+                 inception_resnet_v2_adapt_layers_1_5_head,
+                 inception_resnet_v2_adapt_layers_1_6_head]
     n_trainable_variables = [2, 8, 10, 24, 24 + 14*10]
 
 

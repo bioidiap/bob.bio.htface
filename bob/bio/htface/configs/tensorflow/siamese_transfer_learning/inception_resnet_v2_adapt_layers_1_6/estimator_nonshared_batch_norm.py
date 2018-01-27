@@ -13,25 +13,28 @@ from bob.bio.htface.estimators import SiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
 from bob.learn.tensorflow.loss import contrastive_loss
 from bob.learn.tensorflow.utils import reproducible
-from bob.bio.htface.utils import get_cnn_model_name
+from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
 
 architecture = inception_resnet_v2_adapt_layers_1_6_head
 model_name = "inception_resnet_v2_adapt_layers_1_6_nonshared_batch_norm"
 
 # Training setup
-learning_rate_values=[0.1, 0.01, 0.001]
-learning_rate_boundaries=[400, 700, 700]
-
 data_shape = (160, 160, 1)  # size of atnt images
 output_shape = None
 data_type = tf.uint8
 
 batch_size = 90
 validation_batch_size = 250
-epochs = 200
+epochs = 100
 embedding_validation = True
 steps = 2000000
+
+learning_rate_values=[0.1, 0.01, 0.001]
+
+# Let's do 75% with 0.1 - 15% with 0.01 and 10% with 0.001
+learning_rate_boundaries = get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs)
+
 
 run_config = tf.estimator.RunConfig()
 run_config = run_config.replace(save_checkpoints_steps=500)
@@ -50,14 +53,20 @@ left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x
 left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_left/"
 left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_left/"
 left_scope['InceptionResnetV2/Mixed_5b/']      = "InceptionResnetV2/Mixed_5b_left/"
-left_scope['InceptionResnetV2/Repeat/']        = "InceptionResnetV2/Repeat_left/" # TF-SLIM ADD the prefix repeat unde each repeat
+
+#### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
+for i in range(1, 11):
+    left_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_left/".format(i)
+
 
 
 # NON ADAPTABLE PART
+#left_scope['InceptionResnetV2/Repeat/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat
+
+#### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED
 left_scope['InceptionResnetV2/Repeat_1/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat  
 left_scope['InceptionResnetV2/Repeat_2/'] = "InceptionResnetV2/Repeat_1/" # TF-SLIM ADD the prefix repeat unde each repeat    
 
-left_scope['InceptionResnetV2/Block35/'] = "InceptionResnetV2/Block35/"
 left_scope['InceptionResnetV2/Mixed_6a/'] = "InceptionResnetV2/Mixed_6a/"
 left_scope['InceptionResnetV2/Block17/'] = "InceptionResnetV2/Block17/"
 left_scope['InceptionResnetV2/Mixed_7a/'] = "InceptionResnetV2/Mixed_7a/"
@@ -72,7 +81,12 @@ right_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3
 right_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_right/"
 right_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_right/"
 right_scope['InceptionResnetV2/Mixed_5b/']      = "InceptionResnetV2/Mixed_5b_right/"
-right_scope['InceptionResnetV2/Repeat/']        = "InceptionResnetV2/Repeat_right/" # TF-SLIM ADD the prefix repeat unde each repeat
+
+
+#### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
+for i in range(1, 11):
+    right_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_right/".format(i)
+
 
 
 # Preparing the prior

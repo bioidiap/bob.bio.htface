@@ -70,7 +70,8 @@ def plot_images(raw_image, convolved_image, n_columns = 5):
         norm_factor = numpy.max(img) - numpy.min(img)
         return (255 * ((img - numpy.min(img)) / (norm_factor))).astype("uint8")
 
-    n_rows = int(numpy.ceil(len(convolved_image)/float(n_columns)) + 1)
+    #n_rows = int(numpy.ceil(len(convolved_image)/float(n_columns)) + 1)
+    n_rows = int(numpy.ceil(convolved_image.shape[3]/float(n_columns)) + 1)
 
     # Normalized convolved image 
     #norm_factor = numpy.sum((raw_image - numpy.mean(raw_image)) / numpy.std(raw_image))
@@ -78,49 +79,22 @@ def plot_images(raw_image, convolved_image, n_columns = 5):
 
     fig = plt.figure()
     plt.subplot(n_rows, n_columns, 1)
-    plt.imshow(raw_image, cmap='gray')
+    plt.imshow(raw_image[0, :, :, 0], cmap='gray')
     plt.axis('off')    
-    for i in range(len(convolved_image)):
+    for i in range(convolved_image.shape[3]):
         plt.subplot(n_rows, n_columns, i+2)
 
         #if numpy.sum(convolved_image[0,:,:,i]) < 1e-10:
         #    for_printing = convolved_image[0,:,:,i]
         #else:
         #    for_printing = normalize4save(do_fft(convolved_image[0,:,:,i]))
-        for_printing = normalize4save(do_fft(convolved_image[0]))
+        for_printing = normalize4save(do_fft(convolved_image[0,:,:,i]))
+        #for_printing = normalize4save(convolved_image[0,:,:,i])
         
         plt.imshow(for_printing)
         plt.axis('off')
         
     return fig
-
-
-def dump_and_convolve(input_image, session, layer_name):
-
-    def prewhiten(img):
-        mean = numpy.mean(img)
-        std = numpy.std(img)
-        std_adj = numpy.maximum(std, 1.0 / numpy.sqrt(img.size))
-        y = numpy.multiply(numpy.subtract(img, mean), 1 / std_adj)
-        return y
-    
-    import scipy
-    
-    weights = session.graph.get_tensor_by_name(layer_name + "weights:0").eval(session=session)
-    beta = session.graph.get_tensor_by_name(layer_name + "BatchNorm/beta:0").eval(session=session)
-    mu = session.graph.get_tensor_by_name(layer_name + "BatchNorm/moving_mean:0").eval(session=session)
-    std = session.graph.get_tensor_by_name(layer_name + "BatchNorm/moving_variance:0").eval(session=session)
-
-    convolved_images = []
-    convolved_images_bias = []
-    for i in range(weights.shape[3]):
-        input_image = prewhiten(input_image)
-        convolved = scipy.ndimage.filters.convolve(input_image, weights[:,:,0, i])
-        
-        convolved_images.append(convolved)
-        convolved_images_bias.append(beta[i] + (mu[i]-convolved)/std[i] )
-        
-    return convolved_images, convolved_images_bias
 
 
 def run_demo_mode(baselines, layers, database_name, config_base_path, output_path):
@@ -135,8 +109,12 @@ def run_demo_mode(baselines, layers, database_name, config_base_path, output_pat
     
     baseline = baselines[0]
     #layer = layers[0]
-    layers = ["InceptionResnetV2/Conv2d_1a_3x3_left/",
-              "InceptionResnetV2/Conv2d_1a_3x3_right/"]
+    #layers = ["InceptionResnetV2/Conv2d_1a_3x3_left/",
+    #          "InceptionResnetV2/Conv2d_1a_3x3_right/"]
+
+    layers = ["Conv2d_1a_3x3_left",
+              "Conv2d_1a_3x3_right"]
+    
 
     # Loading the configuration setup
     config_preprocessing = os.path.join(resources[baseline]["preprocessed_data"], database_name+".py")
@@ -154,40 +132,84 @@ def run_demo_mode(baselines, layers, database_name, config_base_path, output_pat
 
         # Loading TF MODEL
         inputs = tf.placeholder(tf.float32, shape=(1, 160, 160, 1))
+        
 
         # Getting the end_points
-        architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = True)
-        architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = False, reuse=True)
+        _, left_end_points = architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = True)
+        _, right_end_points = architecture(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(inputs)]), mode=tf.estimator.ModeKeys.PREDICT, is_left = False, reuse=True)
+
+
+        scopes = {"InceptionResnetV2/Conv2d_1a_3x3_left/weights": "InceptionResnetV2/Conv2d_1a_3x3_left/weights",
+                  "InceptionResnetV2/Conv2d_1a_3x3_right/weights": "InceptionResnetV2/Conv2d_1a_3x3_right/weights",
+                                                  
+                  "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/moving_mean": "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/moving_mean",
+                  "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/moving_variance": "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/moving_variance",
+                  "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/beta": "InceptionResnetV2/Conv2d_1a_3x3_left/BatchNorm/beta",
+
+                  "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/moving_mean": "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/moving_mean",
+                  "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/moving_variance": "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/moving_variance",
+                  "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/beta": "InceptionResnetV2/Conv2d_1a_3x3_right/BatchNorm/beta",
+                  }
+                  
+        #scopes = {"InceptionResnetV2/Conv2d_1a_3x3_left/weights": "InceptionResnetV2/Conv2d_1a_3x3_left/weights",
+        #          "InceptionResnetV2/Conv2d_1a_3x3_right/weights": "InceptionResnetV2/Conv2d_1a_3x3_right/weights"
+        #          }                  
         
+        tf.contrib.framework.init_from_checkpoint(model_dir, scopes)
+
         session = tf.Session()
         session.run(tf.global_variables_initializer())
         
-        saver = tf.train.Saver()
-        if baseline == "idiap_casia_inception_v2_gray":
-            model_dir = config.inception_resnet_v2_casia_webface_gray
-        saver.restore(session, tf.train.latest_checkpoint(model_dir))
+        print(tf.global_variables()[0].eval(session)[0])
+        
+        
+        #saver = tf.train.Saver()
+        #if baseline == "idiap_casia_inception_v2_gray":
+        #    model_dir = config.inception_resnet_v2_casia_webface_gray
+        #saver.restore(session, tf.train.latest_checkpoint(model_dir))
 
 
         # getting the first sample only for the plot
         model_ids = None
+
+        def normalize4save(img):
+          return (255 * ((img - numpy.min(img)) / (numpy.max(img)-numpy.min(img)))).astype("uint8")
         
-        import ipdb; ipdb.set_trace();
-        for modality, layer in zip(database.modalities, layers):
-            file_object = database.objects(protocol=resources["databases"][database_name]["protocols"][0], groups="world", modality=[modality], model_ids=model_ids)[0]
+        #import ipdb; ipdb.set_trace();
+        for modality, layer, end_points in zip(database.modalities, layers, [left_end_points, right_end_points]):
+        
+            file_object = database.objects(protocol=resources["databases"][database_name]["protocols"][0], groups="world", modality=[modality], model_ids=model_ids, purposes="train")[0]
             model_ids = [file_object.client_id]
             path = file_object.make_path(database.original_directory, ".hdf5")
-            raw_image =  bob.io.base.load(path).astype("float32")
+            raw_image =  numpy.reshape(bob.io.base.load(path).astype("float32"), (1, 160, 160, 1))
+            
+            
+            convolved_images = session.run(left_end_points["Conv2d_1a_3x3_left"], feed_dict={inputs: raw_image})
+            fig = plot_images(raw_image, convolved_images)
+            fig.savefig("XUXA_left_{0}.png".format(modality))
+
+            convolved_images = session.run(right_end_points["Conv2d_1a_3x3_right"], feed_dict={inputs: raw_image})
+            fig = plot_images(raw_image, convolved_images)
+            fig.savefig("XUXA_right_{0}.png".format(modality))
+
+
+
+
+
+
             #raw_image =  numpy.reshape(bob.io.base.load(path).astype("float32"), (1, 160, 160, 1))
 
-            convolved_images, convolved_images_bias = dump_and_convolve(raw_image, session, layer)
+           # convolved_images, convolved_images_bias = dump_and_convolve(raw_image, session, layer)
 
             # Convolving the first layer
-            #convolved_image = session.run(end_points[layer], feed_dict={inputs: raw_image})
-            fig = plot_images(raw_image, convolved_images)
-            fig.savefig(os.path.join(output_path,"{0}_{1}_{2}.png").format(database_name, modality, baseline))
+            #import ipdb; ipdb.set_trace();
+            
+
+            x=0
+            #fig.savefig(os.path.join(output_path,"{0}_{1}_{2}.png").format(database_name, modality, baseline))
         
-            fig = plot_images(raw_image, convolved_images_bias)
-            fig.savefig(os.path.join(output_path,"{0}_{1}_{2}_bias.png").format(database_name, modality, baseline))
+            #fig = plot_images(raw_image, convolved_images_bias)
+            #fig.savefig(os.path.join(output_path,"{0}_{1}_{2}_bias.png").format(database_name, modality, baseline))
 
 
         tf.reset_default_graph()

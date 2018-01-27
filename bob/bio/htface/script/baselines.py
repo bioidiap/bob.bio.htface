@@ -52,6 +52,8 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
     
     configs  = load([base_paths])
+
+    #    '-g', 'demanding',
     
     parameters = [
         base_paths,
@@ -60,7 +62,6 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         preprocessor,
         extractor,
         '-a', "distance-cosine",
-        '-g', 'demanding',
         '-vvv',
         '--temp-directory', configs.temp_dir,
         '--result-directory', configs.results_dir,
