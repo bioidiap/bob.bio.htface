@@ -13,3 +13,4 @@ sphinx
 dist
 *.aux
 *.log
+.DS_Store
