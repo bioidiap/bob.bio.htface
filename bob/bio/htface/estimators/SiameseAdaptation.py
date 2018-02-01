@@ -70,6 +70,11 @@ class SiameseAdaptation(estimator.Estimator):
       params:
         Extra params for the model function
         (please see https://www.tensorflow.org/extend/estimators for more info)
+
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
+
         
       extra_checkpoint: dict
         In case you want to use other model to initialize some variables.
@@ -93,6 +98,7 @@ class SiameseAdaptation(estimator.Estimator):
                  params=None,
                  learning_rate_values=[0.1],
                  learning_rate_boundaries=[],
+                 force_weights_shutdown=False,
                  extra_checkpoint=None):
 
         self.architecture = architecture
@@ -102,6 +108,7 @@ class SiameseAdaptation(estimator.Estimator):
         self.extra_checkpoint = extra_checkpoint
         self.learning_rate_boundaries = learning_rate_boundaries
         self.learning_rate_values = learning_rate_values
+        self.force_weights_shutdown = force_weights_shutdown
 
         if self.architecture is None:
             raise ValueError(
@@ -131,14 +138,16 @@ class SiameseAdaptation(estimator.Estimator):
                 mode=mode,
                 reuse=False,
                 trainable_variables=[],
-                is_left = True)
+                is_left = True,
+                force_weights_shutdown=self.force_weights_shutdown)
 
             prelogits_right, end_points_right = self.architecture(
                 features['right'],
                 reuse=True,
                 mode=mode,
                 trainable_variables=[],
-                is_left = False
+                is_left = False,
+                force_weights_shutdown=self.force_weights_shutdown
                 )
 
             for v in tf.all_variables():

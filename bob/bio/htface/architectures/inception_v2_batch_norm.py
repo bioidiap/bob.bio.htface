@@ -31,6 +31,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                          is_siamese=True,
                                          is_left = True,
                                          weight_decay=5e-05,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the FIRST LAYER.
    
@@ -53,6 +54,11 @@ def inception_resnet_v2_adapt_first_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**
+        
               
     **Returns**:
     
@@ -87,7 +93,8 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                       mode=mode,
                                       trainable_variables=trainable_variables,
                                       is_siamese=is_siamese,
-                                      is_left=is_left)
+                                      is_left=is_left,
+                                      force_weights_shutdown=force_weights_shutdown)
 
     return net, end_points
 
@@ -102,6 +109,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                                          is_siamese=True,
                                          is_left = True,
                                          weight_decay=5e-05,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND SECOND LAYERS
@@ -125,6 +133,11 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
+        
 
     **Returns**:
 
@@ -159,7 +172,8 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                                     mode=mode,
                                     trainable_variables=trainable_variables,
                                     is_siamese=is_siamese,
-                                    is_left=is_left)
+                                    is_left=is_left,
+                                    force_weights_shutdown=force_weights_shutdown)
 
     return net, end_points
 
@@ -174,6 +188,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                                          is_siamese=True,
                                          is_left = True,
                                          weight_decay=5e-05,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND FORTH LAYERS
@@ -197,6 +212,11 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
+        
 
     **Returns**:
 
@@ -231,7 +251,8 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                                     mode=mode,
                                     trainable_variables=trainable_variables,
                                     is_siamese=is_siamese,
-                                    is_left=is_left)
+                                    is_left=is_left,
+                                    force_weights_shutdown=force_weights_shutdown)
 
     return net, end_points
 
@@ -246,6 +267,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                          is_siamese=True,
                                          is_left = True,
                                          weight_decay=5e-05,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND FIFTH LAYERS
@@ -269,6 +291,11 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
+        
 
     **Returns**:
 
@@ -303,7 +330,8 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                     mode=mode,
                                     trainable_variables=trainable_variables,
                                     is_siamese=is_siamese,
-                                    is_left=is_left)
+                                    is_left=is_left,
+                                    force_weights_shutdown=force_weights_shutdown)
 
     return net, end_points
 
@@ -318,6 +346,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                          is_siamese=True,
                                          is_left = True,
                                          weight_decay=5e-05,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND SIXTH LAYERS
@@ -341,6 +370,11 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
+        
 
     **Returns**:
 
@@ -375,7 +409,8 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                     mode=mode,
                                     trainable_variables=trainable_variables,
                                     is_siamese=is_siamese,
-                                    is_left=is_left)
+                                    is_left=is_left,
+                                    force_weights_shutdown=force_weights_shutdown)
 
     return net, end_points
 

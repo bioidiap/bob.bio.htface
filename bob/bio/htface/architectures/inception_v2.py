@@ -76,6 +76,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                          trainable_variables=None,
                                          is_siamese=True,
                                          is_left = True,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the FIRST LAYER.
    
@@ -98,6 +99,10 @@ def inception_resnet_v2_adapt_first_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**
               
     **Returns**:
     
@@ -132,7 +137,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                         stride=2,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                                                   
                     end_points[name] = net
@@ -291,6 +296,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                                          trainable_variables=None,
                                          is_siamese=True,
                                          is_left = True,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND SECOND LAYERS
@@ -315,6 +321,10 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
       is_left: bool
         Is the left side of the Siamese?
 
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**
+        
     **Returns**:
 
       logits: the logits outputs of the model.
@@ -351,7 +361,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                         stride=2,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -364,7 +374,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -376,7 +386,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                         64,
                         3,
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -399,7 +409,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                         1,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -523,6 +533,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                                          trainable_variables=None,
                                          is_siamese=True,
                                          is_left = True,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND FORTH LAYERS
@@ -546,6 +557,10 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
 
     **Returns**:
 
@@ -581,7 +596,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         stride=2,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -594,7 +609,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -606,7 +621,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         64,
                         3,
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -629,7 +644,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         1,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -642,7 +657,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -755,6 +770,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                          trainable_variables=None,
                                          is_siamese=True,
                                          is_left = True,
+                                         force_weights_shutdown=False,
                                          **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND FIFTH LAYERS
@@ -778,6 +794,10 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**        
 
     **Returns**:
 
@@ -812,7 +832,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         stride=2,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -825,7 +845,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -837,7 +857,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         64,
                         3,
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -860,7 +880,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         1,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -873,7 +893,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -892,7 +912,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                 96,
                                 1,
                                 scope='Conv2d_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_1'):
                             tower_conv1_0 = slim.conv2d(
@@ -900,14 +920,14 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                 48,
                                 1,
                                 scope='Conv2d_0a_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv1_1 = slim.conv2d(
                                 tower_conv1_0,
                                 64,
                                 5,
                                 scope='Conv2d_0b_5x5',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_2'):
                             tower_conv2_0 = slim.conv2d(
@@ -915,21 +935,21 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                 64,
                                 1,
                                 scope='Conv2d_0a_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv2_1 = slim.conv2d(
                                 tower_conv2_0,
                                 96,
                                 3,
                                 scope='Conv2d_0b_3x3',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv2_2 = slim.conv2d(
                                 tower_conv2_1,
                                 96,
                                 3,
                                 scope='Conv2d_0c_3x3',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_3'):
                             tower_pool = slim.avg_pool2d(
@@ -943,7 +963,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                 64,
                                 1,
                                 scope='Conv2d_0b_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         net = tf.concat([
                             tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
@@ -987,6 +1007,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                               trainable_variables=None,
                                               is_siamese=True,
                                               is_left=True,
+                                              force_weights_shutdown=False,
                                               **kwargs):
     """Creates the Inception Resnet V2 model for the adaptation of the
     FIRST AND SIXTH LAYERS
@@ -1010,6 +1031,10 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
 
       is_left: bool
         Is the left side of the Siamese?
+        
+      force_weights_shutdown: bool
+        If True will shutdown the weights no matter the weights are set in trainable_variables.
+        Default **False**                
 
     **Returns**:
 
@@ -1044,7 +1069,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         stride=2,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -1057,7 +1082,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -1069,7 +1094,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         64,
                         3,
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -1092,7 +1117,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         1,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -1105,7 +1130,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         3,
                         padding='VALID',
                         scope=name,
-                        trainable=is_trainable,
+                        trainable=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable)
                     end_points[name] = net
 
@@ -1124,7 +1149,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                 96,
                                 1,
                                 scope='Conv2d_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_1'):
                             tower_conv1_0 = slim.conv2d(
@@ -1132,14 +1157,14 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                 48,
                                 1,
                                 scope='Conv2d_0a_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv1_1 = slim.conv2d(
                                 tower_conv1_0,
                                 64,
                                 5,
                                 scope='Conv2d_0b_5x5',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_2'):
                             tower_conv2_0 = slim.conv2d(
@@ -1147,21 +1172,21 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                 64,
                                 1,
                                 scope='Conv2d_0a_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv2_1 = slim.conv2d(
                                 tower_conv2_0,
                                 96,
                                 3,
                                 scope='Conv2d_0b_3x3',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                             tower_conv2_2 = slim.conv2d(
                                 tower_conv2_1,
                                 96,
                                 3,
                                 scope='Conv2d_0c_3x3',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         with tf.variable_scope('Branch_3'):
                             tower_pool = slim.avg_pool2d(
@@ -1175,7 +1200,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                 64,
                                 1,
                                 scope='Conv2d_0b_1x1',
-                                trainable=is_trainable,
+                                trainable=is_trainable and not force_weights_shutdown,
                                 reuse=is_reusable)
                         net = tf.concat([
                             tower_conv, tower_conv1_1, tower_conv2_2, tower_pool_1
@@ -1192,7 +1217,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                         block35,
                         scale=0.17,
                         scope=name,
-                        trainable_variables=is_trainable,
+                        trainable_variables=is_trainable and not force_weights_shutdown,
                         reuse=is_reusable
                     )
                     end_points[name] = net
