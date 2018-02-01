@@ -49,9 +49,10 @@ logger = setup(__name__)
 
 import os
 import bob.io.base
-from .registered_baselines import all_baselines, resources
 from docopt import docopt
 from .baselines import write_protocol
+from bob.bio.htface.baselines import get_all_baselines, get_all_databases
+
 
 def train_cnn(baseline, database, protocol, args):
     """
@@ -63,19 +64,19 @@ def train_cnn(baseline, database, protocol, args):
                                                  "configs/base_paths.py")
 
     # 2 - Database preprocessed paths
-    config_preprocessing = os.path.join(resources[baseline]["preprocessed_data"], database+".py")
+    config_preprocessing = os.path.join(baseline.preprocessed_data, database.name+".py")
 
     # 3 - Protocol Hack
     configs  = read_config_file([config_base_path])
-    config_protocol_file_name = os.path.join(configs.temp_dir, "protocols_tmp", resources[baseline]["name"], protocol+".py")
+    config_protocol_file_name = os.path.join(configs.temp_dir, "protocols_tmp", baseline.name, protocol+".py")
     bob.io.base.create_directories_safe(os.path.dirname(config_protocol_file_name))
     write_protocol(config_protocol_file_name, protocol)
     
     # 4 - Database obj
-    config_database = resources["databases"][database]["config"]
+    config_database = database.config
     
     # 5 - Estimator
-    config_estimator = resources[baseline]["estimator"]
+    config_estimator = baseline.estimator
 
     config = read_config_file([config_base_path, config_preprocessing, config_protocol_file_name,
                                 config_database, config_estimator])
@@ -96,6 +97,8 @@ def train_cnn(baseline, database, protocol, args):
 
 def main(argv=None):
 
+    all_baselines = get_all_baselines()
+    all_databases = get_all_databases()
 
     args = docopt(__doc__, version='Run experiment')
     if args["--list"]:
@@ -109,7 +112,7 @@ def main(argv=None):
         print("====================================")
         print("Follow all the registered databases:")
         print("====================================")
-        for a in resources["databases"]:
+        for a in all_databases:
             print("  - %s"%(a))
         print("\n")
 
@@ -117,20 +120,20 @@ def main(argv=None):
         exit()
     
     if args["--databases"] == "all":
-        database = resources["databases"].keys()
+        database = all_databases.keys()
     else:
-        database = [args["--databases"]]
+        database = [all_databases[args["--databases"]]]
 
     if args["--baselines"] == "all":
-        baselines = resources["--baselines"].keys()
+        baselines = all_baselines.keys()
     else:
-        baselines = [args["--baselines"]]
+        baselines = [ all_baselines[ args["--baselines"] ] ]
 
     # Triggering training for each baseline/database/protocol
     for b in baselines:
         for d in database:
             if args["--protocol"] is None:
-                for p in resources["databases"][d]["protocols"]:
+                for p in all_databases[d.name].protocols:
                     train_cnn(baseline=b, database=d, protocol=p, args=args)
             else:
                 train_cnn(baseline=b, database=d, protocol=args["--protocol"], args=args)

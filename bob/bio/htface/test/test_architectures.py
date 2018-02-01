@@ -8,6 +8,7 @@ from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_
                                                       inception_resnet_v2_adapt_layers_1_2_head,\
                                                       inception_resnet_v2_adapt_layers_1_4_head,\
                                                       inception_resnet_v2_adapt_layers_1_5_head,\
+                                                      inception_resnet_v2_adapt_layers_1_6_head
 
 def test_inceptionv2_siamese():
 

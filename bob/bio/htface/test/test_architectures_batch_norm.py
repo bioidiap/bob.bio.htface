@@ -52,6 +52,52 @@ def test_inceptionv2_siamese():
         assert len(tf.global_variables()) == 0
 
 
+def test_inceptionv2_siamese_weights_shutdown():
+
+    
+    # Elements for checking
+    functions = [inception_resnet_v2_adapt_first_head,
+                 inception_resnet_v2_adapt_layers_1_2_head,
+                 inception_resnet_v2_adapt_layers_1_4_head,
+                 inception_resnet_v2_adapt_layers_1_5_head,
+                 inception_resnet_v2_adapt_layers_1_6_head]
+    
+    
+    n_trainable_variables = [1, 4, 5, 12, 12 + 6*10]
+    for function, n, in zip(functions, n_trainable_variables):    
+        input_left = tf.placeholder(tf.float32, shape=(1, 160, 160, 1))
+        input_right = tf.placeholder(tf.float32, shape=(1, 160, 160, 1))
+
+        left,_ = function(input_left,
+                          dropout_keep_prob=0.8,
+                          bottleneck_layer_size=128,
+                          reuse=None,
+                          scope='InceptionResnetV2',
+                          mode=tf.estimator.ModeKeys.TRAIN,
+                          trainable_variables=None,
+                          is_siamese=True,
+                          is_left = True,
+                          force_weights_shutdown=True)
+        
+        right,_ = function(input_right,
+                           dropout_keep_prob=0.8,
+                           bottleneck_layer_size=128,
+                           reuse=True,
+                           scope='InceptionResnetV2',
+                           mode=tf.estimator.ModeKeys.TRAIN,
+                           trainable_variables=None,
+                           is_siamese=True,
+                           is_left = False,
+                           force_weights_shutdown=True
+                           )
+        
+        assert len(tf.trainable_variables())==n
+                                                    
+        tf.reset_default_graph()
+        assert len(tf.global_variables()) == 0
+
+
+
 def test_inceptionv2_triplet():
 
     # Elements for checking

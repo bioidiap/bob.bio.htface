@@ -1,11 +1,9 @@
-from . import database
-from . import algorithm
-from . import extractor
-from . import preprocessor
-from . import architectures
-from . import configs
-from . import utils
-from . import baselines
+from adapt_first import *
+from adapt_1_2 import *
+from adapt_1_4 import *
+from adapt_1_5 import *
+from adapt_1_6 import *
+
 
 def get_config():
   """Returns a string containing the configuration information.
