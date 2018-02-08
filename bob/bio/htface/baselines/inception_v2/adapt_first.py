@@ -16,7 +16,7 @@ class SiameseAdaptFirstBatchNorm(Baseline):
     """
 
     def __init__(self):
-        self.baseline_type     = "cnn"
+        self.baseline_type     = "Siamese BN"
         self.name              = "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
@@ -37,9 +37,9 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
-        self.baseline_type     = "cnn"
+        self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv2_first_layer_betas_nonshared_batch_norm"
-        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_batch_norm.py")
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_betas_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
         self.reuse_extractor   = False        
 
@@ -51,7 +51,7 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
 class TripletAdaptFirstBatchNorm(Baseline):
 
     def __init__(self):
-        self.baseline_type     = "cnn"
+        self.baseline_type     = "Triplet BN"
         self.name              = "triplet_inceptionv2_first_layer_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/triplet_extractor_nonshared_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")

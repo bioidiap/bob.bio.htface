@@ -51,7 +51,7 @@ import os
 import bob.io.base
 from docopt import docopt
 from .baselines import write_protocol
-from bob.bio.htface.baselines import get_all_baselines, get_all_databases
+from bob.bio.htface.baselines import get_all_baselines, get_all_databases, get_all_baselines_by_type
 
 
 def train_cnn(baseline, database, protocol, args):
@@ -99,15 +99,18 @@ def main(argv=None):
 
     all_baselines = get_all_baselines()
     all_databases = get_all_databases()
+    all_baselines_by_type = get_all_baselines_by_type()
 
     args = docopt(__doc__, version='Run experiment')
     if args["--list"]:
         print("====================================")
         print("Follow all the registered baselines:")
         print("====================================")        
-        for a in all_baselines:
-            print("  - %s"%(a))
-        print("\n")
+        for a in all_baselines_by_type:
+            print("Baselines of the type: %s"%(a))
+            for b in all_baselines_by_type[a]:
+                print("  >> %s"%(b))
+            print("\n")
 
         print("====================================")
         print("Follow all the registered databases:")
@@ -115,8 +118,6 @@ def main(argv=None):
         for a in all_databases:
             print("  - %s"%(a))
         print("\n")
-
-
         exit()
     
     if args["--databases"] == "all":
@@ -133,7 +134,7 @@ def main(argv=None):
     for b in baselines:
         for d in database:
             if args["--protocol"] is None:
-                for p in all_databases[d.name].protocols:
+                for p in all_databases[d].protocols:
                     train_cnn(baseline=b, database=d, protocol=p, args=args)
             else:
                 train_cnn(baseline=b, database=d, protocol=args["--protocol"], args=args)

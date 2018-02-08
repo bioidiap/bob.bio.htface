@@ -39,21 +39,18 @@ from bob.extension.config import load
 import pkg_resources
 from docopt import docopt
 from bob.bio.base.script.verify import main as verify
+from bob.bio.htface.baselines import get_all_baselines, get_all_databases, get_all_baselines_by_type
 
 
 base_paths = pkg_resources.resource_filename("bob.bio.htface",
                                              "configs/base_paths.py")
 
-from .registered_baselines import all_baselines, resources
         
-#        '-g', 'demanding',
-
 def trigger_verify(preprocessor, extractor, database, groups, sub_directory, protocol=None,
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
     
     configs  = load([base_paths])
-
-    #    '-g', 'demanding',
+        
     
     parameters = [
         base_paths,
@@ -62,6 +59,8 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         preprocessor,
         extractor,
         '-a', "distance-cosine",
+        '-g', 'demanding',        
+        '-G','submitted_experiments.sql3',
         '-vvv',
         '--temp-directory', configs.temp_dir,
         '--result-directory', configs.results_dir,
@@ -98,81 +97,83 @@ def write_protocol(file_name, protocol):
     open(file_name, "w").write("protocol=\"%s\""%protocol)
     
 
-def run_cnn_baseline(baseline, databases=resources["databases"].keys(), reuse_extractor=False, protocol=None):
+def run_cnn_baseline(baseline, database, reuse_extractor=False, protocol=None):
     configs  = load([base_paths])
-        
-    for d in databases:        
-        first_protocol = resources["databases"][d]["protocols"][0]
-        first_subdir = os.path.join(d, resources[baseline]["name"], first_protocol)
-        
-        extracted_directory = None
-        if ("reuse_extractor" in resources[baseline] and
-           resources[baseline]["reuse_extractor"]):
+    
+    first_protocol = database.protocols[0]
+    first_subdir = os.path.join(database.name, baseline.name, first_protocol)
+    
+    extracted_directory = None
+    if baseline.reuse_extractor:
+        extracted_directory=os.path.join(configs.temp_dir, first_subdir, "extracted")
+    
+    # Iterate over the protocols
+    import tensorflow as tf
+    tf.reset_default_graph()
 
-            extracted_directory=os.path.join(configs.temp_dir, first_subdir, "extracted")
-        
-        # Iterate over the protocols
-        if protocol is None:
-            protocols = resources["databases"][d]["protocols"]
-        else:
-            protocols = [protocol]
-            
-        for p in protocols:
-        
-            import tensorflow as tf
-            tf.reset_default_graph()
+    sub_directory = os.path.join(database.name, baseline.name, protocol)
 
-            sub_directory = os.path.join(d, resources[baseline]["name"], p)
-
-            # Writing file to ship the protocol name to be chain loaded
-            protocol_config_file_name = os.path.join(configs.temp_dir, sub_directory,p + ".py")
-            bob.io.base.create_directories_safe(os.path.dirname(protocol_config_file_name))
-            write_protocol(protocol_config_file_name, p)
-            
-            parameters = trigger_verify(resources[baseline]["preprocessor"],
-                                        resources[baseline]["extractor"],
-                                        resources["databases"][d]["config"],
-                                        resources["databases"][d]["groups"],
-                                        sub_directory,
-                                        protocol=p,
-                                        preprocessed_directory=os.path.join(configs.temp_dir, first_subdir, "preprocessed"),
-                                        extracted_directory=extracted_directory,
-                                        random_config_file_name=protocol_config_file_name
-                                        )
-            verify(parameters)
+    # Writing file to ship the protocol name to be chain loaded
+    protocol_config_file_name = os.path.join(configs.temp_dir, sub_directory, protocol + ".py")
+    bob.io.base.create_directories_safe(os.path.dirname(protocol_config_file_name))
+    write_protocol(protocol_config_file_name, protocol)
+    parameters = trigger_verify(baseline.preprocessor,
+                                baseline.extractor,
+                                database.config,
+                                database.groups,
+                                sub_directory,
+                                protocol=protocol,
+                                preprocessed_directory=os.path.join(configs.temp_dir, first_subdir, "preprocessed"),
+                                extracted_directory=extracted_directory,
+                                random_config_file_name=protocol_config_file_name
+                                )
+    verify(parameters)
 
 
 def main():
+
+    all_baselines = get_all_baselines()
+    all_databases = get_all_databases()
+    all_baselines_by_type = get_all_baselines_by_type()
 
     args = docopt(__doc__, version='Run experiment')
     if args["--list"]:
         print("====================================")
         print("Follow all the registered baselines:")
         print("====================================")        
-        for a in all_baselines:
-            print("  - %s"%(a))
-        print("\n")
+        for a in all_baselines_by_type:
+            print("Baselines of the type: %s"%(a))
+            for b in all_baselines_by_type[a]:
+                print("  >> %s"%(b))
+            print("\n")
 
         print("====================================")
         print("Follow all the registered databases:")
         print("====================================")
-        for a in resources["databases"]:
+        for a in all_databases:
             print("  - %s"%(a))
         print("\n")
-
-
         exit()
-    
+
     if args["--databases"] == "all":
-        database = resources["databases"].keys()
+        database = all_databases.keys()
     else:
-        database = [args["--databases"]]
+        database = [all_databases[args["--databases"]]]
 
     if args["--baselines"] == "all":
-        for b in all_baselines:
-            run_cnn_baseline(baseline=b, database=database, protocol=args["--protocol"])
+        baselines = all_baselines.keys()
     else:
-        run_cnn_baseline(baseline=args["--baselines"], databases=database, protocol=args["--protocol"])
+        baselines = [ all_baselines[ args["--baselines"] ] ]
+
+
+    # Triggering training for each baseline/database/protocol
+    for b in baselines:
+        for d in database:
+            if args["--protocol"] is None:
+                for p in all_databases[d].protocols:
+                    run_cnn_baseline(baseline=b, database=all_databases[d], protocol=p)
+            else:
+                run_cnn_baseline(baseline=b, database=d, protocol=args["--protocol"])
 
 
 if __name__ == "__main__":

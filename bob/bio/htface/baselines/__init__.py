@@ -1,6 +1,7 @@
 from .baseline import Baseline
 from .databases import *
 from inception_v2 import *
+from standard_facerec import *
 
 def get_all_baselines():
 
@@ -8,6 +9,19 @@ def get_all_baselines():
     for baseline in Baseline.__subclasses__():
         b = baseline()
         baselines[b.name] = b
+        
+    return baselines
+
+def get_all_baselines_by_type():
+
+    baselines = dict()
+    for baseline in Baseline.__subclasses__():        
+        b = baseline()
+        
+        if b.baseline_type not in baselines:
+            baselines[b.baseline_type] = []
+
+        baselines[b.baseline_type].append(b.name)
         
     return baselines
 
