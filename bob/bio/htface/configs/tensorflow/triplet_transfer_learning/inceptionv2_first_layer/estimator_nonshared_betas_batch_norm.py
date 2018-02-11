@@ -13,7 +13,7 @@ from bob.bio.htface.dataset.triplet_htface import shuffle_data_and_labels_image_
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.estimators import TripletAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
-from bob.learn.tensorflow.loss import contrastive_loss
+from bob.learn.tensorflow.loss import triplet_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
@@ -101,7 +101,7 @@ estimator = TripletAdaptation(model_dir=model_dir,
                               optimizer=optimizer,
                               validation_batch_size=validation_batch_size,
                               config=run_config,
-                              loss_op=contrastive_loss,
+                              loss_op=triplet_loss,
                               extra_checkpoint=extra_checkpoint,
                               learning_rate_values=learning_rate_values,
                               learning_rate_boundaries=learning_rate_boundaries,
