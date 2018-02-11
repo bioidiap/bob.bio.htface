@@ -9,7 +9,7 @@ import os
 import tensorflow as tf
 #from tensorflow.python import debug as tf_debug
 
-from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
+from bob.bio.htface.dataset.triplet_htface import shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.estimators import TripletAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
