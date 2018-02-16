@@ -2,16 +2,41 @@
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
+"""
+This script runs CMC, DET plots and Recognition prints of groups of experiments.
+It's useful when an evaluation protocol is based of k-fold cross validation.
+
+
+Let's say you have executed 2 different experiments in a dataset whose protocol has five folds.
+The command bellow will search for the scores of every fold and average them accordingly
+
+Examples:
+
+  `bob_htface_evaluate_and_squash.py <experiment_1> [<experiment_2>] --legends experiment1 --legends experiment2`
+  
+
+Usage:
+  bob_htface_evaluate_and_squash.py  <experiment>... --legends=<arg>... [--title=<arg>] [--report-name=<arg>] [--colors=<arg>]... [--score-base-name=<arg>]
+  bob_htface_evaluate_and_squash.py -h | --help
+
+Options:
+  --legends=<arg>                Name of each experiment  
+  --colors=<arg>                 Colors of each plot
+  --report-name=<arg>            Name of the report [default: report_name.pdf]
+  --title=<arg>                  Title of the plot
+  --score-base-name=<arg>        Name of the score files [default: scores-dev]
+  -h --help                      Show this screen.
+"""
+
+from __future__ import absolute_import
+from __future__ import division
 from __future__ import print_function
 
-"""This script evaluates the given score files and computes EER, HTER.
-It also is able to plot CMC and ROC curves."""
-
-
 import bob.measure
-import argparse
-import numpy, math
+import numpy
+import math
 import os
+from docopt import docopt
 
 # matplotlib stuff
 
@@ -29,149 +54,7 @@ import bob.core
 logger = bob.core.log.setup("bob.bio.base")
 
 
-def command_line_arguments(command_line_parameters):
-  """Parse the program options"""
-  # set up command line parser
-  parser = argparse.ArgumentParser(description=__doc__,
-      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-  parser.add_argument('-d', '--dev-files', required=True, nargs='+', help = "A list of score files of the development set.")
-  parser.add_argument('-n', '--report-name', default="report", help = "The name of the report")
-  parser.add_argument('-r', '--roc', action='store_true', default=False, help="Add ROC in the report")
-  parser.add_argument('-e', '--det', action='store_true', default=False, help="Add DET in the report")
-  parser.add_argument('--rr', '--recognition-rate', action='store_true', default=False, help="Compute the recognition rate (Rank 1)")
-
-  parser.add_argument('-l', '--legends', nargs='+', help = "A list of legend strings used for ROC, CMC and DET plots; THE NUMBER OF PLOTS SHOULD BE MULTIPLE OF THE NUMBER OF LEGGENDS. IN THAT WAY, EACH SEGMENT WILL BE AVERAGED")
-  parser.add_argument('-i', '--linestyle', nargs='+', help = "A list of line styles for the ROC, CMC and DET plots; THE NUMBER OF PLOTS SHOULD BE MULTIPLE OF THE NUMBER OF LEGGENDS. IN THAT WAY, EACH SEGMENT WILL BE AVERAGED")  
-
-  parser.add_argument('-c', '--colors', nargs='+', help = "A list of line colors for the ROC, CMC and DET plots.")  
-  parser.add_argument('-t', '--title', type=str, default='', help = "Title of the plot")
-  parser.add_argument('-m', '--xmin', type=float, default=0, help = "Lower bound for the XAxis")
-  parser.add_argument('-a', '--xmax', type=float, default=100, help = "Upper bound for the XAxis")  
-
-  parser.add_argument('-F', '--legend-font-size', type=int, default=8, help = "Set the font size of the legends.")
-  parser.add_argument('-P', '--legend-position', type=int, help = "Set the font size of the legends.")
-  parser.add_argument('--parser', default = '4column', choices = ('4column', '5column'), help="The style of the resulting score files. The default fits to the usual output of score files.")
-
-  # add verbose option
-  bob.core.log.add_command_line_option(parser)
-
-  # parse arguments
-  args = parser.parse_args(command_line_parameters)
-
-  # set verbosity level
-  bob.core.log.set_verbosity_level(logger, args.verbose)
-  # some sanity checks:
-  # update legends when they are not specified on command line
-  if args.legends is None:
-    args.legends = [f.replace('_', '-') for f in args.dev_files]
-    logger.warn("Legends are not specified; using legends estimated from --dev-files: %s", args.legends)
-
-  # check that the legends have the same length as the dev-files
-  if (len(args.dev_files) % len(args.legends)) != 0:
-    logger.error("The number of --dev-files (%d) is not multiple of --legends (%d) ", len(args.dev_files), len(args.legends))
-
-  return args
-
-
-def _plot_roc(scores_input, colors, labels, title, linestyle=None, fontsize=18, position=None):
-
-  if position is None: position = 4
-  figure = pyplot.figure()
-
-
-  logger.info("Computing CAR curves on the development " )
-  fars = [math.pow(10., i * 0.25) for i in range(-16,0)] + [1.] 
-  frrs = [bob.measure.roc_for_far(scores[0], scores[1], fars) for scores in scores_input]
-  offset = 0
-  step   = int(len(scores_input)/len(labels))
-
-  params = {'legend.fontsize': int(fontsize)}
-  matplotlib.rcParams.update(params)
-
-
-  #For each group of labels
-  for i in range(len(labels)):
-    frrs_accumulator = numpy.zeros((step,frrs[0][0].shape[0]))
-    fars_accumulator = numpy.zeros((step,frrs[0][1].shape[0]))
-    for j in range(offset,offset+step):
-      frrs_accumulator[j-i*step,:] = frrs[j][0]
-      fars_accumulator[j-i*step,:] = frrs[j][1]
-
-    frr_average = numpy.mean(frrs_accumulator, axis=0)
-    far_average = numpy.mean(fars_accumulator, axis=0); far_std = numpy.std(fars_accumulator, axis=0)    
-
-    if(linestyle is not None):
-      pyplot.semilogx(frr_average*100, 100. - 100.0*far_average, lw=2, ms=10, mew=1.5, label=labels[i], color=colors[i], ls=linestyle[i].replace("\\",""))
-    else:
-      pyplot.semilogx(frr_average*100, 100. - 100.0*far_average, lw=2, ms=10, mew=1.5, label=labels[i], color=colors[i])
-    pyplot.errorbar(frr_average*100, 100. - 100.0*far_average, far_std*100, lw=0.5, ms=10, color=colors[i])    
-    offset += step
-
-  # finalize plot
-
-  pyplot.plot([0.1,0.1],[0,100], "--", color=(0.3,0.3,0.3))
-  pyplot.axis([frrs[0][0][0]*100,100,0,100])
-  pyplot.xticks((0.01, 0.1, 1, 10, 100), ('0.01', '0.1', '1', '10', '100'))
-  pyplot.xlabel('FAR (\%)')
-  pyplot.ylabel('CAR (\%)')
-  pyplot.grid(True, color=(0.6,0.6,0.6))
-  pyplot.legend(loc=position)
-
-  pyplot.title(title)
-
-  return figure
-
-
-def _plot_det(scores_input, colors, labels, title,linestyle=None, fontsize=18, position=None):
-
-  if position is None: position = 1
-  # open new page for current plot
-  figure = pyplot.figure(figsize=(8.2,8))
-  dets = [bob.measure.det(scores[0], scores[1], 1000) for scores in scores_input]
-  offset = 0
-  step   = int(len(scores_input)/len(labels))
-
-  #For each group of labels
-  for i in range(len(labels)):
-    frrs_accumulator = numpy.zeros((step,dets[0][0].shape[0]))
-    fars_accumulator = numpy.zeros((step,dets[0][1].shape[0]))
-
-    for j in range(offset,offset+step):
-      frrs_accumulator[j,:] = dets[j][0]
-      fars_accumulator[j,:] = dets[j][1]
-
-    frr_average = numpy.mean(frrs_accumulator, axis=0)
-    far_average = numpy.mean(fars_accumulator, axis=0); far_std = numpy.std(fars_accumulator, axis=0)
-
-    if(linestyle is not None):
-      pyplot.plot(frr_average, far_average, color=colors[i], lw=2, ms=10, mew=1.5, label=labels[i], ls=linestyle[i].replace("\\",""))
-    else:
-      pyplot.plot(frr_average, far_average, color=colors[i], lw=2, ms=10, mew=1.5, label=labels[i])
-
-    pyplot.errorbar(frr_average, far_average, far_std, lw=0.5, ms=10)
-    offset += step
-
-  # change axes accordingly
-
-  det_list = [0.0002, 0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 0.7, 0.9, 0.95]
-  ticks = [bob.measure.ppndf(d) for d in det_list]
-  labels = [("%.5f" % (d*100)).rstrip('0').rstrip('.') for d in det_list]
-  pyplot.xticks(ticks, labels)
-  pyplot.yticks(ticks, labels)
-  pyplot.axis((ticks[0], ticks[-1], ticks[0], ticks[-1]))
-
-
-  pyplot.xlabel('FAR (\%)')
-  pyplot.ylabel('FRR (\%)')
-  pyplot.legend(loc=position)
-  pyplot.title(title)
-
-  return figure
-
-
-def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=18, position=None, xmin=0, xmax=100):
-
+def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=None, xmin=0, xmax=100):
 
   if position is None: position = 4
 
@@ -247,68 +130,72 @@ def _compute_rr(cmcs, labels):
     offset += step
 
 
+def discover_scores(base_path, score_name="scores-dev", skip=["extracted", "preprocessed", "gridtk_logs"]):
+    """
+    Given a base path, get all the score files.
+    """
+    
+    files = os.listdir(base_path)
+    score_files = []
+    for f in files:
+
+        if f in skip:
+            continue
+
+        filename = os.path.join(base_path, f)
+        if os.path.isdir(filename):
+            score_files += discover_scores(filename, score_name)
+        
+        if f==score_name:
+            score_files += [filename]
+        
+    return score_files
+
+
 def main(command_line_parameters=None):
-  """Reads score files, computes error measures and plots curves."""
+    """Reads score files, computes error measures and plots curves."""
 
-  args = command_line_arguments(command_line_parameters)
+    args = docopt(__doc__, version='Run experiment')
 
-  # get some colors for plotting
-  #colors     = ['red','green','blue','cyan', 'magenta', 'yellow', 'black']  
-  colors      = args.colors  
-  if(len(args.dev_files)/10 > len(args.legends)):
-  #if(len(args.dev_files)/5 > len(args.legends)):
-    cmap = pyplot.cm.get_cmap(name='hsv')
-    colors = [cmap(i) for i in numpy.linspace(0, 1.0, len(args.dev_files)/len(args.legends)+1)]
 
-  #Creating a multipage PDF
-  pdf = PdfPages(args.report_name)
+    # check that the legends have the same length as the dev-files
+    if (len(args["<experiment>"]) % len(args["--legends"])) != 0:
+        logger.error("The number of experiments (%d) is not multiple of --legends (%d) ", len(args["<experiment>"]), len(args["--legends"]))
 
-  ################ PLOTING CMC ##############
-  logger.info("Loading CMC data on the development ")
-  cmc_parser = {'4column' : bob.measure.load.cmc_four_column, '5column' : bob.measure.load.cmc_five_column}[args.parser]
-  cmcs_dev = [cmc_parser(f) for f in args.dev_files]
-  logger.info("Plotting CMC curves")
-
-  try:
-    # create a separate figure for dev and eval
-    fig = _plot_cmc(cmcs_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position, args.xmin, args.xmax)
-    pdf.savefig(fig)    
-    #fig.savefig("xuxa.png")
-
-  except RuntimeError as e:
-    raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
-
-  ################ Computing recognition rate ##############
-  if args.rr:
-    _compute_rr(cmcs_dev, args.legends)
-
-  ################ PLOTING CMC ##############
-  if args.roc or args.det:
-    score_parser = {'4column' : bob.measure.load.split_four_column, '5column' : bob.measure.load.split_five_column}[args.parser]
-    # First, read the score files
-    logger.info("Loading %d score files of the development set", len(args.dev_files))
-    scores_dev = [score_parser(f) for f in args.dev_files]
-    ################ PLOTING ROC ##############
-    if args.roc:
-      logger.info("Plotting ROC curves ")
-      try:
+    
+    bob.core.log.set_verbosity_level(logger, 3)
+    dev_files = []
+    for e in args["<experiment>"]:
+        df = discover_scores(e, score_name=args["--score-base-name"])
+        dev_files += df
+        logger.info("{0} scores discovered in {1}".format(len(df), e))
+    
+    # RR
+    logger.info("Computing recognition rate")
+    cmcs_dev = [bob.measure.load.cmc_four_column(f) for f in dev_files]
+    _compute_rr(cmcs_dev, args["--legends"])
+    
+    # CMC
+    logger.info("Plotting CMC")
+    if len(args["--colors"]) ==0:
+        colors     = ['red','green','blue', 'black','cyan', 'magenta', 'yellow']
+    else:
+        if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
+            logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
+    
+    pdf = PdfPages(args["--report-name"])
+    try:
         # create a separate figure for dev and eval
-        pdf.savefig(_plot_roc(scores_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position))
-        #del frrs_dev
-      except RuntimeError as e:
-        raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
+        fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=None)
+        pdf.savefig(fig)    
+  
+    except RuntimeError as e:
+        raise RuntimeError("During plotting of CMC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
 
-    ################ PLOTING DET ##############
-    if args.det:
-      logger.info("Computing DET curves on the development ")
-      #dets_dev = [bob.measure.det(scores[0], scores[1], 1000) for scores in scores_dev]
-      logger.info("Plotting DET curves")
-      try:
-        # create a separate figure for dev and eval
-        pdf.savefig(_plot_det(scores_dev, colors, args.legends, args.title, args.linestyle, args.legend_font_size, args.legend_position))
-        #del dets_dev
-      except RuntimeError as e:
-        raise RuntimeError("During plotting of ROC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
+    pdf.close()
+    logger.info("Done !!!")
 
-  pdf.close()
+
+if __name__ == '__main__':
+    main()
 
