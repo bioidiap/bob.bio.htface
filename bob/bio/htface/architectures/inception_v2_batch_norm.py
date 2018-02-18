@@ -9,8 +9,6 @@ are shared and parts are not.
 """
 
 import tensorflow as tf
-from bob.learn.tensorflow.network.InceptionResnetV2 import block35, block17, block8
-from .utils import inception_resnet_v2_core
 import tensorflow.contrib.slim as slim
 
 # Base nets
