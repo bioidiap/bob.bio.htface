@@ -2,6 +2,7 @@ from .baseline import Baseline
 from .databases import *
 from inception_v2 import *
 from standard_facerec import *
+from sota_baselines import *
 
 def get_all_baselines():
 

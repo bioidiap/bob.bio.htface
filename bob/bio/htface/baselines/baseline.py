@@ -25,4 +25,5 @@ class Baseline(object):
         self.extractor = ""
         self.reuse_extractor = ""
         self.preprocessed_data = ""
+        self.algorithm = None
 

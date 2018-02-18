@@ -46,7 +46,7 @@ base_paths = pkg_resources.resource_filename("bob.bio.htface",
                                              "configs/base_paths.py")
 
         
-def trigger_verify(preprocessor, extractor, database, groups, sub_directory, protocol=None,
+def trigger_verify(preprocessor, extractor, database, groups, sub_directory, algorithm, protocol=None,
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
     
     configs  = load([base_paths])
@@ -58,8 +58,8 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, pro
         database,
         preprocessor,
         extractor,
-        '-a', "distance-cosine",
-        '-g', 'demanding',        
+        '-a', algorithm,
+        '-g', 'demanding',
         '-G','submitted_experiments.sql3',
         '-vvv',
         '--temp-directory', configs.temp_dir,
@@ -117,16 +117,24 @@ def run_cnn_baseline(baseline, database, reuse_extractor=False, protocol=None):
     protocol_config_file_name = os.path.join(configs.temp_dir, sub_directory, protocol + ".py")
     bob.io.base.create_directories_safe(os.path.dirname(protocol_config_file_name))
     write_protocol(protocol_config_file_name, protocol)
+    
+    if baseline.algorithm is None:
+        algorithm = "distance-cosine"
+    else:
+        algorithm = baseline.algorithm
+
     parameters = trigger_verify(baseline.preprocessor,
                                 baseline.extractor,
                                 database.config,
                                 database.groups,
                                 sub_directory,
+                                algorithm=algorithm,
                                 protocol=protocol,
                                 preprocessed_directory=os.path.join(configs.temp_dir, first_subdir, "preprocessed"),
                                 extracted_directory=extracted_directory,
                                 random_config_file_name=protocol_config_file_name
                                 )
+
     verify(parameters)
 
 
@@ -158,7 +166,7 @@ def main():
     if args["--databases"] == "all":
         database = all_databases.keys()
     else:
-        database = [all_databases[args["--databases"]]]
+        database = [args["--databases"]]
 
     if args["--baselines"] == "all":
         baselines = all_baselines.keys()
@@ -173,7 +181,7 @@ def main():
                 for p in all_databases[d].protocols:
                     run_cnn_baseline(baseline=b, database=all_databases[d], protocol=p)
             else:
-                run_cnn_baseline(baseline=b, database=d, protocol=args["--protocol"])
+                run_cnn_baseline(baseline=b, database=all_databases[d], protocol=args["--protocol"])
 
 
 if __name__ == "__main__":

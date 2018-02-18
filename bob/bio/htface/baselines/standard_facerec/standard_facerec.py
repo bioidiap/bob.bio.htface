@@ -23,3 +23,58 @@ class LightCNN(Baseline):
         self.estimator         = None
         self.preprocessed_data = None
 
+
+class LightCNNPolathermal(Baseline):
+    """
+    Light CNN Baseline with special preprocessor for polathermal DB
+    """
+
+    def __init__(self):
+        self.baseline_type     = "Standard FaceRec"
+        self.name              = "lightcnn_polathermal"
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_preprocessor_polathermal.py")
+
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+
+
+class Facenet(Baseline):
+    """
+    Facenet CNN Baseline
+    """
+
+    def __init__(self):
+        self.baseline_type     = "Standard FaceRec"
+        self.name              = "facenet"
+        self.nick_name         = self.name
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+
+
+class VGG16(Baseline):
+    """
+    VGG16 CNN Baseline
+    """
+
+    def __init__(self):
+        self.baseline_type     = "Standard FaceRec"
+        self.name              = "vgg16"
+        self.nick_name         = self.name
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_preprocessor.py")
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+
+
