@@ -118,17 +118,17 @@ def run_cnn_baseline(baseline, database, reuse_extractor=False, protocol=None):
     bob.io.base.create_directories_safe(os.path.dirname(protocol_config_file_name))
     write_protocol(protocol_config_file_name, protocol)
     
-    if baseline.algorithm is None:
-        algorithm = "distance-cosine"
-    else:
-        algorithm = baseline.algorithm
+    #if baseline.algorithm is None:
+    #    algorithm = "distance-cosine"
+    #else:
+    #    algorithm = baseline.algorithm
 
     parameters = trigger_verify(baseline.preprocessor,
                                 baseline.extractor,
                                 database.config,
                                 database.groups,
                                 sub_directory,
-                                algorithm=algorithm,
+                                algorithm=baseline.algorithm,
                                 protocol=protocol,
                                 preprocessed_directory=os.path.join(configs.temp_dir, first_subdir, "preprocessed"),
                                 extracted_directory=extracted_directory,

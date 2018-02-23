@@ -13,6 +13,8 @@ class LightCNN(Baseline):
     """
 
     def __init__(self):
+        super(LightCNN, self).__init__()
+
         self.baseline_type     = "Standard FaceRec"
         self.name              = "lightcnn"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_extractor.py")
@@ -30,6 +32,8 @@ class LightCNNPolathermal(Baseline):
     """
 
     def __init__(self):
+        super(LightCNNPolathermal, self).__init__()
+
         self.baseline_type     = "Standard FaceRec"
         self.name              = "lightcnn_polathermal"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_extractor.py")
@@ -48,6 +52,8 @@ class Facenet(Baseline):
     """
 
     def __init__(self):
+        super(Facenet, self).__init__()
+
         self.baseline_type     = "Standard FaceRec"
         self.name              = "facenet"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_extractor.py")
@@ -65,6 +71,8 @@ class VGG16(Baseline):
     """
 
     def __init__(self):
+        super(VGG16, self).__init__()
+
         self.baseline_type     = "Standard FaceRec"
         self.name              = "vgg16"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_extractor.py")
@@ -82,6 +90,8 @@ class Inceptionv1_gray(Baseline):
     """
 
     def __init__(self):
+        super(Inceptionv1_gray, self).__init__()
+
         self.baseline_type     = "Standard FaceRec"
         self.name              = "idiap_casia_inception_v1_gray"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v1_gray_extractor.py")

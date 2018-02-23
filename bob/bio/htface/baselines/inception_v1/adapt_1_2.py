@@ -15,7 +15,7 @@ class SiameseAdaptLayers1_2_BatchNorm(Baseline):
       - Adapt the 1-2 layers
     """
 
-    def __init__(self):
+    def __init__(self):                
         self.baseline_type     = "Siamese BN"
         self.name              = "siamese_inceptionv1_adapt_1_2_nonshared_batch_norm"
         self.extractor         =  None
