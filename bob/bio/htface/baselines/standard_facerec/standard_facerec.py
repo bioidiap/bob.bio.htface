@@ -50,7 +50,6 @@ class Facenet(Baseline):
     def __init__(self):
         self.baseline_type     = "Standard FaceRec"
         self.name              = "facenet"
-        self.nick_name         = self.name
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_extractor.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")
         self.reuse_extractor   = True
@@ -68,7 +67,6 @@ class VGG16(Baseline):
     def __init__(self):
         self.baseline_type     = "Standard FaceRec"
         self.name              = "vgg16"
-        self.nick_name         = self.name
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_extractor.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_preprocessor.py")
         self.reuse_extractor   = True
@@ -78,3 +76,18 @@ class VGG16(Baseline):
         self.preprocessed_data = None
 
 
+class Inceptionv1_gray(Baseline):
+    """
+    VGG16 CNN Baseline
+    """
+
+    def __init__(self):
+        self.baseline_type     = "Standard FaceRec"
+        self.name              = "idiap_casia_inception_v1_gray"
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v1_gray_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
