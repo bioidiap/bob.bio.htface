@@ -36,7 +36,7 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
-        self.baseline_type     = "Siamese BN"
+        self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv1_first_layer_betas_nonshared_batch_norm"
         self.extractor         = None
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py") # Same as v2
