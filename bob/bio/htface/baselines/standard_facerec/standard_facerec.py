@@ -95,7 +95,7 @@ class Inceptionv1_gray(Baseline):
         self.baseline_type     = "Standard FaceRec"
         self.name              = "idiap_casia_inception_v1_gray"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v1_gray_extractor.py")
-        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")
         self.reuse_extractor   = True
 
         # train cnn
