@@ -18,7 +18,7 @@ class SiameseAdaptLayers1_2_BatchNorm(Baseline):
     def __init__(self):
         self.baseline_type     = "Siamese BN"
         self.name              = "siamese_inceptionv1_adapt_1_2_nonshared_batch_norm"
-        self.extractor         =  None
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_2/extractor_nonshared_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
         self.reuse_extractor   = False        
 
