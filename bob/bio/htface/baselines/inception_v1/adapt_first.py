@@ -16,7 +16,7 @@ class SiameseAdaptFirstBatchNorm(Baseline):
     """
 
     def __init__(self):
-        super(Inceptionv1_gray, self).__init__()
+        super(SiameseAdaptFirstBatchNorm, self).__init__()
 
         self.baseline_type     = "Siamese BN"
         self.name              = "siamese_inceptionv1_first_layer_nonshared_batch_norm"
@@ -38,7 +38,7 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
-        super(Inceptionv1_gray, self).__init__()
+        super(SiameseAdaptFirstBatchNorm, self).__init__()
 
         self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv1_first_layer_betas_nonshared_batch_norm"
