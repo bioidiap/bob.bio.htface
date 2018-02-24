@@ -38,7 +38,7 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
-        super(SiameseAdaptFirstBatchNorm, self).__init__()
+        super(SiameseAdaptFirstBetasBatchNorm, self).__init__()
 
         self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv1_first_layer_betas_nonshared_batch_norm"
