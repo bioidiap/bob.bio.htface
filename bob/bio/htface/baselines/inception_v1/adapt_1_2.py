@@ -16,6 +16,8 @@ class SiameseAdaptLayers1_2_BatchNorm(Baseline):
     """
 
     def __init__(self):
+        super(SiameseAdaptLayers1_2_BatchNorm, self).__init__()
+
         self.baseline_type     = "Siamese BN"
         self.name              = "siamese_inceptionv1_adapt_1_2_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_2/extractor_nonshared_batch_norm.py")
@@ -36,6 +38,8 @@ class SiameseAdaptLayers1_2_BetasBatchNorm(Baseline):
     """
 
     def __init__(self):
+        super(SiameseAdaptLayers1_2_BetasBatchNorm, self).__init__()
+
         self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv1_adapt_1_2_betas_nonshared_batch_norm"
         self.extractor         = None
