@@ -43,5 +43,6 @@ inception_resnet_v2_casia_webface_gray = "/idiap/temp/tpereira/casia_webface/new
 inception_resnet_v2_casia_webface_gray_batch_norm = "/idiap/temp/tpereira/casia_webface/new_tf_format/official_checkpoints/inception_resnet_v2_gray/centerloss_alpha-0.90_factor-0.02/"
 
 
-
 inception_resnet_v1_casia_webface_gray_batch_norm = "/idiap/project/hface/models/official_checkpoints/casia_webface/inception_v1_batchnorm_gray/centerloss_alpha-0.90_factor-0.02/"
+
+inception_resnet_v2_casia_webface_rgb_batch_norm = "/idiap/project/hface/models/official_checkpoints/casia_webface/inception_v2_batchnorm_rgb/centerloss_alpha-0.90_factor-0.02/"

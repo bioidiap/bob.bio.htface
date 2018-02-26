@@ -15,6 +15,11 @@ from bob.learn.tensorflow.loss import triplet_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
+# Setting seed
+session_config, run_config,_,_,_ = reproducible.set_seed()
+run_config = run_config.replace(save_checkpoints_steps=500)
+
+
 # UPDATE YOUR NAMES HERE
 architecture = inception_resnet_v2_adapt_first_head
 model_name = "triplet_inceptionv2_first_layer_nonshared_batch_norm"
@@ -36,10 +41,6 @@ learning_rate_values=[0.1, 0.01, 0.001]
 # Let's do 75% with 0.1 - 15% with 0.01 and 10% with 0.001
 learning_rate_boundaries = get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs)
 
-
-
-run_config = tf.estimator.RunConfig()
-run_config = run_config.replace(save_checkpoints_steps=500)
 
 
 #INCEPTION V2 LAYER ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",

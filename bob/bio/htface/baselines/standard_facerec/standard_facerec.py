@@ -101,3 +101,22 @@ class Inceptionv1_gray(Baseline):
         # train cnn
         self.estimator         = None
         self.preprocessed_data = None
+
+        
+class Inceptionv2_rgb(Baseline):
+    """
+    VGG16 CNN Baseline
+    """
+
+    def __init__(self):
+        super(Inceptionv2_rgb, self).__init__()
+
+        self.baseline_type     = "Standard FaceRec"
+        self.name              = "idiap_casia_inception_v2_rgb"
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None        

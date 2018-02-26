@@ -18,7 +18,9 @@ from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
 # Setting seed
-reproducible.set_seed()
+session_config, run_config,_,_,_ = reproducible.set_seed()
+run_config = run_config.replace(save_checkpoints_steps=500)
+
 
 architecture = inception_resnet_v1_adapt_layers_1_5_head
 model_name = "siamese_inceptionv1_adapt_1_5_betas_nonshared_batch_norm"
@@ -38,9 +40,6 @@ learning_rate_values=[0.1, 0.01, 0.001]
 
 # Let's do 75% with 0.1 - 15% with 0.01 and 10% with 0.001
 learning_rate_boundaries = get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs)
-
-run_config = tf.estimator.RunConfig()
-run_config = run_config.replace(save_checkpoints_steps=500)
 
 
 

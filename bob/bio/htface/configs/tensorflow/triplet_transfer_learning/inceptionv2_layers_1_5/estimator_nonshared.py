@@ -15,6 +15,11 @@ from bob.learn.tensorflow.loss import triplet_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name
 
+# Setting seed
+session_config, run_config,_,_,_ = reproducible.set_seed()
+run_config = run_config.replace(save_checkpoints_steps=500)
+
+
 # UPDATE YOUR NAMES HERE
 architecture = inception_resnet_v2_adapt_layers_1_5_head
 model_name = "triplet_inceptionv2_layers_1_5_nonshared"
@@ -34,9 +39,6 @@ epochs = 200
 embedding_validation = True
 steps = 2000000
 
-
-run_config = tf.estimator.RunConfig()
-run_config = run_config.replace(save_checkpoints_steps=500)
 
 
 #INCEPTION V2 LAYER ["Conv2d_1a_3x3", "Conv2d_2a_3x3", "Conv2d_2b_3x3", "Conv2d_3b_1x1", "Conv2d_4a_3x3",
