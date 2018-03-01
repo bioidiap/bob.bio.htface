@@ -16,6 +16,8 @@ class SiameseAdaptFirstBatchNorm(Baseline):
     """
 
     def __init__(self):
+        super(SiameseAdaptFirstBatchNorm, self).__init__()
+    
         self.baseline_type     = "Siamese BN"
         self.name              = "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_batch_norm.py")
@@ -37,6 +39,8 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
+        super(SiameseAdaptFirstBetasBatchNorm, self).__init__()
+    
         self.baseline_type     = "Siamese BN adapt betas"
         self.name              = "siamese_inceptionv2_first_layer_betas_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/extractor_nonshared_betas_batch_norm.py")
@@ -51,6 +55,8 @@ class SiameseAdaptFirstBetasBatchNorm(Baseline):
 class TripletAdaptFirstBatchNorm(Baseline):
 
     def __init__(self):
+        super(TripletAdaptFirstBatchNorm, self).__init__()
+    
         self.baseline_type     = "Triplet BN"
         self.name              = "triplet_inceptionv2_first_layer_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/triplet_extractor_nonshared_batch_norm.py")
@@ -72,6 +78,8 @@ class TripletAdaptFirstBetasBatchNorm(Baseline):
     """
 
     def __init__(self):
+        super(TripletAdaptFirstBetasBatchNorm, self).__init__()
+    
         self.baseline_type     = "Triplet BN adapt betas"
         self.name              = "triplet_inceptionv2_first_layer_betas_nonshared_batch_norm"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_first_layer/triplet_extractor_nonshared_betas_batch_norm.py")

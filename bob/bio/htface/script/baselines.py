@@ -50,8 +50,6 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, alg
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
     
     configs  = load([base_paths])
-        
-    
     parameters = [
         base_paths,
         random_config_file_name,
@@ -59,7 +57,7 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, alg
         preprocessor,
         extractor,
         '-a', algorithm,
-        '-g', 'demanding',
+        '-g', 'demanding',        
         '-G','submitted_experiments.sql3',
         '-vvv',
         '--temp-directory', configs.temp_dir,

@@ -16,7 +16,7 @@ Examples:
   
 
 Usage:
-  bob_htface_evaluate_and_squash.py  <experiment>... --legends=<arg>... [--title=<arg>] [--report-name=<arg>] [--colors=<arg>]... [--score-base-name=<arg>]
+  bob_htface_evaluate_and_squash.py  <experiment>... --legends=<arg>... [--title=<arg>] [--report-name=<arg>] [--colors=<arg>]... [--score-base-name=<arg>] [--x-min=<arg>] [--special-linestyle]
   bob_htface_evaluate_and_squash.py -h | --help
 
 Options:
@@ -25,6 +25,8 @@ Options:
   --report-name=<arg>            Name of the report [default: report_name.pdf]
   --title=<arg>                  Title of the plot
   --score-base-name=<arg>        Name of the score files [default: scores-dev]
+  --x-min=<arg>                  Axis x-min [default: 0]
+  --special-linestyle            Use the special set of linestily. Such set will do the first plot dashed and the rest as solid lines
   -h --help                      Show this screen.
 """
 
@@ -65,8 +67,8 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   step   = int(len(cmcs)/len(labels))
   params = {'legend.fontsize': int(fontsize)}
   matplotlib.rcParams.update(params)
-  matplotlib.rc('xtick', labelsize=18)
-  matplotlib.rc('ytick', labelsize=18)
+  matplotlib.rc('xtick', labelsize=10)
+  matplotlib.rc('ytick', labelsize=10)
   matplotlib.rcParams.update({'font.size': 20})
 
   #For each group of labels
@@ -100,11 +102,11 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   # change axes accordingly
   ticks = [int(t) for t in pyplot.xticks()[0]]
   pyplot.xlabel('Rank')
-  pyplot.ylabel('Probability (\%)')
+  pyplot.ylabel('Identification rate (\%)')
   pyplot.xticks(ticks, [str(t) for t in ticks])
   #pyplot.axis([0, max_x, xmin, 100])
   pyplot.axis([0, max_x, xmin, xmax])  
-  pyplot.legend(loc=position)
+  pyplot.legend(loc=position, fontsize=12)
   pyplot.title(title)
   pyplot.grid(True)
 
@@ -157,6 +159,7 @@ def main(command_line_parameters=None):
 
     args = docopt(__doc__, version='Run experiment')
 
+    special_line_style = ["--", "-", "-", "-", "-", "-"]
 
     # check that the legends have the same length as the dev-files
     if (len(args["<experiment>"]) % len(args["--legends"])) != 0:
@@ -178,7 +181,7 @@ def main(command_line_parameters=None):
     # CMC
     logger.info("Plotting CMC")
     if len(args["--colors"]) ==0:
-        colors     = ['red','green','blue', 'black','cyan', 'magenta', 'yellow']
+        colors     = ['red','mediumseagreen','darkorange', 'dimgrey','darkcyan', 'royalblue']
     else:
         if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
             logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
@@ -186,7 +189,11 @@ def main(command_line_parameters=None):
     pdf = PdfPages(args["--report-name"])
     try:
         # create a separate figure for dev and eval
-        fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=None)
+        if args["--special-linestyle"]:
+            fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=special_line_style, xmin=int(args["--x-min"]))
+        else:
+            fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=None, xmin=int(args["--x-min"]))
+            
         pdf.savefig(fig)    
   
     except RuntimeError as e:
