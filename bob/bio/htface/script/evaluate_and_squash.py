@@ -69,7 +69,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   matplotlib.rcParams.update(params)
   matplotlib.rc('xtick', labelsize=10)
   matplotlib.rc('ytick', labelsize=10)
-  matplotlib.rcParams.update({'font.size': 20})
+  matplotlib.rcParams.update({'font.size': 16})
 
   #For each group of labels
   max_x   =  0 #Maximum CMC size
@@ -181,7 +181,7 @@ def main(command_line_parameters=None):
     # CMC
     logger.info("Plotting CMC")
     if len(args["--colors"]) ==0:
-        colors     = ['red','mediumseagreen','darkorange', 'dimgrey','darkcyan', 'royalblue']
+        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue']
     else:
         if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
             logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
