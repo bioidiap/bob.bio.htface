@@ -3,6 +3,7 @@ from .AugmentedDCTBlocks import AugmentedDCTBlocks
 from .TensorflowEmbedding import TensorflowEmbedding
 from .SiameseEmbedding import SiameseEmbedding
 from .TripletEmbedding import TripletEmbedding
+from .MLBPHS import MLBPHS
 
 
 # gets sphinx autodoc done right - don't remove it
