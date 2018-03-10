@@ -70,7 +70,7 @@ class TripletAdaptLayers1_5_BatchNorm(Baseline):
 class TripletAdaptLayers1_5_BetasBatchNorm(Baseline):
 
     def __init__(self):
-        super(TripletAdaptLayers1_5_BatchNorm, self).__init__()
+        super(TripletAdaptLayers1_5_BetasBatchNorm, self).__init__()
 
         self.baseline_type     = "Triplet BN adapt betas"
         self.name              = "triplet_inceptionv1_layers_1_5_betas_nonshared_batch_norm"
