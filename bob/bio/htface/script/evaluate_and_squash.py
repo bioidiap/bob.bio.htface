@@ -114,22 +114,24 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
 
 
 def _compute_rr(cmcs, labels):
-  offset = 0
-  step   = int(len(cmcs)/len(labels))
+    offset = 0
+    step   = int(len(cmcs)/len(labels))
 
-  #Computing the recognition rate for each score file
-  rr     = []   
-  for i in range(len(cmcs)):
-    rr.append(bob.measure.recognition_rate(cmcs[i]))
-    
-  average   = {}
-  std_value = {}
-  for i in range(len(labels)):
-    l = labels[i]
-    average   = round(numpy.mean(rr[offset : offset+step])*100,3)
-    std_value = round(numpy.std(rr[offset : offset+step])*100,3)
-    print("The AVERAGE Recognition Rate of the development set of '{0}' along '{1}' splits is {2}({3})".format(l, int(step), average, std_value))
-    offset += step
+    #Computing the recognition rate for each score file
+    rr     = []   
+    for i in range(len(cmcs)):
+        rr.append(bob.measure.recognition_rate(cmcs[i]))
+      
+    means   = []
+    for i in range(len(labels)):
+        l = labels[i]
+        average   = round(numpy.mean(rr[offset : offset+step])*100,3)
+        std_value = round(numpy.std(rr[offset : offset+step])*100,3)
+        print("The AVERAGE Recognition Rate of the development set of '{0}' along '{1}' splits is {2}({3})".format(l, int(step), average, std_value))
+        offset += step
+        means.append(average)
+
+    return means
 
 
 def discover_scores(base_path, score_name="scores-dev", skip=["extracted", "preprocessed", "gridtk_logs"]):

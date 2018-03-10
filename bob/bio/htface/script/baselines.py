@@ -48,8 +48,7 @@ base_paths = pkg_resources.resource_filename("bob.bio.htface",
         
 def trigger_verify(preprocessor, extractor, database, groups, sub_directory, algorithm, protocol=None,
                    preprocessed_directory=None, extracted_directory=None, random_config_file_name=None):
-    
-    #    '-g', 'demanding',        
+        
 
     configs  = load([base_paths])
     parameters = [
@@ -57,6 +56,7 @@ def trigger_verify(preprocessor, extractor, database, groups, sub_directory, alg
         random_config_file_name,
         database,
         extractor,
+        '-g', 'demanding',
         '-p', preprocessor,
         '-a', algorithm,
         '-G','submitted_experiments.sql3',

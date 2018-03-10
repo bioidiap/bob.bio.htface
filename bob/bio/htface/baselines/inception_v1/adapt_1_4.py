@@ -49,3 +49,46 @@ class SiameseAdaptLayers1_4_BetasBatchNorm(Baseline):
         # train cnn
         self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v1_adapt_layers_1_4/estimator_nonshared_betas_batch_norm.py")
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/") # Same as v2
+        
+        
+class TripletAdaptLayers1_4_BatchNorm(Baseline):
+
+    def __init__(self):
+        super(TripletAdaptLayers1_4_BatchNorm, self).__init__()
+    
+        self.baseline_type     = "Triplet BN"
+        self.name              = "triplet_inceptionv1_layers_1_4_nonshared_batch_norm"
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_4/triplet_extractor_nonshared_batch_norm.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+        self.reuse_extractor   = False        
+
+        # train cnn
+        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv1_layers_1_4/estimator_nonshared_batch_norm.py")
+        self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+        
+        
+class TripletAdaptLayers1_4_BetasBatchNorm(Baseline):
+    """
+    This baseline has the following features:
+      - The prior uses batch norm in all layers
+      - Siamese net
+      - Adapt the first layer only
+      - ADAPT ONLY THE BETAS
+    """
+
+    def __init__(self):
+        super(TripletAdaptLayers1_4_BetasBatchNorm, self).__init__()
+            
+        self.baseline_type     = "Triplet BN adapt betas"
+        self.name              = "triplet_inceptionv1_layers_1_4_betas_nonshared_batch_norm"
+        self.extractor         = None
+        
+        
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
+        self.reuse_extractor   = False
+
+        # train cnn
+        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv1_layers_1_4/estimator_nonshared_betas_batch_norm.py")
+        self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")        
+        
+

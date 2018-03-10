@@ -3,17 +3,17 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures.inception_v1_batch_norm import inception_resnet_v1_adapt_layers_1_5_head
+from bob.bio.htface.architectures.inception_v1_batch_norm import inception_resnet_v1_adapt_layers_1_6_head
 
 import os
 import tensorflow as tf
 #from tensorflow.python import debug as tf_debug
 
-from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
+from bob.bio.htface.dataset.triplet_htface import shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils import reproducible
-from bob.bio.htface.estimators import SiameseAdaptation
+from bob.bio.htface.estimators import   TripletAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
-from bob.learn.tensorflow.loss import contrastive_loss
+from bob.learn.tensorflow.loss import triplet_loss
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 
@@ -21,8 +21,9 @@ from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rat
 session_config, run_config,_,_,_ = reproducible.set_seed()
 run_config = run_config.replace(save_checkpoints_steps=500)
 
-architecture = inception_resnet_v1_adapt_layers_1_5_head
-model_name = "siamese_inceptionv1_adapt_1_5_nonshared_batch_norm"
+
+architecture = inception_resnet_v1_adapt_layers_1_6_head
+model_name = "triplet_inceptionv1_layers_1_6_nonshared_batch_norm"
 
 # Training setup
 data_shape = (160, 160, 1)  # size of atnt images
@@ -43,21 +44,20 @@ learning_rate_boundaries = get_stair_case_learning_rates(samples_per_epoch, batc
 
 # Preparing the checkpoint loading
 left_scope = dict()
-left_scope['InceptionResnetV1/Conv2d_1a_3x3/'] = "InceptionResnetV1/Conv2d_1a_3x3_left/"
-left_scope['InceptionResnetV1/Conv2d_2a_3x3/'] = "InceptionResnetV1/Conv2d_2a_3x3_left/"
-left_scope['InceptionResnetV1/Conv2d_2b_3x3/'] = "InceptionResnetV1/Conv2d_2b_3x3_left/"
-left_scope['InceptionResnetV1/Conv2d_3b_1x1/'] = "InceptionResnetV1/Conv2d_3b_1x1_left/"
-left_scope['InceptionResnetV1/Conv2d_4a_3x3/'] = "InceptionResnetV1/Conv2d_4a_3x3_left/"
-left_scope['InceptionResnetV1/Conv2d_4b_3x3/'] = "InceptionResnetV1/Conv2d_4b_3x3_left/"
+left_scope['InceptionResnetV1/Conv2d_1a_3x3/'] = "InceptionResnetV1/Conv2d_1a_3x3_anchor/"
+left_scope['InceptionResnetV1/Conv2d_2a_3x3/'] = "InceptionResnetV1/Conv2d_2a_3x3_anchor/"
+left_scope['InceptionResnetV1/Conv2d_2b_3x3/'] = "InceptionResnetV1/Conv2d_2b_3x3_anchor/"
+left_scope['InceptionResnetV1/Conv2d_3b_1x1/'] = "InceptionResnetV1/Conv2d_3b_1x1_anchor/"
+left_scope['InceptionResnetV1/Conv2d_4a_3x3/'] = "InceptionResnetV1/Conv2d_4a_3x3_anchor/"
+left_scope['InceptionResnetV1/Conv2d_4b_3x3/'] = "InceptionResnetV1/Conv2d_4b_3x3_anchor/"
 
 #### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
 for i in range(1, 6):
-    left_scope['InceptionResnetV1/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV1/block35_{0}_left/".format(i)
+    left_scope['InceptionResnetV1/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV1/block35_{0}_anchor/".format(i)
 
 #left_scope['InceptionResnetV1/Repeat/']        = "InceptionResnetV1/block35_left/" # TF-SLIM ADD the prefix repeat unde each repeat
+left_scope['InceptionResnetV1/Mixed_6a/'] = "InceptionResnetV1/Mixed_6a_anchor/" # TF-SLIM ADD the prefix repeat unde each repeat
 
-
-left_scope['InceptionResnetV1/Mixed_6a/'] = "InceptionResnetV1/Mixed_6a/" # TF-SLIM ADD the prefix repeat unde each repeat
 left_scope['InceptionResnetV1/Repeat_1/'] = "InceptionResnetV1/block17/" # TF-SLIM ADD the prefix repeat unde each repeat    
 left_scope['InceptionResnetV1/Mixed_7a/'] = "InceptionResnetV1/Mixed_7a/"
 left_scope['InceptionResnetV1/Repeat_2/'] = "InceptionResnetV1/block8/" # TF-SLIM ADD the prefix repeat unde each repeat    
@@ -66,16 +66,20 @@ left_scope['InceptionResnetV1/Logits/'] = "InceptionResnetV1/Logits/"
 left_scope['InceptionResnetV1/Bottleneck/'] = "InceptionResnetV1/Bottleneck/"
 
 right_scope = dict()
-right_scope['InceptionResnetV1/Conv2d_1a_3x3/'] = "InceptionResnetV1/Conv2d_1a_3x3_right/"
-right_scope['InceptionResnetV1/Conv2d_2a_3x3/'] = "InceptionResnetV1/Conv2d_2a_3x3_right/"
-right_scope['InceptionResnetV1/Conv2d_2b_3x3/'] = "InceptionResnetV1/Conv2d_2b_3x3_right/"
-right_scope['InceptionResnetV1/Conv2d_3b_1x1/'] = "InceptionResnetV1/Conv2d_3b_1x1_right/"
-right_scope['InceptionResnetV1/Conv2d_4a_3x3/'] = "InceptionResnetV1/Conv2d_4a_3x3_right/"
-right_scope['InceptionResnetV1/Conv2d_4b_3x3/'] = "InceptionResnetV1/Conv2d_4b_3x3_right/"
+right_scope['InceptionResnetV1/Conv2d_1a_3x3/'] = "InceptionResnetV1/Conv2d_1a_3x3_positive-negative/"
+right_scope['InceptionResnetV1/Conv2d_2a_3x3/'] = "InceptionResnetV1/Conv2d_2a_3x3_positive-negative/"
+right_scope['InceptionResnetV1/Conv2d_2b_3x3/'] = "InceptionResnetV1/Conv2d_2b_3x3_positive-negative/"
+right_scope['InceptionResnetV1/Conv2d_3b_1x1/'] = "InceptionResnetV1/Conv2d_3b_1x1_positive-negative/"
+right_scope['InceptionResnetV1/Conv2d_4a_3x3/'] = "InceptionResnetV1/Conv2d_4a_3x3_positive-negative/"
+right_scope['InceptionResnetV1/Conv2d_4b_3x3/'] = "InceptionResnetV1/Conv2d_4b_3x3_positive-negative/"
 
 #### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
 for i in range(1, 6):
-    right_scope['InceptionResnetV1/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV1/block35_{0}_right/".format(i)
+    right_scope['InceptionResnetV1/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV1/block35_{0}_positive-negative/".format(i)
+
+
+right_scope['InceptionResnetV1/Mixed_6a/'] = "InceptionResnetV1/Mixed_6a_positive-negative/" # TF-SLIM ADD the prefix repeat unde each repeat
+
 
 # Preparing the prior
 extra_checkpoint = {"checkpoint_path": inception_resnet_v1_casia_webface_gray_batch_norm, 
@@ -100,12 +104,12 @@ def train_input_fn():
 
 # Defining our estimator
 optimizer = tf.train.AdagradOptimizer
-estimator = SiameseAdaptation(model_dir=model_dir,
+estimator = TripletAdaptation(model_dir=model_dir,
                               architecture=architecture,
                               optimizer=optimizer,
                               validation_batch_size=validation_batch_size,
                               config=run_config,
-                              loss_op=contrastive_loss,
+                              loss_op=triplet_loss,
                               extra_checkpoint=extra_checkpoint,
                               learning_rate_values=learning_rate_values,
                               learning_rate_boundaries=learning_rate_boundaries,
