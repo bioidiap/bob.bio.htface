@@ -11,7 +11,7 @@ CROPPED_IMAGE_WIDTH = 128
 #RIGHT_EYE_POS = (32, 44)
 #LEFT_EYE_POS = (32, 84)
 RIGHT_EYE_POS = (35, 35)
-LEFT_EYE_POS = (35, 67)
+LEFT_EYE_POS = (35, 75)
 
 
 # Detects the face and crops it without eye detection
