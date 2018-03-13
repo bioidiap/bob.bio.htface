@@ -118,7 +118,8 @@ setup(
             'bob_htface_evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main',
             'bob_htface_baselines.py = bob.bio.htface.script.baselines:main',
             'bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main',
-            'bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main',            
+            'bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main',
+            'bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main',
         ],
 
     },

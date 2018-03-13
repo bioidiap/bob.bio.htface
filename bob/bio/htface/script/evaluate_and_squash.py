@@ -150,7 +150,8 @@ def discover_scores(base_path, score_name="scores-dev", skip=["extracted", "prep
         if os.path.isdir(filename):
             score_files += discover_scores(filename, score_name)
         
-        if f==score_name:
+        #if f==score_name:
+        if f in ["scores-dev", "scores-eval"]:
             score_files += [filename]
         
     return score_files
