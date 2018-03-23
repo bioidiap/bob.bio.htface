@@ -81,7 +81,8 @@ class TripletAdaptFirstBetasBatchNorm(Baseline):
     
         self.baseline_type     = "Triplet BN adapt betas"
         self.name              = "triplet_inceptionv1_first_layer_betas_nonshared_batch_norm"
-        self.extractor         = None
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_first_layer/triplet_extractor_nonshared_betas_batch_norm.py")
+                
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
         self.reuse_extractor   = False
 

@@ -16,6 +16,10 @@ polathermal = {"data_path": "/idiap/project/hface/databases/polimetric_thermal_d
                "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/pola_thermal/idiap_casia_inception_v2_gray/VIS-polarimetric-overall-split1/preprocessed/",
                "extension": ".png"}
 
+thermal = {"data_path": "/idiap/project/hface/databases/polimetric_thermal_database/Registered",
+          "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/thermal/idiap_casia_inception_v2_gray_batch_norm/VIS-thermal-overall-split1/preprocessed/",
+          "extension": ".png"}
+
 nivl = {"data_path": "/idiap/resource/database/nivl/nivl-dataset-v1.0",
         "inception_resnet_v2_path":"/idiap/temp/tpereira/HTFace/nivl/idiap_casia_inception_v2_gray/idiap-search_VIS-NIR_split1/preprocessed/",
         "extension": ".png"}

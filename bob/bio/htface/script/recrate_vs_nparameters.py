@@ -139,7 +139,7 @@ def compute_trainable_variables(base_architecture):
                            is_siamese=True,
                            is_left = False,
                            force_weights_shutdown=update_bias)
-        n_parameters.append(sum([numpy.sum(v.get_shape().as_list()) for v in tf.trainable_variables()]))
+        n_parameters.append(sum([numpy.prod(v.get_shape().as_list()) for v in tf.trainable_variables()]))
         tf.reset_default_graph()
     return n_parameters
 
@@ -186,18 +186,19 @@ def main(command_line_parameters=None):
     ax2 = ax1.twinx()
     for baseline, linestyle in zip(args["--base-system"], linestyles):
         n_parameters[baseline].insert(0,0)
-        ax2.plot(range(6), n_parameters[baseline], 'darkred', marker=".", linestyle=linestyle, linewidth=1.5)
+        ax2.plot(range(6), n_parameters[baseline], 'darkred', marker=".", linestyle="--", linewidth=1.5, label="\#Parameters")
         print("#Parameters per model: {0}".format(n_parameters[baseline]))
     
 
     ax1.tick_params('y', colors='royalblue')
     #ax1.set_ylim(50, 100)
-    ax1.set_ylabel('Average CMC(r=1)', color='royalblue')
+    ax1.set_ylabel('Identification rate (\%)', color='royalblue')
     ax1.set_xlabel('Adaptation model')
     ax1.legend(loc=2)
         
     ax2.tick_params('y', colors='darkred')
     ax2.set_ylabel('\#Parameters', color='darkred')
+    ax2.legend(loc=1)
     #ax2.set_ylim(0, 5000)
     pyplot.xticks(range(6), [str(t) for t in xticks])
     pyplot.title(args["--title"])

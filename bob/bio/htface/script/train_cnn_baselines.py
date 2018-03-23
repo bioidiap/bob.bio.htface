@@ -58,7 +58,7 @@ def train_cnn(baseline, database, protocol, args):
     """
     Trains the CNN given
     """
-    
+
     # 1 - Paths config file for the chain loading
     config_base_path = pkg_resources.resource_filename("bob.bio.htface",
                                                  "configs/base_paths.py")
@@ -77,10 +77,9 @@ def train_cnn(baseline, database, protocol, args):
     
     # 5 - Estimator
     config_estimator = baseline.estimator
-
     config = read_config_file([config_base_path, config_preprocessing, config_protocol_file_name,
                                 config_database, config_estimator])
-    
+
     hooks = getattr(config, 'hooks', None)
     
     # Sets-up logging

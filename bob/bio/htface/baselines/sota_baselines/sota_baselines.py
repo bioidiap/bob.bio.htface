@@ -39,8 +39,6 @@ class MLBPHS(Baseline):
     
     """
 
-
-
     def __init__(self):
         super(MLBPHS, self).__init__()
 
@@ -48,11 +46,36 @@ class MLBPHS(Baseline):
         self.name              = "mlbphs-r1357"
         self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_extractor.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_preprocessor.py")
-        self.algorithm         = "distance-euclidean"
+        self.algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_algorithm.py")
 
         self.reuse_extractor   = True
 
         # train cnn
         self.estimator         = None
         self.preprocessed_data = None
+
+
+class GFKGabor(Baseline):
+    """
+    Baseline from:
+    
+    MLBP
+    
+    """
+
+    def __init__(self):
+        super(GFKGabor, self).__init__()
+
+        self.baseline_type     = "SOTA baselines"
+        self.name              = "gfk_gabor"
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_extractor.py")
+        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_preprocessor.py")
+        self.algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_algorithm.py")
+
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+
 

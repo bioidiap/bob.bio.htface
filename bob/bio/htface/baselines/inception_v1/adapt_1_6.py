@@ -20,7 +20,7 @@ class SiameseAdaptLayers1_6_BatchNorm(Baseline):
     
         self.baseline_type     = "Siamese BN"
         self.name              = "siamese_inceptionv1_adapt_1_6_nonshared_batch_norm"
-        self.extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_6/extractor_nonshared_batch_norm.py")
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_6/extractor_nonshared_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
         self.reuse_extractor   = False        
 
@@ -74,7 +74,7 @@ class TripletAdaptLayers1_6_BetasBatchNorm(Baseline):
 
         self.baseline_type     = "Triplet BN adapt betas"
         self.name              = "triplet_inceptionv1_layers_1_6_betas_nonshared_batch_norm"
-        self.extractor         = None
+        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_6/triplet_extractor_nonshared_betas_batch_norm.py")
         self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")
         self.reuse_extractor   = False
 

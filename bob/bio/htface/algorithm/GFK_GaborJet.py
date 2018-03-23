@@ -11,7 +11,6 @@ import logging
 
 logger = logging.getLogger("bob.bio.htface")
 
-from .HTAlgorithm import HTAlgorithm
 from bob.learn.linear import GFKMachine, GFKTrainer
 from .GFK import GFK
 from bob.bio.face.algorithm import GaborJet
@@ -39,7 +38,6 @@ class GFK_GaborJet(GFK, GaborJet):
             kernel_per_jet=True,
             **kwargs  # parameters directly sent to the base class
     ):
-
         # For the time being, default parameters are fine
         GaborJet.__init__(self,
                           # parameters for the tool
@@ -141,16 +139,15 @@ class GFK_GaborJet(GFK, GaborJet):
 
             return jets_abs
 
-    def train_projector(self, training_features, projector_file):
+    def train_projector(self, training_features, projector_file, metadata=None):
         """Compute the kernel using the jets.abs"""
-
         gfk_trainer = GFKTrainer(self.m_number_of_subspaces,
                                  subspace_dim_source=self.m_source_subspace_dimension,
                                  subspace_dim_target=self.m_target_subspace_dimension,
                                  eps=self.eps)
 
-        source_jets = training_features[0]
-        target_jets = training_features[1]
+        source_jets, target_jets = self.split_data_by_modality(training_features, metadata, self.split_training_features_by_client)
+        #self.split_training_features_by_client
         # Creating a kernel per jet
         if self.kernel_per_jet:
 
@@ -174,7 +171,7 @@ class GFK_GaborJet(GFK, GaborJet):
                     
                     node_name = "node{0}".format(k)
                     logger.info("    -> Training node {0} ".format(node_name))
-                    
+                                                
                     # Stacking the absolute values per client and per node
                     source_client_jets = [c[k] for c in source_jets_abs]
                     target_client_jets = [c[k] for c in target_jets_abs]
@@ -184,7 +181,7 @@ class GFK_GaborJet(GFK, GaborJet):
 
                     logger.info("      -> Training PCA+LDA for the target ")
                     Pt = self.train_pca_lda(target_client_jets)
-                
+                                
                     logger.info("      -> Training GFK ")
                     G = gfk_trainer._train_gfk(numpy.hstack((Ps.weights, null_space(Ps.weights.T))),Pt.weights[:, 0:self.m_target_subspace_dimension])
                     machine = GFKMachine()
@@ -203,6 +200,7 @@ class GFK_GaborJet(GFK, GaborJet):
                 # Computing a kernel per node
                 hdf5 = bob.io.base.HDF5File(projector_file, 'w')
                 gfk_machine = []
+                
                 for k in source_jets_abs.keys():
                     node_name = "node{0}".format(k)
                     logger.info("  -> Training {0}".format(node_name))
@@ -279,7 +277,7 @@ class GFK_GaborJet(GFK, GaborJet):
         data = numpy.vstack([feature for feature in client_data]) # Stacking the features
         mu = numpy.average(data, axis=0)
         std = numpy.std(data, axis=0)
-
+        
         # Train PCA
         pca_trainer = bob.learn.linear.PCATrainer()
         pca_machine,_ = pca_trainer.train(data)
@@ -291,6 +289,7 @@ class GFK_GaborJet(GFK, GaborJet):
 
     def load_projector(self, projector_file):
         """Reads the1 PCA projection matrix from file"""
+                
         # read PCA projector
         hdf5 = bob.io.base.HDF5File(projector_file, 'r')
 
@@ -308,6 +307,7 @@ class GFK_GaborJet(GFK, GaborJet):
         else:
             hdf5 = bob.io.base.HDF5File(projector_file)
             self.gfk_machine = GFKMachine(hdf5)
+            
 
     def project(self, feature):
         """Projects the data using the stored covariance matrix"""
@@ -360,7 +360,6 @@ class GFK_GaborJet(GFK, GaborJet):
 
         model_file : str or :py:class:`bob.io.base.HDF5File`
           The name of the file or the file opened for reading.
-
         **Returns:**
 
         model : [[:py:class:`bob.ip.gabor.Jet`]]

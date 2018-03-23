@@ -67,4 +67,13 @@ class Polathermal(Databases):
                          "VIS-polarimetric-overall-split4", "VIS-polarimetric-overall-split5"]
         self.groups    = ["dev"]
     
+    
+class Thermal(Databases):
+
+    def __init__(self):
+        self.name      = "thermal"
+        self.config    = pkg_resources.resource_filename("bob.bio.htface", "configs/databases/thermal.py")
+        self.protocols = ["VIS-thermal-overall-split1", "VIS-thermal-overall-split2", "VIS-thermal-overall-split3",
+                         "VIS-thermal-overall-split4", "VIS-thermal-overall-split5"]
+        self.groups    = ["dev"]    
 
