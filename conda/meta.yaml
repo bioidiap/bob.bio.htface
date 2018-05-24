@@ -1,0 +1,80 @@
+{% set name = 'bob.bio.htface' %}
+{% set project_dir = environ.get('RECIPE_DIR') + '/..' %}
+
+package:
+  name: {{ name }}
+  version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
+
+build:
+  skip: true  # [not linux]
+  entry_points:
+    - bob_htface_gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main
+    - bob_htface_plot_covariate_shift.py = bob.bio.htface.script.plot_covariate_shift:main
+    - bob_htface_grassmann_test.py = bob.bio.htface.script.grassmann_test:main
+    - bob_htface_plot_tsne_modality.py = bob.bio.htface.script.plot_tsne_modality:main
+    - bob_htface_evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main
+    - bob_htface_baselines.py = bob.bio.htface.script.baselines:main
+    - bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main
+    - bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main
+    - bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main
+    - bob_htface_recrate_vs_nparameters_by_hand.py = bob.bio.htface.script.recrate_vs_nparameters_by_hand:main
+    - bob_htface_plot_tsne_modality_database.py = bob.bio.htface.script.plot_tsne_modality_database:main
+  number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
+  run_exports:
+    - {{ pin_subpackage(name) }}
+  script:
+    - cd {{ project_dir }}
+    {% if environ.get('BUILD_EGG') %}
+    - python setup.py sdist --formats=zip
+    {% endif %}
+    - python setup.py install --single-version-externally-managed --record record.txt
+
+requirements:
+  host:
+    - python {{ python }}
+    - setuptools {{ setuptools }}
+    - bob.bio.base
+    - bob.bio.caffe_face
+    - bob.bio.face
+    - bob.bio.gmm
+    - bob.ip.tensorflow_extractor
+    - bob.bio.face_ongoing
+    - bob.db.cuhk_cufs
+    - bob.db.cuhk_cufsf
+    - bob.db.pola_thermal
+    - bob.db.nivl
+    - bob.db.cbsr_nir_vis_2
+    - bob.learn.tensorflow
+  run:
+    - python
+    - setuptools
+    - matplotlib
+    - six
+    - wheel
+    - tensorflow
+    - scikit-learn
+    - numpy
+      
+test:
+  imports:
+    - {{ name }}
+  commands:
+    - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
+    - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
+    - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
+    - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
+    - conda inspect objects -p $PREFIX {{ name }}  # [osx]
+  requires:
+    - bob-devel {{ bob_devel }}.*
+    - nose
+    - coverage
+    - sphinx
+    - sphinx_rtd_theme
+    - gridtk
+
+about:
+  home: https://www.idiap.ch/software/bob/
+  license: BSD License
+  summary: Tools for running face recognition experiments
+  license_family: BSD
+
