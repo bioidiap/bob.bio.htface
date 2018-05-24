@@ -90,7 +90,7 @@ sub_directories['siamese-nobias-resnetv2'] = ["idiap_casia_inception_v2_gray",
                                             "idiap_casia_inception_v2_gray_adapt_first_layer_nonshared_batch_norm",
                                             "inception_resnet_v2_adapt_layers_1_2_nonshared_batch_norm",
                                             "inception_resnet_v2_adapt_layers_1_4_nonshared_batch_norm",
-                                            "isv-512g-u50",
+                                            "inception_resnet_v2_adapt_layers_1_5_nonshared_batch_norm",
                                             "inception_resnet_v2_adapt_layers_1_6_nonshared_batch_norm"]
 
 

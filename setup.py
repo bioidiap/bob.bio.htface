@@ -102,11 +102,12 @@ setup(
     entry_points={
 
         'bob.bio.database': [
-            'cuhk-cufs    = bob.bio.htface.config.database.cuhk_cufs:database',
-            'cuhk-cufsf   = bob.bio.htface.config.database.cuhk_cufsf:database',
-            'nivl         = bob.bio.htface.config.database.nivl:database',
-            'pola_thermal = bob.bio.htface.config.database.pola_thermal:database',
-            'cbsr_nir_vis_2 = bob.bio.htface.config.database.cbsr_nir_vis_2:database'
+            'cuhk-cufs    = bob.bio.htface.configs.databases.cuhk_cufs:database',
+            'cuhk-cufsf   = bob.bio.htface.configs.databases.cuhk_cufsf:database',
+            'nivl         = bob.bio.htface.configs.databases.nivl:database',
+            'pola_thermal = bob.bio.htface.configs.databases.pola_thermal:database',
+            'thermal = bob.bio.htface.configs.databases.thermal:database',
+            'cbsr_nir_vis_2 = bob.bio.htface.configs.databases.cbsr_nir_vis_2s:database'
         ],
         
         'console_scripts' : [
@@ -120,6 +121,10 @@ setup(
             'bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main',
             'bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main',
             'bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main',
+            
+            'bob_htface_recrate_vs_nparameters_by_hand.py = bob.bio.htface.script.recrate_vs_nparameters_by_hand:main',
+
+            'bob_htface_plot_tsne_modality_database.py = bob.bio.htface.script.plot_tsne_modality_database:main',
         ],
 
     },
