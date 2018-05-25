@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 
-from bob.bio.htface.baselines import Baseline
+from bob.bio.base.baseline import Baseline
 import pkg_resources
 
 

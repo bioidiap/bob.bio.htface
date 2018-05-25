@@ -45,4 +45,13 @@ class PeriCrossEyeBioDatabase(BioDatabase):
 
     def annotations(self, file_object):
         return None
+
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["cross-eye-VIS-NIR-split1", "cross-eye-VIS-NIR-split2", "cross-eye-VIS-NIR-split3",
+                "cross-eye-VIS-NIR-split4", "cross-eye-VIS-NIR-split5"]
+
         

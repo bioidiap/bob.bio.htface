@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 
-from bob.bio.htface.baselines import Baseline
+from bob.bio.base.baseline import Baseline
 import pkg_resources
 
 
@@ -15,21 +15,24 @@ class ISV(Baseline):
     
     """
 
-    def __init__(self):
-        super(ISV, self).__init__()
+    def __init__(self, **kwargs):
     
-        self.baseline_type     = "SOTA baselines"
-        self.name              = "isv-512g-u50"
-        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_extractor.py")
-        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_preprocessor.py")
-        self.algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_algorithm.py")
+        name              = "isv-512g-u50"
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_extractor.py")
+        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_preprocessor.py")}
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_algorithm.py")
 
+        self.baseline_type     = "SOTA baselines"
         self.reuse_extractor   = True
 
         # train cnn
         self.estimator         = None
         self.preprocessed_data = None
+        
+        super(ISV, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+        
 
+htface_isv = ISV()
 
 class MLBPHS(Baseline):
     """
@@ -39,21 +42,23 @@ class MLBPHS(Baseline):
     
     """
 
-    def __init__(self):
-        super(MLBPHS, self).__init__()
+    def __init__(self, **kwargs):
+
+        name              = "mlbphs-r1357"
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_extractor.py")
+        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_preprocessor.py")}
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_algorithm.py")
 
         self.baseline_type     = "SOTA baselines"
-        self.name              = "mlbphs-r1357"
-        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_extractor.py")
-        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_preprocessor.py")
-        self.algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/brendan_algorithm.py")
-
         self.reuse_extractor   = True
 
         # train cnn
         self.estimator         = None
         self.preprocessed_data = None
+        
+        super(MLBPHS, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
 
+htface_mlbphs = MLBPHS()
 
 class GFKGabor(Baseline):
     """
@@ -63,19 +68,20 @@ class GFKGabor(Baseline):
     
     """
 
-    def __init__(self):
-        super(GFKGabor, self).__init__()
+    def __init__(self, **kwargs):
+
+        name              = "gfk_gabor"
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_extractor.py")
+        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_preprocessor.py")}
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_algorithm.py")
 
         self.baseline_type     = "SOTA baselines"
-        self.name              = "gfk_gabor"
-        self.extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_extractor.py")
-        self.preprocessor      = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_preprocessor.py")
-        self.algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/gfk_algorithm.py")
-
         self.reuse_extractor   = True
 
         # train cnn
         self.estimator         = None
         self.preprocessed_data = None
 
-
+        super(GFKGabor, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+        
+htface_gfkgabor = GFKGabor()

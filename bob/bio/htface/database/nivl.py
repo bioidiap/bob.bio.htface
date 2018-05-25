@@ -70,3 +70,11 @@ class NIVLBioDatabase(ZTBioDatabase):
     def modalities(self):
         return self.db.modalities
 
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["idiap-search_VIS-NIR_split1", "idiap-search_VIS-NIR_split2", "idiap-search_VIS-NIR_split3",
+                "idiap-search_VIS-NIR_split4", "idiap-search_VIS-NIR_split5"]
+
