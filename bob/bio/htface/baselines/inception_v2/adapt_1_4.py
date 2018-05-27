@@ -15,7 +15,7 @@ class SiameseAdaptLayers1_4_BatchNorm(Baseline):
       - Adapt the 1-4 layers
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
     
         name              = "inception_resnet_v2_adapt_layers_1_4_nonshared_batch_norm"
         extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_batch_norm.py")
@@ -41,7 +41,7 @@ class SiameseAdaptLayers1_4_BetasBatchNorm(Baseline):
       - Adapt betas
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
     
         name              = "siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm"
         extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_betas_batch_norm.py")
@@ -60,7 +60,7 @@ class SiameseAdaptLayers1_4_BetasBatchNorm(Baseline):
 
 class TripletAdaptLayers1_4_BatchNorm(Baseline):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
     
         name              = "triplet_inceptionv2_layers_1_4_nonshared_batch_norm"
         extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/triplet_extractor_nonshared_batch_norm.py")
@@ -85,7 +85,7 @@ class TripletAdaptLayers1_4_BetasBatchNorm(Baseline):
       - ADAPT ONLY THE BETAS
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
             
         name              = "triplet_inceptionv2_layers_1_4_betas_nonshared_batch_norm"
         extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_4/triplet_extractor_nonshared_betas_batch_norm.py")
