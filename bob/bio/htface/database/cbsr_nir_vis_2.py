@@ -56,7 +56,13 @@ class CBSR_NIR_VIS_2BioDatabase(ZTBioDatabase):
     @property
     def modalities(self):
         return self.db.modalities
-        
+
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["view2_1", "view2_2", "view2_3", "view2_4", "view2_5"]
 
     def model_ids_with_protocol(self, groups=None, protocol="view2_1", **kwargs):
         return self.db.model_ids(groups=groups, protocol=protocol)

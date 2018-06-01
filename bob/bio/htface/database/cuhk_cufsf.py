@@ -74,6 +74,14 @@ class CUHK_CUFSFBioDatabase(BioDatabase):
     def modalities(self):
         return self.db.modalities
 
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["search_split1_p2s", "search_split2_p2s", "search_split3_p2s",
+                "search_split4_p2s", "search_split5_p2s"]
+
     def original_file_name(self, file, check_existence = True):
         return self.db.original_file_name(file, check_existence = check_existence)    
 

@@ -107,7 +107,7 @@ setup(
             'nivl         = bob.bio.htface.configs.databases.nivl:database',
             'pola_thermal = bob.bio.htface.configs.databases.pola_thermal:database',
             'thermal = bob.bio.htface.configs.databases.thermal:database',
-            'cbsr_nir_vis_2 = bob.bio.htface.configs.databases.cbsr_nir_vis_2s:database'
+            'casia-nir-vis-2 = bob.bio.htface.configs.databases.casia_nir_vis:database'
         ],
         
         'console_scripts' : [
@@ -120,12 +120,105 @@ setup(
             'bob_htface_baselines.py = bob.bio.htface.script.baselines:main',
             'bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main',
             'bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main',
-            'bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main',
-            
+            'bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main', 
             'bob_htface_recrate_vs_nparameters_by_hand.py = bob.bio.htface.script.recrate_vs_nparameters_by_hand:main',
 
             'bob_htface_plot_tsne_modality_database.py = bob.bio.htface.script.plot_tsne_modality_database:main',
         ],
+        
+      'bob.bio.baseline':[
+
+           # FACE REC BASELINES
+          'htface_vgg16 = bob.bio.htface.baselines.standard_facerec:htface_vgg16',
+          'htface_facenet = bob.bio.htface.baselines.standard_facerec:htface_facenet',
+          'htface_lightcnn = bob.bio.htface.baselines.standard_facerec:htface_lightcnn',
+
+          #'htface_idiap_casia_inception_v2_centerloss_gray = bob.bio.face_ongoing.baselines.idiap_inception_v2:htface_idiap_casia_inception_v2_centerloss_gray',
+          #'htface_idiap_casia_inception_v2_centerloss_rgb = bob.bio.face_ongoing.baselines.idiap_inception_v2:htface_idiap_casia_inception_v2_centerloss_rgb',
+
+          #'htface_idiap_casia_inception_v1_centerloss_gray = bob.bio.face_ongoing.baselines.idiap_inception_v1:htface_idiap_casia_inception_v1_centerloss_gray',
+          #'htface_idiap_casia_inception_v1_centerloss_rgb = bob.bio.face_ongoing.baselines.idiap_inception_v1:htface_idiap_casia_inception_v1_centerloss_rgb',
+ 
+          # SOTA BASELINES
+          'htface_isv = bob.bio.htface.baselines.sota_baselines:htface_isv',
+          'htface_mlbphs = bob.bio.htface.baselines.sota_baselines:htface_mlbphs',
+          'htface_gfkgabor = bob.bio.htface.baselines.sota_baselines:htface_gfkgabor',
+
+          # HTFACE-BASELINE
+          
+          # V2
+          
+          #Resnet_v2 siamese - ADAPT FIRST
+          'inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.inception_v2.adapt_first:inception_resnet_v2_siamese_adapt_first',
+          'inception_resnet_v2_siamese_adapt_first_betas = bob.bio.htface.baselines.inception_v2.adapt_first:inception_resnet_v2_siamese_adapt_first_betas',
+          'inception_resnet_v2_triplet_adapt_first = bob.bio.htface.baselines.inception_v2.adapt_first:inception_resnet_v2_triplet_adapt_first',
+          'inception_resnet_v2_triplet_adapt_first_betas = bob.bio.htface.baselines.inception_v2.adapt_first:inception_resnet_v2_triplet_adapt_first_betas',
+          
+          #Resnet_v2 siamese - ADAPT 1-2
+          'inception_resnet_v2_siamese_adapt_1_2 = bob.bio.htface.baselines.inception_v2.adapt_1_2:inception_resnet_v2_siamese_adapt_1_2',
+          'inception_resnet_v2_siamese_adapt_1_2_betas = bob.bio.htface.baselines.inception_v2.adapt_1_2:inception_resnet_v2_siamese_adapt_1_2_betas',
+          'inception_resnet_v2_triplet_adapt_1_2 = bob.bio.htface.baselines.inception_v2.adapt_1_2:inception_resnet_v2_triplet_adapt_1_2',
+          'inception_resnet_v2_triplet_adapt_1_2_betas = bob.bio.htface.baselines.inception_v2.adapt_1_2:inception_resnet_v2_triplet_adapt_1_2_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-4
+          'inception_resnet_v2_siamese_adapt_1_4 = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4',
+          'inception_resnet_v2_siamese_adapt_1_4_betas = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_betas',
+          'inception_resnet_v2_triplet_adapt_1_4 = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_triplet_adapt_1_4',
+          'inception_resnet_v2_triplet_adapt_1_4_betas = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_triplet_adapt_1_4_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-5
+          'inception_resnet_v2_siamese_adapt_1_5 = bob.bio.htface.baselines.inception_v2.adapt_1_5:inception_resnet_v2_siamese_adapt_1_5',
+          'inception_resnet_v2_siamese_adapt_1_5_betas = bob.bio.htface.baselines.inception_v2.adapt_1_5:inception_resnet_v2_siamese_adapt_1_5_betas',
+          'inception_resnet_v2_triplet_adapt_1_5 = bob.bio.htface.baselines.inception_v2.adapt_1_5:inception_resnet_v2_triplet_adapt_1_5',
+          'inception_resnet_v2_triplet_adapt_1_5_betas = bob.bio.htface.baselines.inception_v2.adapt_1_5:inception_resnet_v2_triplet_adapt_1_5_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-6
+          'inception_resnet_v2_siamese_adapt_1_6 = bob.bio.htface.baselines.inception_v2.adapt_1_6:inception_resnet_v2_siamese_adapt_1_6',
+          'inception_resnet_v2_siamese_adapt_1_6_betas = bob.bio.htface.baselines.inception_v2.adapt_1_6:inception_resnet_v2_siamese_adapt_1_6_betas',
+          'inception_resnet_v2_triplet_adapt_1_6 = bob.bio.htface.baselines.inception_v2.adapt_1_6:inception_resnet_v2_triplet_adapt_1_6',
+          'inception_resnet_v2_triplet_adapt_1_6_betas = bob.bio.htface.baselines.inception_v2.adapt_1_6:inception_resnet_v2_triplet_adapt_1_6_betas',
+          
+
+          # V1
+          
+          #Resnet_v1 siamese - ADAPT FIRST
+          'inception_resnet_v1_siamese_adapt_first = bob.bio.htface.baselines.inception_v1.adapt_first:inception_resnet_v1_siamese_adapt_first',
+          'inception_resnet_v1_siamese_adapt_first_betas = bob.bio.htface.baselines.inception_v1.adapt_first:inception_resnet_v1_siamese_adapt_first_betas',
+          'inception_resnet_v1_triplet_adapt_first = bob.bio.htface.baselines.inception_v1.adapt_first:inception_resnet_v1_triplet_adapt_first',
+          'inception_resnet_v1_triplet_adapt_first_betas = bob.bio.htface.baselines.inception_v1.adapt_first:inception_resnet_v1_triplet_adapt_first_betas',
+          
+          #Resnet_v2 siamese - ADAPT 1-2
+          'inception_resnet_v1_siamese_adapt_1_2 = bob.bio.htface.baselines.inception_v1.adapt_1_2:inception_resnet_v1_siamese_adapt_1_2',
+          'inception_resnet_v1_siamese_adapt_1_2_betas = bob.bio.htface.baselines.inception_v1.adapt_1_2:inception_resnet_v1_siamese_adapt_1_2_betas',
+          'inception_resnet_v1_triplet_adapt_1_2 = bob.bio.htface.baselines.inception_v1.adapt_1_2:inception_resnet_v1_triplet_adapt_1_2',
+          'inception_resnet_v1_triplet_adapt_1_2_betas = bob.bio.htface.baselines.inception_v1.adapt_1_2:inception_resnet_v1_triplet_adapt_1_2_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-4
+          'inception_resnet_v1_siamese_adapt_1_4 = bob.bio.htface.baselines.inception_v1.adapt_1_4:inception_resnet_v1_siamese_adapt_1_4',
+          'inception_resnet_v1_siamese_adapt_1_4_betas = bob.bio.htface.baselines.inception_v1.adapt_1_4:inception_resnet_v1_siamese_adapt_1_4_betas',
+          'inception_resnet_v1_triplet_adapt_1_4 = bob.bio.htface.baselines.inception_v1.adapt_1_4:inception_resnet_v1_triplet_adapt_1_4',
+          'inception_resnet_v1_triplet_adapt_1_4_betas = bob.bio.htface.baselines.inception_v1.adapt_1_4:inception_resnet_v1_triplet_adapt_1_4_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-5
+          'inception_resnet_v1_siamese_adapt_1_5 = bob.bio.htface.baselines.inception_v1.adapt_1_5:inception_resnet_v1_siamese_adapt_1_5',
+          'inception_resnet_v1_siamese_adapt_1_5_betas = bob.bio.htface.baselines.inception_v1.adapt_1_5:inception_resnet_v1_siamese_adapt_1_5_betas',
+          'inception_resnet_v1_triplet_adapt_1_5 = bob.bio.htface.baselines.inception_v1.adapt_1_5:inception_resnet_v1_triplet_adapt_1_5',
+          'inception_resnet_v1_triplet_adapt_1_5_betas = bob.bio.htface.baselines.inception_v1.adapt_1_5:inception_resnet_v1_triplet_adapt_1_5_betas',
+
+          #Resnet_v2 siamese - ADAPT 1-6
+          'inception_resnet_v1_siamese_adapt_1_6 = bob.bio.htface.baselines.inception_v1.adapt_1_6:inception_resnet_v1_siamese_adapt_1_6',
+          'inception_resnet_v1_siamese_adapt_1_6_betas = bob.bio.htface.baselines.inception_v1.adapt_1_6:inception_resnet_v1_siamese_adapt_1_6_betas',
+          'inception_resnet_v1_triplet_adapt_1_6 = bob.bio.htface.baselines.inception_v1.adapt_1_6:inception_resnet_v1_triplet_adapt_1_6',
+          'inception_resnet_v1_triplet_adapt_1_6_betas = bob.bio.htface.baselines.inception_v1.adapt_1_6:inception_resnet_v1_triplet_adapt_1_6_betas',
+
+      ],        
+
+      # bob bio scripts
+      'bob.bio.cli': [
+        'htface_baseline                    = bob.bio.htface.script.baseline:htface_baseline',
+        'htface_train_dsu = bob.bio.htface.script.domain_specic_units:htface_train_dsu',
+      ],
+        
 
     },
 

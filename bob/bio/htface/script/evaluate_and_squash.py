@@ -38,6 +38,7 @@ import bob.measure
 import numpy
 import math
 import os
+import bob.bio.base
 from docopt import docopt
 
 # matplotlib stuff
@@ -178,7 +179,7 @@ def main(command_line_parameters=None):
     
     # RR
     logger.info("Computing recognition rate")
-    cmcs_dev = [bob.measure.load.cmc_four_column(f) for f in dev_files]
+    cmcs_dev = [bob.bio.base.score.load.cmc_four_column(f) for f in dev_files]
     _compute_rr(cmcs_dev, args["--legends"])
     
     # CMC

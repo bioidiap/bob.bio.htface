@@ -44,6 +44,7 @@ requirements:
     - bob.db.pola_thermal
     - bob.db.nivl
     - bob.db.cbsr_nir_vis_2
+    - bob.learn.tensorflow
   run:
     - python
     - setuptools
@@ -51,6 +52,9 @@ requirements:
     - six
     - wheel
     - tensorflow
+    - scikit-learn
+    - numpy
+      
 test:
   imports:
     - {{ name }}

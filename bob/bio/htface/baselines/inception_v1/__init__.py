@@ -1,8 +1,8 @@
-from adapt_first import *
-from adapt_1_2 import *
-from adapt_1_4 import *
-from adapt_1_5 import *
-from adapt_1_6 import *
+#from adapt_first import *
+#from adapt_1_2 import *
+#from adapt_1_4 import *
+#from adapt_1_5 import *
+#from adapt_1_6 import *
 
 
 def get_config():

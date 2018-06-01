@@ -49,6 +49,13 @@ class Pola_ThermalBioDatabase(BioDatabase):
     def modalities(self):
         return self.db.modalities
 
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["VIS-thermal-overall-split1", "VIS-thermal-overall-split2", "VIS-thermal-overall-split3",
+                "VIS-thermal-overall-split4", "VIS-thermal-overall-split5"]
 
     def model_ids_with_protocol(self, groups=None, protocol="VIS-polarimetric-overall-split1", **kwargs):
         return self.db.model_ids(groups=groups, protocol=protocol)

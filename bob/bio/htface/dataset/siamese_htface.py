@@ -155,8 +155,8 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
                 label = 1
                 while True:
                     index = numpy.random.randint(len(samples_B.keys()))
-                    if samples_B.keys()[index] != o.client_id:
-                        right_object = samples_B[samples_B.keys()[index]].get_object()
+                    if list(samples_B.keys())[index] != o.client_id:
+                        right_object = samples_B[list(samples_B.keys())[index]].get_object()
                         break    
 
             if not get_objects:                                                  
