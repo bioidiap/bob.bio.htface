@@ -3,8 +3,14 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 
-from bob.bio.htface.baselines import Baseline
+from bob.bio.base.baseline import Baseline
 import pkg_resources
+import bob.bio.htface
+
+# IMPORTING THE NECESSARY MODULES
+import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_4.estimator_nonshared_batch_norm
+
+import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_4.estimator_nonshared_betas_batch_norm
 
 
 class SiameseAdaptLayers1_4_BatchNorm(Baseline):
@@ -18,15 +24,15 @@ class SiameseAdaptLayers1_4_BatchNorm(Baseline):
     def __init__(self, **kwargs):
 
         name              = "siamese_inceptionv1_adapt_1_4_nonshared_batch_norm"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_4/extractor_nonshared_batch_norm.py")
-        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")}
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/siamese_transfer_learning/inception_resnet_v1_adapt_layers_1_4/extractor_nonshared_batch_norm.py")
+        preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm       = "distance-cosine"
 
         self.baseline_type     = "Siamese BN"
         self.reuse_extractor   = False        
 
         # train cnn
-        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v1_adapt_layers_1_4/estimator_nonshared_batch_norm.py")
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_4.estimator_nonshared_batch_norm.get_estimator
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
         super(SiameseAdaptLayers1_4_BatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
@@ -43,15 +49,15 @@ class SiameseAdaptLayers1_4_BetasBatchNorm(Baseline):
     def __init__(self, **kwargs):
 
         name              = "siamese_inceptionv1_adapt_1_4_betas_nonshared_batch_norm"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_4/extractor_nonshared_betas_batch_norm.py")
-        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")} # Same as v2
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/siamese_transfer_learning/inception_resnet_v1_adapt_layers_1_4/extractor_nonshared_betas_batch_norm.py")
+        preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm       = "distance-cosine"
 
         self.baseline_type     = "Siamese BN adapt betas"
         self.reuse_extractor   = False
 
         # train cnn
-        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v1_adapt_layers_1_4/estimator_nonshared_betas_batch_norm.py")
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_4.estimator_nonshared_betas_batch_norm.get_estimator
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/") # Same as v2
         
         super(SiameseAdaptLayers1_4_BetasBatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)

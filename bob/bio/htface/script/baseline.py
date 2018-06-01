@@ -14,6 +14,9 @@ from bob.extension.scripts.click_helper import verbosity_option
 import click
 from bob.bio.base.script.verify import main as verify
 from bob.extension import rc
+import tensorflow as tf
+import tempfile
+import bob.io.base
 
 @click.command(context_settings={'ignore_unknown_options': True,
                                  'allow_extra_args': True})
@@ -69,10 +72,15 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
         protocols = [None]
 
     for p, i in zip(protocols, range(len(protocols))):
+        temp_config_file = generate_temp_config_file(result_directory,
+                                                     db.name,
+                                                     p,
+                                                     baseline)
         # call verify with all parameters
         parameters = [
+            temp_config_file,
+            loaded_baseline.extractor,           
             '-p', preprocessor,
-            '-e', loaded_baseline.extractor,
             '-d', database] + ['-v'] * ctx.meta['verbosity']
 
         parameters += ['--groups', "dev"]
@@ -98,7 +106,29 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
         verify(parameters + ['-a', loaded_baseline.algorithm] + directories + ctx.args)
 
         # CASE WE NEED TO EXTRACT THE TRAINING DATA
+        tf.reset_default_graph()
         if preprocess_training_data:
-            training_data_params = ['-a', "eigenface"] 
+            training_data_params = ['-a', 'pca']
             training_data_params += ['-o', 'preprocessing']
             verify(parameters + training_data_params + directories + ctx.args)
+            tf.reset_default_graph()
+
+
+def generate_temp_config_file(result_directory, database_name, protocol, baseline):
+
+    config = '''
+temp_dir      = '{temp_dir}'
+database_name = '{database_name}'
+protocol      = '{protocol}'
+'''.format(temp_dir=result_directory,
+                        database_name=database_name,
+                        protocol=protocol)
+
+    directory = os.path.join(result_directory, "temp")
+    bob.io.base.create_directories_safe(directory)
+
+    with tempfile.NamedTemporaryFile(mode='w+t', prefix='{}_'.format(baseline),                                      suffix='.py', delete=False, dir=directory)as f:
+        f.write(config)
+        f.flush()
+        f.seek(0)
+        return f.name
