@@ -8,9 +8,14 @@ import pkg_resources
 import bob.bio.htface
 
 # IMPORTING THE NECESSARY MODULES
-import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_batch_norm
 
+# Siamese
+import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_batch_norm
 import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_betas_batch_norm
+
+# Triplet
+import bob.bio.htface.configs.domain_specific_units.triplet_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_batch_norm
+import bob.bio.htface.configs.domain_specific_units.triplet_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_betas_batch_norm
 
 
 class SiameseAdaptLayers1_5_BatchNorm(Baseline):
@@ -72,14 +77,14 @@ class TripletAdaptLayers1_5_BatchNorm(Baseline):
     
         name              = "triplet_inceptionv1_layers_1_5_nonshared_batch_norm"
         extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_5/triplet_extractor_nonshared_batch_norm.py")
-        preprocessors     = {"default" :pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")}
+        preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm       = "distance-cosine"
 
         self.baseline_type     = "Triplet BN"
         self.reuse_extractor   = False        
 
         # train cnn
-        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv1_layers_1_5/estimator_nonshared_batch_norm.py")
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.triplet_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_batch_norm
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
         
         super(TripletAdaptLayers1_5_BatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)        
@@ -99,14 +104,14 @@ class TripletAdaptLayers1_5_BetasBatchNorm(Baseline):
         name              = "triplet_inceptionv1_layers_1_5_betas_nonshared_batch_norm"
         extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v1_adapt_layers_1_5/triplet_extractor_nonshared_betas_batch_norm.py")
         
-        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2/preprocessor.py")}
+        preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
             
         self.baseline_type     = "Triplet BN adapt betas"
         self.reuse_extractor   = False
 
         # train cnn
-        self.estimator         = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/triplet_transfer_learning/inceptionv1_layers_1_5/estimator_nonshared_betas_batch_norm.py")
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.triplet_transfer_learning.inception_resnet_v1_adapt_layers_1_5.estimator_nonshared_betas_batch_norm
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")        
 
         super(TripletAdaptLayers1_5_BetasBatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
