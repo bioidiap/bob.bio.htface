@@ -74,7 +74,7 @@ class TripletAdaptLayers1_6_BatchNorm(Baseline):
     def __init__(self, **kwargs):
     
         name              = "triplet_inceptionv2_layers_1_6_nonshared_batch_norm"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_6/triplet_extractor_nonshared_batch_norm.py")
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_5/extractor_nonshared_batch_norm.py")
         preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
 
@@ -100,7 +100,7 @@ class TripletAdaptLayers1_6_BetasBatchNorm(Baseline):
     def __init__(self, **kwargs):
             
         name              = "triplet_inceptionv2_layers_1_6_betas_nonshared_batch_norm"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/inception_resnet_v2_adapt_layers_1_6/triplet_extractor_nonshared_betas_batch_norm.py")
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_5/extractor_nonshared_betas_batch_norm.py")
         preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
 

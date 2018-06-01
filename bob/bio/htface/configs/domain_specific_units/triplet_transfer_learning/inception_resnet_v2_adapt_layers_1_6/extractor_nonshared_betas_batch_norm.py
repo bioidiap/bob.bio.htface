@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 
 
-from bob.bio.htface.extractor import SiameseEmbedding
+from bob.bio.htface.extractor import TripletEmbedding
 import tensorflow as tf
 from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_layers_1_6_head
 from bob.bio.htface.utils import get_cnn_model_name
@@ -16,5 +16,5 @@ model_name = "triplet_inceptionv2_adapt_1_6_betas_nonshared_batch_norm"
 model_filename = get_cnn_model_name(temp_dir, model_name,
                                     database_name, protocol)
 
-extractor = SiameseEmbedding(model_filename, architecture, shape=(1, 160, 160, 1))
+extractor = TripletEmbedding(model_filename, architecture, shape=(1, 160, 160, 1))
 
