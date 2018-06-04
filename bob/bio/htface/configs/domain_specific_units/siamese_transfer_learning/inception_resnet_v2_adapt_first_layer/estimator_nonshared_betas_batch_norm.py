@@ -18,7 +18,7 @@ from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rat
 from bob.extension import rc
 
 
-def get_estimator(experiment_dir, database, protocol, samples_per_epoch):
+def get_estimator(experiment_dir, database, protocol, samples_per_epoch, training_setup):
 
     architecture = inception_resnet_v2_adapt_first_head
     model_name = "siamese_inceptionv2_first_layer_betas_nonshared_batch_norm"

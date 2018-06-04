@@ -26,24 +26,58 @@ After everything installed do::
   $ source activate bob.bio.htface  # activate the environment
   $ buildout
 
+.. warning::
+  Before the magic begins, it's necessary to set a set of paths for the databases.
+  Sorry, but there is no other way.
+  Please, edit this file according to your own working environment::
 
-Before the magic begins, it's necessary to set a set of paths.
-Please, edit this file according to your own working environment.
-I hope the variable names are clear enough::
+  $ vim ~/.bobrc
 
-  $ vim ./bob/bio/htface/configs/base_paths.py
 
-Follow below how this file looks like.
+Follow below how this file looks like::
 
-.. literalinclude:: ../bob/bio/htface/configs/base_paths.py
-   :language: python
-   :caption: "base_paths.py"
+    {
+    "bob.bio.htface.experiment-directory": "[PATH-WHERE-THE-EXPERIMENTS-WILL-BE-EXECUTED]",
+    
+    "bob.bio.htface.cufs_path": "[CUHK-CUFS-DB-PATH]",
+    "bob.bio.htface.arface_path": "[ARFACE-DB-PATH]",
+    "bob.bio.htface.xm2vts_path": "[XM2VTS-DB-PATH]",
+    "bob.bio.htface.cufs_extension": [".jpg", ".JPG", ".ppm"],
+    
+    "bob.bio.htface.nivl_path": "[NIVL-DB-PATH]",
+    "bob.bio.htface.nivl_extension": ".png",
 
+    "bob.bio.htface.polathermal_path": "[POLATHERMAL-DB-PATH]",
+    "bob.bio.htface.polathermal_extension": ".png",
+
+    "bob.bio.htface.casia_nir_vis_path": "[CBSR-NIR-VIS-2-DB-PATH]",
+    "bob.bio.htface.casia_nir_vis_extension": [".bmp", ".jpg"],
+
+    "bob.bio.htface.cufsf_path": "[CUHK-CUFSF-PATH]",
+    "bob.bio.htface.feret_path": "[FERET-PATH]",
+    "bob.bio.htface.cufsf_extension": [".jpg",".tif"],
+
+    "bob.bio.face_ongoing.idiap_casia_inception_v1_centerloss_gray": "[INCEPTIONV1-GRAY-MODEL-PATH]",
+    "bob.bio.face_ongoing.idiap_casia_inception_v1_centerloss_rgb": "[INCEPTIONV1-RGB-MODEL-PATH],
+    "bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray": "[INCEPTIONV2-GRAY-MODEL-PATH],
+    "bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_rgb": "[INCEPTIONV2-RGB-MODEL-PATH]
+    
+    }
+
+.. warning::  
+  Sorry, but there is no other way, you have to set all these things
+   
 ========
 The task
 ========
 
-.. Todo:: Describe what heterogeneous face recognition is about
+
+The task of Heterogeneous Face Recognition consists in matching face images that are sensed in different domains, such as sketches to photographs (visual spectra images), thermal images to photographs or near-infrared images to photographs.
+
+Follow below possible Heteregenous Face Recognition Scenarious.
+
+.. image:: ./img/hfr_schema.png
+ :scale: 100 %
 
 
 ==========

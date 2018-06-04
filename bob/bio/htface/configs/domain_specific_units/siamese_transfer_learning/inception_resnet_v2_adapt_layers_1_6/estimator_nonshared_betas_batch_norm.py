@@ -85,7 +85,11 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
     for i in range(1, 11):
         right_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_right/".format(i)
 
-
+    
+    # Preparing the prior
+    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"],
+                        "scopes": [left_scope, right_scope]
+                       }
 
     def train_input_fn():
         return shuffle_data_and_labels_image_augmentation(database, protocol,

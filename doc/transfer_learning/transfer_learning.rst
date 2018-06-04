@@ -20,14 +20,35 @@ Before any hypothesis on how to find this :math:`\phi`, we have done two differe
 The **first analysis** is exploratory and it consists on the observation of the distribution of the covariates :math:`x_A` and :math:`x_B` for different image modalities.
 To support this analysis we use the a well know algorithm that supports the visualization of high dimentional data called `t-SNE <http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html>`_.
 This algorithm converts similarities between data points to joint probabilities and minimizes the Kullback-Leibler divergence between the joint probabilities of the low-dimensional embedding and the high-dimensional data.
-Such exploratory analisys is carried out under two conditions.
-The first condition is a direct plot using the pixel space (:math:`x_A` and :math:`x_B`).
-For the second condition, such plot is carried out in the embedding space :math:`\phi(x_A)` and :math:`\phi(x_B)`.
-The goal of such analysis is to observe if the modalities cluster.
+Such exploratory analisys is carried out by a direct plot using the pixel space (:math:`x_A` and :math:`x_B`).
 
 
 The **second analisys** is more practical and it consists in the analisys of error rates in a closed-set scenario.
 The base question here at this point is to know if state-of-the-art face recognition systems can natually handle signals from heterogenous sources.
+We will explore six different DCNN models based on three base architectures for **HFR**.
+This set of experiments establishes the baseline results for further analysis.
+
+The first  is the **VGG16-Face** network REF[Parkhi2015], which was made publicly available by the `Visual Geometry Group <http://www.robots.ox.ac.uk/>`_ and consists of 16 hidden layers where the first 13 are composed by convolutions and pooling layers. 
+The last three layers are fully-connected (named fc6, fc7, and fc8).
+As a feature representation, we use the embeddings produced by the 'fc7' layer.
+The input signal of such network are RGB images of :math:`224 \times 224` pixels.
+Since all our databases are one channel only (NIR, Sketch and Thermal), we convert them from one channel images to three channels by replicating the signal along the extra channels.
+
+The second network used is the **Light CNN**.
+Xiang et al. in REF[WuXiang2015] proposed an architecture that has ten times less free parameters than the VGG16-Face and claimed that it is naturally able to handle mislabeled data during the training (very common in datasets mined automatically).
+This is achieved through the use of a newly introduced Max-Feature-Map (MFM) activation.
+The input signal of such network are gray scaled images of :math:`112 \times 112`.
+
+The third one is the **Facenet** by David Sandberg REF[Sandberg2018].
+This is the closest open-source implementation of the model proposed in REF[Schroff2015], where neither training data or source code were made available.
+Sandberg's FaceNet implements an Inception-ResNet v1 and Inception-ResNet v2 CNN architectures REF[SzegedyChristian2017].
+For this evaluation we have used the 20170512-110547 model (Inception-ResNet v1), trained on the MS-Celeb-1M dataset REF[GuoYandong2016], which input signals are RGB images of :math:`160\times160` pixels.
+Furthermore, we trained ourselves two Inception-ResNet v2 models, one with gray scaled images and one with RGB using the CASIA WebFace REF[Dong2014] dataset and one Inception-ResNet v1 with gray scaled images.
+
+Summarizing, we have six different deep face models representing the VIS source domain :math:`\mathcal{D}^s`, the **VGG16-Face**, **LightCNN**, **Inception-ResNet v1**, **Inception-ResNet v1**, **Inception-ResNet v2** and **Inception-ResNet v2-gray**.
+Comparisons between samples are made with the embeddings of each DCNN using the cosine similarity metric.
+Given the embeddings :math:`e_s` and :math:`e_t` from source and target domains respectively, the similarity :math:`S` is given by the cosine similarity.
+
 
 Such set of tests were conducted under several datasets and they are bellow.
 
@@ -39,52 +60,37 @@ Such set of tests were conducted under several datasets and they are bellow.
   - More database coming soon
 
 
-The Resnet v2 architecture (our initial :math:`\phi`)
------------------------------------------------------
-
-The literature covering deep neural networks is imense; although I will need to cover that at some point, at this stage I will just point to a nice survey where
-important engineering decisions, taken along years of research, are described [Canziani2016]_.
-Such set of engineering decisions are the basis of the state-of-the-art architectures of today for face recognition.
-For this work, we will take one of the state-of-the-art architectures for face recognition Inception-Resnet-V2 [Szegedy2017]_.
-Such CNN was trained by ourselves with gray scaled visible light images only using Casia Webface database.
-More details about our face recognition baselines and benchmarks can be found `here <http://beatubulatest.lab.idiap.ch/private/docs/bob/bob.bio.face_ongoing/master/index.html>`_.
-
-For the rest of this section, we use :math:`\phi` as a placeholder term for this architecture, whose simple schematic can be seen below.
-
-.. image:: ../img/resnet_v2.png
- :scale: 100 %
-
-.. Todo:: Develop a better plot with tikz
-
 POLA THERMAL
 ============
 
 Follow below the covariate scatter plot produced with t-SNE, between visible light (:math:`x_A`) and polarimetric thermograms (:math:`x_B`) in the pixel space for the :ref:`pola thermal <db-polathermal>` database.
 Such scatter plot is split according to the image modalities.
 
+THERMAL SET.
+
+
 .. image:: ../plots/transfer-learning/pola_thermal/tsne/pixel_space.png
 
 It's possible to clearly observe a two clusters formed by the image modalities.
 
-Let's observe now the same scatter plot in the embedding space (:math:`\phi(x_A)` and :math:`\phi(x_B)`).
-
-.. image:: ../plots/transfer-learning/pola_thermal/tsne/resnet_gray_face_space.png
-
-It's possible to clearly observe the same trend as before.
-Follow bellow the source code that generate this plot::
-
-  $ ./doc/plots/transfer-learning/pola_thermal/tsne/plot_tsne_resnet_gray.sh
-
 Follow bellow the results in terms of Rank-1 recognition rate
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 11.798% (1.556)   |
- +------------+--------------+--------+-------------------+
+ +------------+---------------------------+-------------+
+ | Image size | DCNN                      | Rank-1 (%)  |
+ +============+===========================+=============+
+ | 160 x 160  | LightCNN                  | 22.36 (3.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | VGG16                     | 15.43 (2.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-gray  | 15.50 (1.9) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-rgb   | 27.68 (1.7) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-gray  | 17.80 (3.3) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-rgb   | 17.12 (2.1) |
+ +------------+---------------------------+-------------+
 
-By observing these low error rates along the splits, we can conclude that
-using a :math:`\phi` that doesn't take into account the modality prior is not very promissing.
 
 
 CUHK-CUFS
@@ -99,46 +105,23 @@ Such scatter plot is split according to the image modalities.
 
 It's possible to clear observe two clusters formed by the image modalities.
 
-Let's observe now the same scatter plot in the embedding space (:math:`\phi(x_A)` and :math:`\phi(x_B)`).
-
-.. image:: ../plots/transfer-learning/cuhk_cufs/tsne/resnet_gray.png
-
-Such clusters can't be clearly seen for this pair of modalities.
-On possible reason for that is that, with respect to shape, the pairs photos-sketeches from this dataset are quite reliable as we can observe in the figure below.
-Even details like the expression, proportion of the face and volume of the hair are the same.
-We could suggest that a linear model could be carried out between :math:`x_A` and :math:`x_B`.
-
-.. image:: ../img/cuhk_cufs.png
-
-
 Follow bellow the results in terms of Rank-1 recognition rate:
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 64.158% (3.424)   |
- +------------+--------------+--------+-------------------+
-
-We can observe a recognition rate of ~64%, which is not very low considering that such modality was not observed by the CNN.
-However, state of the art algorithms that do consider the joint modeling of the modalities achive recognition rates above 95% for this dataset.
-
-
-
-.. +------------+--------------+-------+-------------+
-.. | Image size | ML           | Feat. | Rank-1      |
-.. +============+==============+=======+=============+
-.. | 80 x 64    | ISV (512g)   | DCT   | 94.95(1.57) |
-.. +------------+--------------+-------+-------------+
-.. | 224 x 224  | Cosine       | VGG16 | 70.49(1.99) |
-.. +------------+--------------+-------+-------------+
-.. | 224 x 224  | PLDA         | VGG16 | --.--(-.--) |
-.. +------------+--------------+-------+-------------+
-.. | 128 x 128  | GFK          | Gabor | --.--(-.--) |
-.. +------------+--------------+-------+-------------+
-.. | 160 x 160  | Cosine       | Resnet| 54.35(1.86) |
-.. +------------+--------------+-------+-------------+
-.. | 160 x 160  | PLDA         | Resnet| 71.78(1.10) |
-.. +------------+--------------+-------+-------------+
+ +------------+---------------------------+-------------+
+ | Image size | DCNN                      | Rank-1 (%)  |
+ +============+===========================+=============+
+ | 160 x 160  | LightCNN                  | 76.63 (2.9) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | VGG16                     | 73.17 (1.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-gray  | 69.80 (3.2) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-rgb   | 81.48 (2.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-gray  | 67.03 (2.3) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-rgb   | 67.62 (2.6) |
+ +------------+---------------------------+-------------+
 
 
 CUHK-CUFSF
@@ -152,25 +135,26 @@ Such scatter plot is split according to the image modalities.
 
 It's possible to clear observe a two clusters formed by the image modalities.
 
-Let's observe now the same scatter plot in the embedding space (:math:`\phi(x_A)` and :math:`\phi(x_B)`).
-
-.. image:: ../plots/transfer-learning/cuhk_cufsf/tsne/resnet_gray.png
-
-It's possible to clearly observe the same trend as before.
-Follow bellow the source code that generate this plot::
-
-  $ ./doc/plots/transfer-learning/cuhk_cufsf/tsne/plot_tsne_resnet_gray.sh
 
 Follow bellow the results in terms of Rank-1 recognition rate
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 16.518%(1.394)    |
- +------------+--------------+--------+-------------------+
+ +------------+---------------------------+-------------+
+ | Image size | DCNN                      | Rank-1 (%)  |
+ +============+===========================+=============+
+ | 160 x 160  | LightCNN                  | 25.87 (1.5) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | VGG16                     | 32.99 (1.1) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-gray  | 16.64 (0.7) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-rgb   | 27.85 (0.9) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-gray  | 16.56 (0.7) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-rgb   | 15.99 (1.3) |
+ +------------+---------------------------+-------------+
 
-By observing these lower error rates along the splits, we can conclude that
-using a :math:`\phi` that doesn't take into account the modality prior is not very promissing.
+
 
 
 CASIA VIS-NIR
@@ -183,38 +167,24 @@ Such scatter plot is split according to the image modalities.
 .. image:: ../plots/transfer-learning/casia_nir_vis/tsne/pixel_space.png
 
 It's possible to clear observe a two clusters formed by the image modalities.
-Let's observe now the same scatter plot in the embedding space (:math:`\phi(x_A)` and :math:`\phi(x_B)`).
 
-.. image:: ../plots/transfer-learning/casia_nir_vis/tsne/resnet_gray.png
-
-Two clusters are not evident after :math:`\phi(x_A)` and :math:`\phi(x_B)`.
-This can suggest that the CNN is able to model this particular pair of input signals and no joint modeling is necessary.
 Let's check that in our closed-set evaluation using the rank one recognition rate as a reference.
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 44.031%(0.999)    |
- +------------+--------------+--------+-------------------+
-
-We can observe a recognition rate that is far from being random, but still far from the state of the art results that do consider joint modeling.
-
-
-.. +------------+--------------+-------+-------------+
-.. | Image size | ML           | Feat. | Rank-1      |
-.. +============+==============+=======+=============+
-.. | 80 x 64    | ISV (1024g)  | DCT   | 72.38(1.35) |
-.. +------------+--------------+-------+-------------+
-.. | 224 x 224  | Cosine       | VGG16 | 67.73(1.55) |
-.. +------------+--------------+-------+-------------+
-.. | 224 x 224  | PLDA         | VGG16 | --.--(-.--) |
-.. +------------+--------------+-------+-------------+
-.. | 224 x 224  | GFK          | Gabor | 50.93(1.39) |
-.. +------------+--------------+-------+-------------+
-.. | 160 x 160  | Cosine       | resnet| 34.86(1.18) |
-.. +------------+--------------+-------+-------------+
-.. | 160 x 160  | PLDA         | resnet| 34.86(1.18) |
-.. +------------+--------------+-------+-------------+
+ +------------+---------------------------+-------------+
+ | Image size | DCNN                      | Rank-1 (%)  |
+ +============+===========================+=============+
+ | 160 x 160  | LightCNN                  | 65.17 (0.9) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | VGG16                     | 64.92 (1.4) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-gray  | 74.25 (1.3) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-rgb   | 81.79 (1.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-gray  | 73.80 (1.2) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-rgb   | 79.92 (0.9) |
+ +------------+---------------------------+-------------+
 
 
 NIVL
@@ -227,43 +197,67 @@ Such scatter plot is split according to the image modalities.
 
 
 It's possible to clear observe a two clusters formed by the image modalities.
-Let's observe now the same scatter plot in the embedding space (:math:`\phi(x_A)` and :math:`\phi(x_B)`).
 
-.. image:: ../plots/transfer-learning/nivl/tsne/resnet_gray.png
-
-The same trend observed by `CASIA VIS-NIR`_ can be observed here, two clusters are not evident after :math:`\phi(x_A)` and :math:`\phi(x_B)`.
 Let's check that in our closed-set evaluation using the rank one recognition rate as a reference.
 
- +------------+--------------+--------+-------------------+
- | Image size | ML           | Feat.  | Rank-1            |
- +============+==============+========+===================+
- | 160 x 160  | Resnet-Gray  |        | 60.009%(2.518)    |
- +------------+--------------+--------+-------------------+
-
-We can observe a recognition rate that is far from being random, but still far from the state of the art results that do consider joint modeling.
+ +------------+---------------------------+-------------+
+ | Image size | DCNN                      | Rank-1 (%)  |
+ +============+===========================+=============+
+ | 160 x 160  | LightCNN                  | 86.24 (3.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | VGG16                     | 89.99 (0.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-gray  | 87.48 (1.3) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v1-rgb   | 92.77 (0.4) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-gray  | 88.14 (0.6) |
+ +------------+---------------------------+-------------+
+ | 160 x 160  | Inception-Resnet-v2-rgb   | 86.06 (1.3) |
+ +------------+---------------------------+-------------+
 
 
 Final Discussion
 ================
 
-In this first insigh we evaluated one of the state of art neural network architectures under several Heterogenous Face Recognition Databases in a closed set scenario.
-Follow bellow a wrap up of the first insights of this study.
+It's possible to observe, that despite the fact such DCNNs don't have any prior knowledge about :math:`\mathcal{D}^t`, the feature detectors of such models were still able to detect discriminant features in all them (above a hypothetical random classifier).
+However, those recognition rates are lower than the state-of-the-art recognition rates in each image database (which consider a joint modeling of both :math:`\mathcal{D}^s` and :math:`\mathcal{D}^t$`.
 
- 1. For datasets that represent the pairs VIS-sketeches and VIS-thermal the modalities cluster in both pixels space and under our :math:`\phi`. 
- 2. For datasets that represent the pairs VIS-NIR the clusters are evident only in the pixels space. Under :math:`\phi`, we could not visually observe such trend. 
- 3. For all datasets, using only our :math:`\phi` (that does not jointly model the modalities), we were not able to achieve high recognition rates.
+The VIS-NIR databases (CASIA and NIVL) presented the highest rank one recognition rates in the majority of the tests.
+For instance, the best DCNN model in CASIA (Inception-ResNet v1) achieved a  rank one recognition rate of 81.79\%.
+For NIVL, which compared with CASIA has higher resolution images, the average rank one recognition rate is even better (92.77\%).
+Among all image domains, NIR seems to be visually similar to VIS images, which can explain why the feature detectors from our $\mathcal{D}^s$ are very accurate in this target domain.
 
-In the light of these points we can conclude that it's wise to consider the target modality as a prior to model :math:`\phi`.
+
+The images taken from sketches are basically composed by shapes, and because of that, have lots of high frequency components.
+Moreover, all the texture of the image comes from the texture of the paper where the sketch was drawn.
+Because of those two factors, it's reasonable to assume that the feature detectors of our baseline DCNNs are not suitable for VIS-Sketch task.
+However, in practice, we observe the opposite.
+The Inception-ResNet v1 CNN presented an average rank one recognition rate of 81.48\% in the CUFS database.
+For the CUFSF, the best network is the VGG16-Face with 32.99\%.
+These experiments show that such feature detectors are very robust, even though the recognition rates are lower than the state-of-the-art.
+The recognition rates of the CUFS dataset are way higher than the ones for the CUFSF.
+This could be explained by the realism of the CUFS sketches.
+Details like the expression, proportion of the face and volume of the hair are present in both image domains.
+
+
+The most challenging task seems to be the VIS-Thermal domain.
+For this one, the best CNN (Inception-ResNet v1-rgb) achieved an average recognition rate of only 27.68\%.
+
+In this section we presented an overview of Face Recognition using DCNNs and we analysed the effectiveness of six different face models trained with VIS face images in the $HFR$ task (covering three different image domains).
+It was possible to observe that despite those new image domains were not used to train the DCNN, their feature detectors achieved recognition rates way above a random guess.
+For some of them, it was possible to achieve recognition rates above 80\%.
+With those experiments we argue that some set of feature detectors suitable for VIS :math:`\mathcal{D}^s` are also suitable for different spectral domains :math:`\mathcal{D}^t`.
+
 
 The next subsections we present strategies on how to create a joint model :math:`\phi` between pairs image modalities using two types of architectural setups: siamese and triplet networks.
 
 
-Siamese and triplet Networks
-----------------------------
+Strategies
+----------
 
 .. toctree::
    :maxdepth: 2
 
-   siamese_triplet
-
+   domain_specific_units
 

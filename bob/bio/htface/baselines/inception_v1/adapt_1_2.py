@@ -62,7 +62,7 @@ class SiameseAdaptLayers1_2_BetasBatchNorm(Baseline):
         self.reuse_extractor   = False
 
         # train cnn
-        self.estimator         = bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_2.estimator_nonshared_betas_batch_norm
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v1_adapt_layers_1_2.estimator_nonshared_betas_batch_norm.get_estimator
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/") # Same as v2
         
         super(SiameseAdaptLayers1_2_BetasBatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
