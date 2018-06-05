@@ -8,7 +8,7 @@ from bob.bio.htface.architectures.inception_v1_batch_norm import inception_resne
 from bob.bio.htface.utils import get_cnn_model_name
 
 architecture = inception_resnet_v1_adapt_layers_1_6_head
-model_name = "triplet_inceptionv1_adapt_1_6_betas_nonshared_batch_norm"
+model_name = "triplet_inceptionv1_layers_1_6_betas_nonshared_batch_norm"
 
 
 # The model filename depends on the database and its protocol and those values are

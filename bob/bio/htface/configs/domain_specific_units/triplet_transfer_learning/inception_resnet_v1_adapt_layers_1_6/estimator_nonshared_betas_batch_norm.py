@@ -22,8 +22,8 @@ from bob.extension import rc
 def get_estimator(experiment_dir, database, protocol, samples_per_epoch, training_setup):
 
     # Training parameters
-    architecture = inception_resnet_v1_adapt_layers_1_2_head
-    model_name = "triplet_inceptionv1_layers_1_2_betas_nonshared_batch_norm"
+    architecture = inception_resnet_v1_adapt_layers_1_6_head
+    model_name = "triplet_inceptionv1_layers_1_6_betas_nonshared_batch_norm"
 
     # Setting seed
     session_config, run_config,_,_,_ = reproducible.set_seed()
