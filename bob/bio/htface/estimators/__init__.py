@@ -1,2 +1,3 @@
 from .SiameseAdaptation import SiameseAdaptation
+from .FDSUSiameseAdaptation import FDSUSiameseAdaptation
 from .TripletAdaptation import TripletAdaptation

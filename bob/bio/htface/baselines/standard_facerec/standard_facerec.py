@@ -42,7 +42,7 @@ class Facenet(Baseline):
     def __init__(self, **kwargs):
 
         name              = "facenet"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_extractor.py")
+        extractor         = pkg_resources.resource_filename("bob.bio.face_ongoing", "configs/baselines/facenet_sandberg/inception_v1.py")
         preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")}
         algorithm = "distance-cosine"
                
@@ -89,8 +89,8 @@ class Inceptionv1_gray(Baseline):
 
     def __init__(self, **kwargs):
 
-        name              = "idiap_casia_inception_v1_gray"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v1_gray_extractor.py")
+        name              = "htface_idiap_casia_inception_v1_centerloss_gray"
+        extractor         = pkg_resources.resource_filename("bob.bio.face_ongoing", "configs/baselines/casiawebface/inception_resnet_v1/centerloss_gray.py")
         preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm = "distance-cosine"
  
@@ -103,7 +103,7 @@ class Inceptionv1_gray(Baseline):
 
         super(Inceptionv1_gray, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
 
-htface_inceptionv1_gray = Inceptionv1_gray()
+htface_idiap_casia_inception_v1_centerloss_gray = Inceptionv1_gray()
 
 
 class Inceptionv2_gray(Baseline):
@@ -113,8 +113,8 @@ class Inceptionv2_gray(Baseline):
 
     def __init__(self, **kwargs):
 
-        name              = "idiap_casia_inception_v2_gray_batch_norm"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_extractor.py")
+        name              = "htface_idiap_casia_inception_v2_centerloss_gray"
+        extractor         = pkg_resources.resource_filename("bob.bio.face_ongoing", "configs/baselines/casiawebface/inception_resnet_v2/centerloss_gray.py")
         preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm = "distance-cosine"
 
@@ -125,11 +125,9 @@ class Inceptionv2_gray(Baseline):
         self.estimator         = None
         self.preprocessed_data = None
 
-        super(Inceptionv2_gray, self).__init__(name, preprocessors, extractor, name, **kwargs)
+        super(Inceptionv2_gray, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
 
-
-
-htface_inceptionv2_gray = Inceptionv2_gray()
+htface_idiap_casia_inception_v2_centerloss_gray = Inceptionv2_gray()
 
        
 class Inceptionv2_rgb(Baseline):
@@ -139,8 +137,8 @@ class Inceptionv2_rgb(Baseline):
 
     def __init__(self, **kwargs):
 
-        name              = "idiap_casia_inception_v2_rgb"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_extractor.py")
+        name              = "htface_idiap_casia_inception_v2_centerloss_rgb"
+        extractor         = pkg_resources.resource_filename("bob.bio.face_ongoing", "configs/baselines/casiawebface/inception_resnet_v2/centerloss_rgb.py")
         preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")}
         algorithm = "distance-cosine"
 
@@ -153,5 +151,5 @@ class Inceptionv2_rgb(Baseline):
 
         super(Inceptionv2_rgb, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
 
-htface_inceptionv2_rgb = Inceptionv2_rgb()
+htface_idiap_casia_inception_v2_centerloss_rgb = Inceptionv2_rgb()
 

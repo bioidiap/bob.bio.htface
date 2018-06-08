@@ -63,7 +63,6 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
     db = load_resource(database, 'database', package_prefix="bob.bio.")
     db_preprocessor = search_preprocessor(database, loaded_baseline.preprocessors.keys())
     preprocessor = loaded_baseline.preprocessors[db_preprocessor]
-
     # Iterating over the protocols
     if hasattr(db, "reproducible_protocols"):
         protocols = db.reproducible_protocols
@@ -109,7 +108,7 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
         tf.reset_default_graph()
         if preprocess_training_data:
             training_data_params = ['-a', 'pca']
-            training_data_params += ['-o', 'preprocessing']
+            training_data_params += ['-o', 'preprocessing', 'extraction']
             verify(parameters + training_data_params + directories + ctx.args)
             tf.reset_default_graph()
 

@@ -1,12 +1,3 @@
-from . import database
-from . import algorithm
-from . import extractor
-from . import preprocessor
-from . import architectures
-from . import utils
-from . import baselines
-from . import configs
-from . import loss
 
 def get_config():
   """Returns a string containing the configuration information.

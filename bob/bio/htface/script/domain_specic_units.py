@@ -63,6 +63,7 @@ def htface_train_dsu(ctx, baseline, database, result_directory, protocol):
         samples_per_epoch = (len(db.objects(protocol=p, groups="world"))//2)*5
 
         # load the estimator
+        #import ipdb; ipdb.set_trace()        
         estimator, train_input_fn, hooks, preprocessed_relative_dir = \
                                                           loaded_baseline.estimator(result_directory, \
                                                           db, p, samples_per_epoch=samples_per_epoch,\
