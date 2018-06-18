@@ -221,12 +221,12 @@ Final Discussion
 ================
 
 It's possible to observe, that despite the fact such DCNNs don't have any prior knowledge about :math:`\mathcal{D}^t`, the feature detectors of such models were still able to detect discriminant features in all them (above a hypothetical random classifier).
-However, those recognition rates are lower than the state-of-the-art recognition rates in each image database (which consider a joint modeling of both :math:`\mathcal{D}^s` and :math:`\mathcal{D}^t$`.
+However, those recognition rates are lower than the state-of-the-art recognition rates in each image database (which consider a joint modeling of both :math:`\mathcal{D}^s` and :math:`\mathcal{D}^t`.
 
 The VIS-NIR databases (CASIA and NIVL) presented the highest rank one recognition rates in the majority of the tests.
 For instance, the best DCNN model in CASIA (Inception-ResNet v1) achieved a  rank one recognition rate of 81.79\%.
 For NIVL, which compared with CASIA has higher resolution images, the average rank one recognition rate is even better (92.77\%).
-Among all image domains, NIR seems to be visually similar to VIS images, which can explain why the feature detectors from our $\mathcal{D}^s$ are very accurate in this target domain.
+Among all image domains, NIR seems to be visually similar to VIS images, which can explain why the feature detectors from our :math:`\mathcal{D}^s` are very accurate in this target domain.
 
 
 The images taken from sketches are basically composed by shapes, and because of that, have lots of high frequency components.
@@ -244,7 +244,7 @@ Details like the expression, proportion of the face and volume of the hair are p
 The most challenging task seems to be the VIS-Thermal domain.
 For this one, the best CNN (Inception-ResNet v1-rgb) achieved an average recognition rate of only 27.68\%.
 
-In this section we presented an overview of Face Recognition using DCNNs and we analysed the effectiveness of six different face models trained with VIS face images in the $HFR$ task (covering three different image domains).
+In this section we presented an overview of Face Recognition using DCNNs and we analysed the effectiveness of six different face models trained with VIS face images in the **HFR** task (covering three different image domains).
 It was possible to observe that despite those new image domains were not used to train the DCNN, their feature detectors achieved recognition rates way above a random guess.
 For some of them, it was possible to achieve recognition rates above 80\%.
 With those experiments we argue that some set of feature detectors suitable for VIS :math:`\mathcal{D}^s` are also suitable for different spectral domains :math:`\mathcal{D}^t`.

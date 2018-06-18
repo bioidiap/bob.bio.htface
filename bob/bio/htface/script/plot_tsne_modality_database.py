@@ -67,7 +67,9 @@ def process_raw_data(raw_data):
     # If it is W x H x C 
     if raw_data.ndim == 3:
         raw_data = bob.io.image.to_bob(raw_data)
-        return numpy.reshape(raw_data, (raw_data.shape[0],raw_data.shape[1]*raw_data.shape[2]))
+        return raw_data.flatten()
+        #return numpy.reshape(raw_data, (raw_data.shape[0],raw_data.shape[1]*raw_data.shape[2]))
+
     elif raw_data.ndim == 2:
         return raw_data.flatten() 
     else:
@@ -154,16 +156,19 @@ def main():
                 data = numpy.zeros(shape=(total_samples, 1, raw_data.shape[0]))
 
         for j in range(data.shape[1]):
-            data[i,j] = raw_data[j]
+            if raw_data.ndim == 1:
+                data[i,j] = raw_data
+            else:
+                data[i,j] = raw_data[j]
  
     pp = PdfPages(output_file)
     for i in range(data.shape[1]):
+    #for i in range(32):
 
         logger.debug("  >> Training TSNE with {0} ...".format(data.shape))
         model = TSNE(n_components=2, random_state=seed, perplexity=perplexity,
                  learning_rate=learning_rate, n_iter=iterations, init='pca', metric='euclidean', method='exact')
         projected_data = model.fit_transform(data[:,i,:])
-
         # Ploting
         logger.debug("  >> Plotting projected data")
         fig = mpl.figure()
@@ -185,7 +190,7 @@ def main():
                    projected_data[indexes, 1],
                    c="indianred",
                    marker="o",
-                    s=3)
+                    s=1)
    
         mpl.legend(bob_db.modalities)
         pp.savefig(fig)

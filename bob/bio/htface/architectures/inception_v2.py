@@ -45,6 +45,7 @@ def inception_resnet_v2_core(inputs,
 
       logits: the logits outputs of the model.
     """
+    end_points = dict()
 
     net = inputs
 
@@ -93,6 +94,7 @@ def inception_resnet_v2_core(inputs,
                 padding='VALID',
                 scope='MaxPool_1a_3x3')
         net = tf.concat([tower_conv, tower_conv1_2, tower_pool], 3)
+        end_points[name] = net
 
     # BLOCK 17
     name = "Block17"
@@ -174,6 +176,7 @@ def inception_resnet_v2_core(inputs,
         net = tf.concat([
             tower_conv_1, tower_conv1_1, tower_conv2_2, tower_pool
         ], 3)
+        end_points[name] = net
 
     # Block 8
     name = "Block8"
@@ -193,6 +196,8 @@ def inception_resnet_v2_core(inputs,
     name = "Conv2d_7b_1x1"
     net = slim.conv2d(
         net, 1536, 1, scope=name, trainable=False, reuse=reuse)
+    end_points[name] = net
+
 
     with tf.variable_scope('Logits'):
         # pylint: disable=no-member
@@ -204,7 +209,7 @@ def inception_resnet_v2_core(inputs,
         net = slim.flatten(net)
 
         net = slim.dropout(net, dropout_keep_prob, scope='Dropout', is_training=(mode == tf.estimator.ModeKeys.TRAIN))
-
+        end_points['PreLogitsFlatten'] = net
 
     name = "Bottleneck"
     net = slim.fully_connected(
@@ -215,7 +220,7 @@ def inception_resnet_v2_core(inputs,
         reuse=reuse,
         trainable=False)
 
-    return net
+    return net, end_points
 
 
 def inception_resnet_v2_adapt_first_head(inputs,
@@ -424,7 +429,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                         trainable_variables=False,
                         reuse=reuse)
 
-                    net = inception_resnet_v2_core(
+                    net, core_endpoints = inception_resnet_v2_core(
                                          net,
                                          dropout_keep_prob=0.8,
                                          bottleneck_layer_size=128,
@@ -435,6 +440,7 @@ def inception_resnet_v2_adapt_first_head(inputs,
                                          **kwargs                    
                     )
                     
+    end_points.update(core_endpoints)
     return net, end_points
 
 
@@ -661,7 +667,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                         trainable_variables=False,
                         reuse=reuse)
 
-                    net = inception_resnet_v2_core(
+                    net, core_endpoints = inception_resnet_v2_core(
                                          net,
                                          dropout_keep_prob=0.8,
                                          bottleneck_layer_size=128,
@@ -671,7 +677,7 @@ def inception_resnet_v2_adapt_layers_1_2_head(inputs,
                                          trainable_variables=None,
                                          **kwargs
                     )
-
+    end_points.update(core_endpoints)
     return net, end_points
 
 
@@ -898,7 +904,7 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                         trainable_variables=False,
                         reuse=reuse)
 
-                    net = inception_resnet_v2_core(
+                    net, core_endpoints = inception_resnet_v2_core(
                                          net,
                                          dropout_keep_prob=0.8,
                                          bottleneck_layer_size=128,
@@ -908,6 +914,8 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
                                          trainable_variables=None,
                                          **kwargs
                     )
+
+    end_points.update(core_endpoints)
 
     return net, end_points
 
@@ -1135,7 +1143,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                         trainable_variables=False,
                         reuse=reuse)
 
-                    net = inception_resnet_v2_core(
+                    net, core_endpoints = inception_resnet_v2_core(
                                          net,
                                          dropout_keep_prob=0.8,
                                          bottleneck_layer_size=128,
@@ -1145,6 +1153,7 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
                                          trainable_variables=None,
                                          **kwargs
                     )
+    end_points.update(core_endpoints)
 
     return net, end_points
 
@@ -1376,7 +1385,7 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                 # CORE OF THE THE ADAPTATION
                 with slim.arg_scope([slim.batch_norm], trainable=False, is_training=False):
 
-                    net = inception_resnet_v2_core(
+                    net, core_endpoints = inception_resnet_v2_core(
                                          net,
                                          dropout_keep_prob=0.8,
                                          bottleneck_layer_size=128,
@@ -1385,5 +1394,6 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
                                          mode=mode,
                                          trainable_variables=None,
                                          **kwargs)
+    end_points.update(core_endpoints)
 
     return net, end_points

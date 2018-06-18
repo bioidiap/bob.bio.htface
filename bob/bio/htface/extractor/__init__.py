@@ -2,6 +2,7 @@ from .CNNFeatureBlocks import CNNFeatureBlocks
 from .AugmentedDCTBlocks import AugmentedDCTBlocks
 from .SiameseEmbedding import SiameseEmbedding
 from .TripletEmbedding import TripletEmbedding
+from .SiameseEmbeddingDumpFirstLayer import SiameseEmbeddingDumpFirstLayer
 from .MLBPHS import MLBPHS
 
 
