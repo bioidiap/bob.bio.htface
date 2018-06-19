@@ -52,19 +52,21 @@ where :math:`\phi` are the embeddings from the jointly trained DCNN.
 Results
 -------
 
-**Decribe the results from the paper.**
+.. warning::
+
+  Decribe the results from the paper
 
 
 Understanding the Domain Specific Units
 ---------------------------------------
 
-In this section we break down the covariate distribution layer by layer using tSNEs.
+In this section we break down the covariate distribution of data points sensed in different image modalities layer by layer using tSNEs.
 
-With these plots we expect to observe how data from different image modalities and different identities are organized along the forward pass.
+With these plots we expect to observe how data from different image modalities and different identities are organized along the DCNN transformations.
 
 For each image domain we present: 
   - The covariate distribution using the base network as a reference (without any adaptation) in the **left** column.
-  - The covariate distribution using the **best** DSU adapted network in the **right** column.
+  - The covariate distribution using the **best** DSU adapted network (for each database) in the **right** column.
 
 For this analysis we make all the plots using the Inception Resnet v2 as a basis.
 
@@ -72,14 +74,14 @@ For this analysis we make all the plots using the Inception Resnet v2 as a basis
 Pola Thermal
 ************
 
-For this analysis, the columsn on the right is generated using the :math:`\theta_{t[1-4]}` DSU.
+For this analysis, the columns on the right are generated using the :math:`\theta_{t[1-4]}` DSU.
 
 
 Pixel level distribution
 ........................
 
 Below we present the tSNE covariate distribution using the pixels as input.
-Blue dots represent **VIS** samples and red dots represents **Thermal** samples.
+Blue dots represent **VIS** samples and red dots represent **Thermal** samples.
 It's possible to observe that images from different image modalities do cluster, which is an expected behaviour.
 
 .. image:: ../plots/transfer-learning/understanding/THERMAL_pixel.png
@@ -200,6 +202,142 @@ We can use this layer as the final embedding.
    :width: 45%
 .. image:: ../plots/transfer-learning/understanding/THERMAL_adapt_1-4_emb_flat.png
    :width: 45%
+
+
+
+CUFSF
+*****
+
+For this analysis, the columns on the right is generated using the :math:`\theta_{t[1-5]}` DSU.
+
+
+Pixel level distribution
+........................
+
+Below we present the tSNE covariate distribution using the pixels as input.
+Blue dots represent **VIS** samples and red dots represents **Thermal** samples.
+It's possible to observe that images from different image modalities do cluster, which is an expected behaviour.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_pixel.png
+   :width: 70%
+
+
+Conv2d_1a_3x3 (:math:`\theta_{t[1-1]}` DSU adapted)
+...................................................
+
+Below we present the tSNE covariate distribution using the output of the first layer as input (:math:`\theta_{1-1}`).
+We can observe that in the very first layer the identities are clustered (**of course they are clustered, we have only one sample per identity/modality**) for both, adapted and non adapted, DCNNs.
+Moreover, the image modalities form two "big" clusters.
+
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_1_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_1_flat.png
+   :width: 45%
+
+
+Conv2d_3b_1x1 (:math:`\theta_{t[1-2]}` DSU adapted)
+...................................................
+
+Below we present the tSNE covariate distribution using the output of the first layer as input (:math:`\theta_{1-2}`).
+We can observe that in the very first layer the identities are clustered (**of course they are clustered, we have only one sample per identity/modality**) for both, adapted and non adapted, DCNNs.
+Moreover, the image modalities form two "big" clusters.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_2_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_2_flat.png
+   :width: 45%
+
+
+Conv2d_4a_3x3 (:math:`\theta_{t[1-4]}` DSU adapted)
+...................................................
+
+Below we present the tSNE covariate distribution using the output of the first layer as input (:math:`\theta_{1-4}`).
+We can observe that in the very first layer the identities are clustered (**of course they are clustered, we have only one sample per identity/modality**) for both, adapted and non adapted, DCNNs.
+
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_4_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_4_flat.png
+   :width: 45%
+
+
+Mixed_5b (:math:`\theta_{t[1-5]}` DSU adapted)
+..............................................
+
+From now, the layers are not DSU adapted.
+Below we can observe the same behaviour as before.
+This is the last adapted layer for this setup and the image modalities are still organized in two different clusters, which is a behaviour that, at first glance, is not expected.
+
+
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_5_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_5_flat.png
+   :width: 45%
+
+
+Mixed_6a (:math:`\theta_{t[1-6]}`)
+..................................
+
+Below we can observe the same behaviour as before.
+Modalities are clustered in two "big" clusters and inside of these clusters, the identities are clustered.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_6a_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_6a_flat.png
+   :width: 45%
+
+
+Mixed_7a
+........
+
+Below we can observe the same behaviour as before.
+Modalities are clustered in two "big" clusters and inside of these clusters, the identities are clustered.
+
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_7a_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_7a_flat.png
+   :width: 45%
+
+Conv2d_7b_1x1
+.............
+
+In the **left** tSNE (non DSU), we can observe the same behaviour as before.
+However, in the tSNE on the **right** we can observe that images from the same identities, but different image modalities start to cluster.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_7b_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_7b_flat.png
+   :width: 45%
+
+
+PreLogitsFlatten
+................
+
+In the **left** tSNE (non DSU), we can observe the same behaviour as before.
+However, in the tSNE on the **right** we can observe that images from the same identities, but different image modalities start to cluster.
+We can use this layer as the final embedding.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_prelog_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_prelog_flat.png
+   :width: 45%
+
+Final Embedding
+...............
+
+In the **left** tSNE (non DSU), we can observe the same behaviour as before.
+However, in the tSNE on the **right** we can observe that images from the same identities, but different image modalities start to cluster.
+We can use this layer as the final embedding.
+
+.. image:: ../plots/transfer-learning/understanding/CUFSF_NOadapt_1-5_emb_flat.png
+   :width: 45%
+.. image:: ../plots/transfer-learning/understanding/CUFSF_adapt_1-5_emb_flat.png
+   :width: 45%
+
+
 
 
 CUHK-CUFS
