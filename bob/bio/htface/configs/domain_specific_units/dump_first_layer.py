@@ -19,7 +19,11 @@ from bob.bio.htface.extractor import SiameseEmbeddingDumpFirstLayer
 
 #model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_5_nonshared_batch_norm/cuhk_cufs/search_split1_p2s/"
 
-model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_5_nonshared_batch_norm/cuhk_cufsf/search_split1_p2s/"
+#model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_5_nonshared_batch_norm/cuhk_cufsf/search_split1_p2s/"
+
+#model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_euclidean_loss/pola_thermal/VIS-thermal-overall-split1/"
+
+model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs/pola_thermal/VIS-thermal-overall-split1/"
 
 #model_filename = rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"]
 
@@ -60,9 +64,9 @@ model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_5_
 
 # DUMP FIRST
 #architecture = inception_resnet_v2_adapt_first_head
-#architecture = inception_resnet_v2_adapt_layers_1_4_head
+architecture = inception_resnet_v2_adapt_layers_1_4_head
 
-architecture = inception_resnet_v2_adapt_layers_1_5_head
+#architecture = inception_resnet_v2_adapt_layers_1_5_head
 
 #import ipdb; ipdb.set_trace()
 extractor = SiameseEmbeddingDumpFirstLayer(model_filename, architecture, shape=(1, 160, 160, 1))

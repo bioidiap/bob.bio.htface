@@ -22,7 +22,9 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                                                random_saturation=False,
                                                per_image_normalization=True, 
                                                groups="world", purposes="train",
-                                               extension=None):
+                                               extension=None,
+                                               pairs_same_modality=False,
+                                               random_pairs=False):
     """
     Dump random batches for siamese networks using heterogeneous face databases
     
@@ -84,6 +86,11 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
        extension:
            If None, will load files using `tf.image.decode..` if set to `hdf5`, will load with `bob.io.base.load`
 
+       pairs_same_modality:
+           If True, will return pairs of images from the same modality
+
+       random_pairs:
+           If True, will return pairs whose the GENUINE pair doesn't belong to the same identity
     """    
     parser = partial(image_augmentation_parser,
                  data_shape=data_shape,
@@ -97,7 +104,8 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                  per_image_normalization=per_image_normalization,
                  extension=extension)
 
-    left_data, right_data, siamese_labels = siamese_htface_generator(database, protocol, groups, purposes)
+    left_data, right_data, siamese_labels = siamese_htface_generator(database, protocol, groups, 
+            purposes, pairs_same_modality=pairs_same_modality, random_pairs=random_pairs)
     dataset = tf.contrib.data.Dataset.from_tensor_slices((left_data, right_data, siamese_labels))
     dataset = dataset.map(parser)
 
@@ -108,7 +116,8 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
     return data, labels
 
 
-def siamese_htface_generator(database, protocol, groups="world", purposes="train", get_objects=False):
+def siamese_htface_generator(database, protocol, groups="world", purposes="train", 
+        get_objects=False, pairs_same_modality=False, random_pairs=False):
                  
     left_data = []
     right_data = []
@@ -124,10 +133,17 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
     client_ids = database.model_ids_with_protocol(protocol=protocol, groups=groups)
                                               
     # List of samples from modality A
-    samples_A = database.objects(protocol=protocol,
-                                 groups=groups,
-                                 purposes=purposes,
-                                 modality=database.modalities[0])
+    if pairs_same_modality:
+        samples_A = database.objects(protocol=protocol,
+                                     groups=groups,
+                                     purposes=purposes,
+                                     modality=database.modalities[1])
+
+    else:
+        samples_A = database.objects(protocol=protocol,
+                                     groups=groups,
+                                     purposes=purposes,
+                                     modality=database.modalities[0])
 
     # Samples from modality B sorted by identiy
     samples_B = list_2_dict(database.objects(protocol=protocol,
@@ -148,7 +164,14 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
                 left = o
             if genuine:
                 # Loading genuine pair
-                right_object = samples_B[reference_identity].get_object()
+                if random_pairs:
+                    while True:
+                        index = numpy.random.randint(len(samples_B.keys()))
+                        if list(samples_B.keys())[index] != o.client_id:
+                            right_object = samples_B[list(samples_B.keys())[index]].get_object()
+                            break       
+                else:
+                    right_object = samples_B[reference_identity].get_object()
                 label = 0
             else:
                 # Loading impostor pair
