@@ -7,11 +7,11 @@ logger = logging.getLogger("bob.learn.tensorflow")
 import tensorflow as tf
 
 
-def kl_loss(left_embedding,
-            right_embedding,
-            contrastive_margin=2.0):
+def fdsu_contrastive_loss(left_embedding,
+                          right_embedding,
+                          contrastive_margin=2.0):
     """
-    Compute the KL
+    Compute the FDSU Siamese loss
  
 
     **Parameters**
@@ -27,15 +27,25 @@ def kl_loss(left_embedding,
 
     """
 
-    with tf.name_scope("kl_loss"):
+    with tf.name_scope("fsdu_contranstive_loss"):
 
-        left_embedding = tf.maximum(tf.reduce_mean(tf.nn.l2_normalize(left_embedding, 1), axis=0), 1e-5)
-        right_embedding = tf.maximum(tf.reduce_mean(tf.nn.l2_normalize(right_embedding, 1), axis=0), 1e-5)
+        losses = []
+        for l,r in zip(left_embedding, right_embedding):
 
-        kl = (left_embedding - right_embedding) * tf.log(left_embedding/right_embedding)
+            _, height, width, number = map(lambda i: i.value, l.get_shape())
+            size = height * width * number
+        
+            # reshaping per channel
+            l = tf.reshape(l, (-1, number))
+            r = tf.reshape(r, (-1, number))
 
-        loss = tf.reduce_sum(kl, name="kl_loss")
-        tf.summary.scalar('kl_loss', loss)
+            # gram 
+            left_gram = tf.matmul(tf.transpose(l), l) / size
+            right_gram = tf.matmul(tf.transpose(r), r) / size
+
+            losses.append(tf.nn.l2_loss(left_gram - right_gram))
+
+        loss = reduce(tf.add, losses)
 
         return loss
 

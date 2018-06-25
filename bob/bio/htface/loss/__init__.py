@@ -1,2 +1,3 @@
-from .Losses import kl_loss
+from .Losses import fdsu_contrastive_loss
+
 

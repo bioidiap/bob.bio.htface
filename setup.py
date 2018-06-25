@@ -215,7 +215,13 @@ setup(
 
           'fdsu_inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.free_domain_specific_units.inception_v2.adapt_first:fdsu_inception_resnet_v2_siamese_adapt_first',
 
+          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_same_modality = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_same_modality',
+ 
+          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_random_pairs',
+ 
+          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_euclidean_loss = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_euclidean_loss',
 
+ 
       ],        
 
       # bob bio scripts

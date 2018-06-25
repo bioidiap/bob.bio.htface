@@ -24,6 +24,8 @@ import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.in
 
 import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v2_adapt_layers_1_4.estimator_nonshared_batch_norm_euclidean_loss
 
+import bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v2_adapt_layers_1_4.estimator_nonshared_batch_norm_low_level_loss
+
 
 class SiameseAdaptLayers1_4_BatchNorm(Baseline):
     """
@@ -198,6 +200,7 @@ class SiameseAdaptLayers1_4_BatchNorm_euclidean_loss(Baseline):
         self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
 
         super(SiameseAdaptLayers1_4_BatchNorm_euclidean_loss, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+
 
 
 # Entry points

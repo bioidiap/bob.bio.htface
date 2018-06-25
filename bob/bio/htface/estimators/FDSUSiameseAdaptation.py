@@ -99,7 +99,9 @@ class FDSUSiameseAdaptation(estimator.Estimator):
                  learning_rate_values=[0.1],
                  learning_rate_boundaries=[],
                  force_weights_shutdown=False,
-                 extra_checkpoint=None):
+                 extra_checkpoint=None,
+                 end_points=None
+                 ):
 
         self.architecture = architecture
         self.optimizer = optimizer
@@ -179,16 +181,13 @@ class FDSUSiameseAdaptation(estimator.Estimator):
 
                 with tf.control_dependencies([variable_averages_op]):
 
-                    # Compute Loss (for both TRAIN and EVAL modes)
-                    #self.loss = self.loss_op(prelogits_left, prelogits_right,
-                    #                         labels)
+                    left_ep = []
+                    right_ep = []
+                    for e in end_points:
+                        left_ep.append(end_points_left)
+                        right_ep.append(end_points_right)
 
-                    ##################
-                    # HARDCODING FOR THE MOMENT
-                    ##################
-                    self.loss = self.loss_op( end_points_left["Conv2d_1a_3x3_left"],
-                                              end_points_right["Conv2d_1a_3x3_right"])
-
+                    self.loss = self.loss_op(left_ep, right_ep)
 
                     # Compute the moving average of all individual losses and the total loss.
                     loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')

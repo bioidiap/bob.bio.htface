@@ -13,7 +13,7 @@ from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_
 from bob.learn.tensorflow.utils import reproducible
 from bob.bio.htface.estimators import FDSUSiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
-from bob.bio.htface.loss import kl_loss
+from bob.bio.htface.loss import fdsu_contrastive_loss
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 from bob.extension import rc
 
@@ -89,7 +89,8 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
                                                       random_saturation=False,
                                                       per_image_normalization=True, 
                                                       groups="world", purposes="train",
-                                                      extension="hdf5")
+                                                      extension="hdf5",
+                                                      random_pairs=True)
 
     # Defining our estimator
     optimizer = tf.train.AdagradOptimizer
@@ -98,7 +99,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
                                   optimizer=optimizer,
                                   validation_batch_size=training_setup["validation_batch_size"],
                                   config=run_config,
-                                  loss_op=kl_loss,
+                                  loss_op=fdsu_contrastive_loss,
                                   extra_checkpoint=extra_checkpoint,
                                   learning_rate_values=training_setup["learning_rate_values"],
                                   learning_rate_boundaries=learning_rate_boundaries,
