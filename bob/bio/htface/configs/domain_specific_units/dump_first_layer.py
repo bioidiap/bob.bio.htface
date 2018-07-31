@@ -23,7 +23,9 @@ from bob.bio.htface.extractor import SiameseEmbeddingDumpFirstLayer
 
 #model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_euclidean_loss/pola_thermal/VIS-thermal-overall-split1/"
 
-model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs/pola_thermal/VIS-thermal-overall-split1/"
+#model_filename = "/idiap/temp/tpereira/HTFace/cnn/siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs/pola_thermal/VIS-thermal-overall-split1/"
+
+model_filename = "/idiap/temp/tpereira/HTFace/cnn/styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm/pola_thermal/VIS-thermal-overall-split1/"
 
 #model_filename = rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"]
 

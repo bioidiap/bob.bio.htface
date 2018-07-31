@@ -75,6 +75,32 @@ def test_siamese_dataset_cuhk_cufs():
         assert left_data[i].modality != right_data[i].modality
 
 
+def test_siamese_dataset_sameidentity_cuhk_cufs():
+
+    #from bob.db.cuhk_cufs.query import Database
+    from bob.bio.htface.database import CUHK_CUFSBioDatabase as Database
+    database = Database(cufs_database_dir="", original_extension="", arface_database_dir="", xm2vts_database_dir="")
+    protocol="search_split1_p2s"
+    
+    left_data, right_data, labels = siamese_htface_generator(database,
+                                                                         protocol,
+                                                                         groups="world",
+                                                                         purposes="train",
+                                                                         get_objects=True,
+                                                                         same_identity_pairs=True)
+    # Checking the first 100 pairs
+    for i in range(100):
+        # Genuine pair
+        if labels[i]==0:
+            assert left_data[i].client_id == right_data[i].client_id
+        else:
+            assert False
+    
+        assert left_data[i].modality != right_data[i].modality
+
+
+
+
 """
 def test_siamese_dataset_cuhk_cufs():
 

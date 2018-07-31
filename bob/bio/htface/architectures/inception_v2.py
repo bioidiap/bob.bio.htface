@@ -105,6 +105,7 @@ def inception_resnet_v2_core(inputs,
         scale=0.10,
         trainable_variables=False,
         reuse=reuse)
+    end_points[name] = net
 
     name = "Mixed_7a"
     with tf.variable_scope(name):
@@ -192,6 +193,7 @@ def inception_resnet_v2_core(inputs,
         activation_fn=None,
         trainable_variables=False,
         reuse=reuse)
+    end_points[name] = net
 
     name = "Conv2d_7b_1x1"
     net = slim.conv2d(
@@ -219,6 +221,7 @@ def inception_resnet_v2_core(inputs,
         scope=name,
         reuse=reuse,
         trainable=False)
+    end_points[name] = net
 
     return net, end_points
 
@@ -277,7 +280,12 @@ def inception_resnet_v2_adapt_first_head(inputs,
             # Defining if the branches are reusable or not            
             is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
             is_reusable = is_reusable_variable(is_siamese, is_left)
-            
+
+            # In case you want to reuse the left part
+            # TODO: CHECK THIS PATCH
+            if is_left and reuse:
+                is_reusable = True
+
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
                 with slim.arg_scope([slim.batch_norm], trainable=is_trainable, is_training=is_trainable):
@@ -737,6 +745,12 @@ def inception_resnet_v2_adapt_layers_1_4_head(inputs,
             is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
             is_reusable = is_reusable_variable(is_siamese, is_left)
 
+            # In case you want to reuse the left part
+            # TODO: CHECK THIS PATCH
+            if is_left and reuse:
+                is_reusable = True
+
+
             # ADAPTABLE PART
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
 
@@ -975,6 +989,12 @@ def inception_resnet_v2_adapt_layers_1_5_head(inputs,
             # Defining if the branches are reusable or not            
             is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
             is_reusable = is_reusable_variable(is_siamese, is_left)
+            
+            # In case you want to reuse the left part
+            # TODO: CHECK THIS PATCH
+            if is_left and reuse:
+                is_reusable = True
+            
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):
@@ -1213,6 +1233,11 @@ def inception_resnet_v2_adapt_layers_1_6_head(inputs,
             # Defining if the branches are reusable or not            
             is_trainable = is_trainable_variable(is_left, mode=tf.estimator.ModeKeys.TRAIN)
             is_reusable = is_reusable_variable(is_siamese, is_left)
+
+            # In case you want to reuse the left part
+            # TODO: CHECK THIS PATCH
+            if is_left and reuse:
+                is_reusable = True
 
             # ADAPTABLE PART
             with slim.arg_scope([slim.dropout], is_training=(mode == tf.estimator.ModeKeys.TRAIN)):

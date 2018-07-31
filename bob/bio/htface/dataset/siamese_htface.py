@@ -24,7 +24,9 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                                                groups="world", purposes="train",
                                                extension=None,
                                                pairs_same_modality=False,
-                                               random_pairs=False):
+                                               random_pairs=False,
+                                               same_identity_pairs=False
+                                               ):
     """
     Dump random batches for siamese networks using heterogeneous face databases
     
@@ -91,6 +93,9 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
 
        random_pairs:
            If True, will return pairs whose the GENUINE pair doesn't belong to the same identity
+
+       same_identiy_pairs:
+           Return only genuine pairs
     """    
     parser = partial(image_augmentation_parser,
                  data_shape=data_shape,
@@ -105,7 +110,8 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                  extension=extension)
 
     left_data, right_data, siamese_labels = siamese_htface_generator(database, protocol, groups, 
-            purposes, pairs_same_modality=pairs_same_modality, random_pairs=random_pairs)
+            purposes, pairs_same_modality=pairs_same_modality, random_pairs=random_pairs,
+            same_identity_pairs=same_identity_pairs)    
     dataset = tf.contrib.data.Dataset.from_tensor_slices((left_data, right_data, siamese_labels))
     dataset = dataset.map(parser)
 
@@ -117,7 +123,7 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
 
 
 def siamese_htface_generator(database, protocol, groups="world", purposes="train", 
-        get_objects=False, pairs_same_modality=False, random_pairs=False):
+        get_objects=False, pairs_same_modality=False, random_pairs=False, same_identity_pairs=False):
                  
     left_data = []
     right_data = []
@@ -186,8 +192,9 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
                 right = right_object.make_path(database.original_directory, database.original_extension)
             else:
                 right = right_object
-                
-            genuine = not genuine
+            
+            if not same_identity_pairs:
+                genuine = not genuine
 
             #yield left, right, label
             append(left, right, label)

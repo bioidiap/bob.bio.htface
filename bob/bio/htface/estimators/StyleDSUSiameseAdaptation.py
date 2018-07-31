@@ -141,7 +141,6 @@ class StyleDSUSiameseAdaptation(estimator.Estimator):
                 is_siamese=False,
                 force_weights_shutdown=self.force_weights_shutdown)
 
-
             prelogits_xt0, end_points_xt0 = self.architecture(
                 features['right'],
                 mode=mode,
@@ -203,9 +202,10 @@ class StyleDSUSiameseAdaptation(estimator.Estimator):
                     for layer_source, layer_target in zip(loss_left_end_points, loss_right_end_points):
                         source_layers.append(end_points_xs[layer_source])
                         target_layers.append(end_points_xt[layer_target])
-                       
-                    self.loss = style_gram_dsu_contrastive_loss(prelogits_xt,
-                                                           prelogits_xt0,
+
+                    self.loss = style_dsu_contrastive_loss(features['right'],
+                                                           [end_points_xt["Block8"]],
+                                                           [end_points_xt0["Block8"]],
 
                                                            source_layers,
                                                            target_layers

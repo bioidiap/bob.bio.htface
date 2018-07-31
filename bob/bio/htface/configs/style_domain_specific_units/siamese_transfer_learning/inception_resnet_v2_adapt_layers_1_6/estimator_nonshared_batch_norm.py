@@ -3,26 +3,23 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 # Calling our base setup
-from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_first_head
+from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_layers_1_6_head
 
 import os
 import tensorflow as tf
-#from tensorflow.python import debug as tf_debug
-
 from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils import reproducible
-from bob.bio.htface.estimators import FDSUSiameseAdaptation
+from bob.bio.htface.estimators import StyleDSUSiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
-from bob.bio.htface.loss import fdsu_contrastive_loss
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 from bob.extension import rc
 
 
 def get_estimator(experiment_dir, database, protocol, samples_per_epoch, training_setup):
 
-    # Training parameters
-    architecture = inception_resnet_v2_adapt_first_head
-    model_name = "fdsu_siamese_inceptionv2_first_layer_nonshared_batch_norm"
+    # MAIN ARCHITECTURE
+    architecture = inception_resnet_v2_adapt_layers_1_6_head
+    model_name = "styledsu_siamese_inceptionv2_adapt_1_6_nonshared_batch_norm"
 
     # Setting seed
     session_config, run_config,_,_,_ = reproducible.set_seed()
@@ -43,34 +40,50 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
     #             "Mixed_5b", "Block35", "Mixed_6a", "Block17", "Mixed_7a",
     #             "Block8", "Conv2d_7b_1x1", "Bottleneck"]
 
+
     # Preparing the checkpoint loading
     left_scope = dict()
-    left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_left/"
-    left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3/"
-    left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3/"
-    left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1/"
-    left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3/"
-    left_scope['InceptionResnetV2/Repeat/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat
-    left_scope['InceptionResnetV2/Repeat_1/'] = "InceptionResnetV2/Repeat_1/" # TF-SLIM ADD the prefix repeat unde each repeat  
-    left_scope['InceptionResnetV2/Repeat_2/'] = "InceptionResnetV2/Repeat_2/" # TF-SLIM ADD the prefix repeat unde each repeat    
+    left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_anchor/"
+    left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_anchor/"
+    left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_anchor/"
+    left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_anchor/"
+    left_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_anchor/"
+    left_scope['InceptionResnetV2/Mixed_5b/']      = "InceptionResnetV2/Mixed_5b_anchor/"
 
-    # JUst to be sure
-    left_scope['InceptionResnetV2/Mixed_5b/'] = "InceptionResnetV2/Mixed_5b/"
-    left_scope['InceptionResnetV2/Block35/'] = "InceptionResnetV2/Block35/"
+    #### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
+    for i in range(1, 11):
+        left_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_anchor/".format(i)
+
+
+
+    # NON ADAPTABLE PART
+    #left_scope['InceptionResnetV2/Repeat/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat
+
+    #### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED
+    left_scope['InceptionResnetV2/Repeat_1/'] = "InceptionResnetV2/Repeat/" # TF-SLIM ADD the prefix repeat unde each repeat  
+    left_scope['InceptionResnetV2/Repeat_2/'] = "InceptionResnetV2/Repeat_1/" # TF-SLIM ADD the prefix repeat unde each repeat    
+
     left_scope['InceptionResnetV2/Mixed_6a/'] = "InceptionResnetV2/Mixed_6a/"
     left_scope['InceptionResnetV2/Block17/'] = "InceptionResnetV2/Block17/"
     left_scope['InceptionResnetV2/Mixed_7a/'] = "InceptionResnetV2/Mixed_7a/"
     left_scope['InceptionResnetV2/Block8/'] = "InceptionResnetV2/Block8/"
     left_scope['InceptionResnetV2/Conv2d_7b_1x1/'] = "InceptionResnetV2/Conv2d_7b_1x1/"
     left_scope['InceptionResnetV2/Bottleneck/'] = "InceptionResnetV2/Bottleneck/"
-    left_scope['InceptionResnetV2/Logits/'] = "InceptionResnetV2/Logits/"
 
     right_scope = dict()
-    right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_right/"
+    right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_positive-negative/"
+    right_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3_positive-negative/"
+    right_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3_positive-negative/"
+    right_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1_positive-negative/"
+    right_scope['InceptionResnetV2/Conv2d_4a_3x3/'] = "InceptionResnetV2/Conv2d_4a_3x3_positive-negative/"
+    right_scope['InceptionResnetV2/Mixed_5b/']      = "InceptionResnetV2/Mixed_5b_positive-negative/"
 
- 
-    loss_left_end_points=["Conv2d_1a_3x3_left"]
-    loss_right_end_points=["Conv2d_1a_3x3_right"]
+    loss_left_end_points = ["Conv2d_1a_3x3_anchor", "Conv2d_2a_3x3_anchor", "Conv2d_2b_3x3_anchor", "Conv2d_3b_1x1_anchor", "Conv2d_4a_3x3_anchor", "Mixed_5b_anchor", "block35_anchor"]
+    loss_right_end_points = ["Conv2d_1a_3x3_positive-negative", "Conv2d_2a_3x3_positive-negative", "Conv2d_2b_3x3_positive-negative", "Conv2d_3b_1x1_positive-negative", "Conv2d_4a_3x3_positive-negative", "Mixed_5b_positive-negative", "block35_positive-negative"]
+
+    #### ISSUE #2 THE REPEAT LAYERS ARE SHIFTED I HAVE TO COPY, ONE BY ONE
+    for i in range(1, 11):
+        right_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_positive-negative/".format(i)        
 
     # Preparing the prior
     extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"],
@@ -93,21 +106,21 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
                                                       per_image_normalization=True, 
                                                       groups="world", purposes="train",
                                                       extension="hdf5",
-                                                      random_pairs=True)
+                                                      random_pairs=True
+                                                      )
 
     # Defining our estimator
     optimizer = tf.train.AdagradOptimizer
-    estimator = FDSUSiameseAdaptation(model_dir=model_dir,
+    estimator = StyleDSUSiameseAdaptation(model_dir=model_dir,
                                   architecture=architecture,
                                   optimizer=optimizer,
                                   validation_batch_size=training_setup["validation_batch_size"],
                                   config=run_config,
-                                  loss_op=fdsu_contrastive_loss,
                                   extra_checkpoint=extra_checkpoint,
                                   learning_rate_values=training_setup["learning_rate_values"],
                                   learning_rate_boundaries=learning_rate_boundaries,
                                   loss_left_end_points=loss_left_end_points,
-                                  loss_right_end_points=loss_right_end_points 
+                                  loss_right_end_points=loss_right_end_points
                                   )
 
     # Defining our hook mechanism

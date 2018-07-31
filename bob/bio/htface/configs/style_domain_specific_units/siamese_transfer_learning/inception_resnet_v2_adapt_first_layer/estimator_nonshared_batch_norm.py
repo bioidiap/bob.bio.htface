@@ -11,9 +11,8 @@ import tensorflow as tf
 
 from bob.bio.htface.dataset.siamese_htface import shuffle_data_and_labels_image_augmentation
 from bob.learn.tensorflow.utils import reproducible
-from bob.bio.htface.estimators import FDSUSiameseAdaptation
+from bob.bio.htface.estimators import StyleDSUSiameseAdaptation
 from bob.learn.tensorflow.utils.hooks import LoggerHookEstimator
-from bob.bio.htface.loss import fdsu_contrastive_loss
 from bob.bio.htface.utils import get_cnn_model_name, get_stair_case_learning_rates
 from bob.extension import rc
 
@@ -22,7 +21,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
 
     # Training parameters
     architecture = inception_resnet_v2_adapt_first_head
-    model_name = "fdsu_siamese_inceptionv2_first_layer_nonshared_batch_norm"
+    model_name = "styledsu_siamese_inceptionv2_first_layer_nonshared_batch_norm"
 
     # Setting seed
     session_config, run_config,_,_,_ = reproducible.set_seed()
@@ -45,7 +44,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
 
     # Preparing the checkpoint loading
     left_scope = dict()
-    left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_left/"
+    left_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_anchor/"
     left_scope['InceptionResnetV2/Conv2d_2a_3x3/'] = "InceptionResnetV2/Conv2d_2a_3x3/"
     left_scope['InceptionResnetV2/Conv2d_2b_3x3/'] = "InceptionResnetV2/Conv2d_2b_3x3/"
     left_scope['InceptionResnetV2/Conv2d_3b_1x1/'] = "InceptionResnetV2/Conv2d_3b_1x1/"
@@ -66,11 +65,11 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
     left_scope['InceptionResnetV2/Logits/'] = "InceptionResnetV2/Logits/"
 
     right_scope = dict()
-    right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_right/"
+    right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_positive-negative/"
 
  
-    loss_left_end_points=["Conv2d_1a_3x3_left"]
-    loss_right_end_points=["Conv2d_1a_3x3_right"]
+    loss_left_end_points=["Conv2d_1a_3x3_anchor"]
+    loss_right_end_points=["Conv2d_1a_3x3_positive-negative"]
 
     # Preparing the prior
     extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"],
@@ -97,12 +96,11 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
 
     # Defining our estimator
     optimizer = tf.train.AdagradOptimizer
-    estimator = FDSUSiameseAdaptation(model_dir=model_dir,
+    estimator = StyleDSUSiameseAdaptation(model_dir=model_dir,
                                   architecture=architecture,
                                   optimizer=optimizer,
                                   validation_batch_size=training_setup["validation_batch_size"],
                                   config=run_config,
-                                  loss_op=fdsu_contrastive_loss,
                                   extra_checkpoint=extra_checkpoint,
                                   learning_rate_values=training_setup["learning_rate_values"],
                                   learning_rate_boundaries=learning_rate_boundaries,

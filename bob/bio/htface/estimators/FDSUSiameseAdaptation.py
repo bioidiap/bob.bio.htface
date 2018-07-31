@@ -100,7 +100,8 @@ class FDSUSiameseAdaptation(estimator.Estimator):
                  learning_rate_boundaries=[],
                  force_weights_shutdown=False,
                  extra_checkpoint=None,
-                 end_points=None
+                 loss_left_end_points=None,
+                 loss_right_end_points=None
                  ):
 
         self.architecture = architecture
@@ -183,9 +184,9 @@ class FDSUSiameseAdaptation(estimator.Estimator):
 
                     left_ep = []
                     right_ep = []
-                    for e in end_points:
-                        left_ep.append(end_points_left)
-                        right_ep.append(end_points_right)
+                    for lp, rp in zip(loss_left_end_points, loss_right_end_points):
+                        left_ep.append(end_points_left[lp])
+                        right_ep.append(end_points_right[rp])
 
                     self.loss = self.loss_op(left_ep, right_ep)
 

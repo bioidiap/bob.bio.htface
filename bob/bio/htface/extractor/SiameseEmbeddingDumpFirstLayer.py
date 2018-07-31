@@ -26,10 +26,10 @@ class SiameseEmbeddingDumpFirstLayer(Extractor):
 
         # Taking the embedding
         prelogits_left, endpoints_left = graph_function(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(self.input_left)]),
-                                                    mode=tf.estimator.ModeKeys.PREDICT, is_left=True)
+                                                    mode=tf.estimator.ModeKeys.PREDICT, is_left=True, is_siamese=False)
 
         prelogits_right, endpoints_right = graph_function(tf.stack([tf.image.per_image_standardization(i) for i in tf.unstack(self.input_right)]),
-                                           mode=tf.estimator.ModeKeys.PREDICT, is_left=False, reuse=True)
+                                           mode=tf.estimator.ModeKeys.PREDICT, is_left=False, reuse=True, is_siamese=False)
 
         #self.embedding_left = tf.nn.l2_normalize(endpoints_left["Conv2d_1a_3x3_left"], dim=1, name="embedding")
         #self.embedding_right = tf.nn.l2_normalize(endpoints_right["Conv2d_1a_3x3_right"], dim=1, name="embedding")
@@ -38,8 +38,11 @@ class SiameseEmbeddingDumpFirstLayer(Extractor):
         #self.embedding_right = tf.nn.l2_normalize(endpoints_right["Conv2d_3b_1x1_right"], dim=1, name="embedding")
 
 
-        self.embedding_left = tf.nn.l2_normalize(endpoints_left["Conv2d_4a_3x3_left"], dim=1, name="embedding")
-        self.embedding_right = tf.nn.l2_normalize(endpoints_right["Conv2d_4a_3x3_right"], dim=1, name="embedding")
+        #self.embedding_left = tf.nn.l2_normalize(endpoints_left["Conv2d_4a_3x3_left"], dim=1, name="embedding")
+        #self.embedding_right = tf.nn.l2_normalize(endpoints_right["Conv2d_4a_3x3_right"], dim=1, name="embedding")
+
+        self.embedding_left = tf.nn.l2_normalize(endpoints_left["Conv2d_4a_3x3_anchor"], dim=1, name="embedding")
+        self.embedding_right = tf.nn.l2_normalize(endpoints_right["Conv2d_4a_3x3_positive-negative"], dim=1, name="embedding")
 
 
         #self.embedding_left = tf.nn.l2_normalize(endpoints_left["Mixed_5b_left"], dim=1, name="embedding")

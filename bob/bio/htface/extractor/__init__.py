@@ -4,6 +4,7 @@ from .SiameseEmbedding import SiameseEmbedding
 from .TripletEmbedding import TripletEmbedding
 from .SiameseEmbeddingDumpFirstLayer import SiameseEmbeddingDumpFirstLayer
 from .MLBPHS import MLBPHS
+from .StyleTransfer import StyleTransfer
 
 
 # gets sphinx autodoc done right - don't remove it

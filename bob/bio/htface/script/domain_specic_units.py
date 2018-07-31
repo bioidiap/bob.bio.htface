@@ -17,6 +17,7 @@ from bob.bio.base.script.verify import main as verify
 from bob.extension import rc
 from bob.bio.htface.configs.domain_specific_units.utils import get_dsu_training_setup
 import tensorflow as tf
+from tensorflow.python import debug as tf_debug
 
 
 @click.command(context_settings={'ignore_unknown_options': True,
@@ -63,7 +64,6 @@ def htface_train_dsu(ctx, baseline, database, result_directory, protocol):
         samples_per_epoch = (len(db.objects(protocol=p, groups="world"))//2)*5
 
         # load the estimator
-        #import ipdb; ipdb.set_trace()        
         estimator, train_input_fn, hooks, preprocessed_relative_dir = \
                                                           loaded_baseline.estimator(result_directory, \
                                                           db, p, samples_per_epoch=samples_per_epoch,\
@@ -77,6 +77,9 @@ def htface_train_dsu(ctx, baseline, database, result_directory, protocol):
         # Changing the database path
         db.original_directory = preprocessed_directory
         db.original_extension = ".hdf5"
+
+        # debug        
+        #hooks.append(tf_debug.LocalCLIDebugHook())
 
         # Triggering the estimator
         estimator.train(input_fn=train_input_fn, hooks=hooks,
