@@ -114,7 +114,68 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   return figure
 
 
+def _plot_roc(scores, colors, labels, title, linestyle,  fontsize=12, position=None, xmin=0, xmax=100):
+
+    def _semilogx(x, y, color, **kwargs):
+        # remove points were x is 0
+        x, y = numpy.asarray(x), numpy.asarray(y)
+        zero_index = x == 0
+        x = x[~zero_index]
+        y = y[~zero_index]
+        return pyplot.semilogx(x, y, color=color, **kwargs)
+
+    if position is None: position = 4
+
+    # open new page for current plot
+
+    figure = pyplot.figure(dpi=600)
+    offset = 0
+    step   = int(len(scores)/len(labels))
+    params = {'legend.fontsize': int(fontsize)}
+    matplotlib.rcParams.update(params)
+    matplotlib.rc('xtick', labelsize=10)
+    matplotlib.rc('ytick', labelsize=10)
+    matplotlib.rcParams.update({'font.size': 16})
+
+    rocs     = []
+    for s in scores:
+        negatives, positives = bob.bio.base.score.load.split_four_column(s)
+        rocs.append(bob.measure.roc(negatives, positives, n_points=100))
+    rocs = numpy.array(rocs)
+ 
+    for i in range(len(labels)):
+        l = labels[i]
+
+        mean_x   = numpy.mean(rocs[offset : offset+step,0,:], axis=0)
+        mean_y   = 1-numpy.mean(rocs[offset : offset+step,1,:], axis=0)
+
+        #std_x   = numpy.std(rocs[offset : offset+step,0,:], axis=0)
+        std_y   = numpy.std(rocs[offset : offset+step,1,:], axis=0)
+
+        offset += step
+        _semilogx(mean_x, mean_y, colors[i])
+        pyplot.errorbar(mean_x, mean_y, std_y, lw=0.5, ms=10,color=colors[i])
+       
+        
+        
+    # change axes accordingly
+    #ticks = [int(t) for t in pyplot.xticks()[0]]
+    pyplot.xlabel('False Acceptance Rate @')
+    pyplot.ylabel('Verification Rate (\%)')
+    #pyplot.xticks(ticks, [str(t) for t in ticks])
+    #pyplot.axis([0, max_x, xmin, 100])
+    #pyplot.axis([0, max_x, xmin, xmax])  
+    #pyplot.legend(loc=position, fontsize=12)
+    pyplot.title(title)
+    pyplot.grid(True)
+
+    return figure
+
+
 def _compute_rr(cmcs, labels):
+    """
+    Compute Average Recognition Rate
+    """
     offset = 0
     step   = int(len(cmcs)/len(labels))
 
@@ -129,6 +190,33 @@ def _compute_rr(cmcs, labels):
         average   = round(numpy.mean(rr[offset : offset+step])*100,3)
         std_value = round(numpy.std(rr[offset : offset+step])*100,3)
         print("The AVERAGE Recognition Rate of the development set of '{0}' along '{1}' splits is {2}({3})".format(l, int(step), average, std_value))
+        offset += step
+        means.append(average)
+
+    return means
+
+
+def _compute_tpir_at_far(scores, labels, far=0.1):
+    """
+    Compute average TPIR@FAR=0.1
+    """
+    offset = 0
+    step   = int(len(scores)/len(labels))
+
+    #Computing the recognition rate for each score file
+    tpir     = []
+    for s in scores:
+        negatives, positives = bob.bio.base.score.load.split_four_column(s)
+        thres = bob.measure.far_threshold(negatives, positives, far_value=far)
+        far, frr = bob.measure.farfrr(negatives, positives, thres)
+        tpir.append(1.-frr)
+      
+    means   = []
+    for i in range(len(labels)):
+        l = labels[i]
+        average   = round(numpy.mean(tpir[offset : offset+step])*100,3)
+        std_value = round(numpy.std(tpir[offset : offset+step])*100,3)
+        print("The AVERAGE TPIR@FAR=0.1 of '{0}' along '{1}' splits is {2}({3})".format(l, int(step), average, std_value))
         offset += step
         means.append(average)
 
@@ -176,7 +264,12 @@ def main(command_line_parameters=None):
         df = discover_scores(e, score_name=args["--score-base-name"])
         dev_files += df
         logger.info("{0} scores discovered in {1}".format(len(df), e))
-    
+
+
+    # TPIR@FAR=0.1
+    logger.info("Computing TPIR@FAR=0.1")
+    _compute_tpir_at_far(dev_files, args["--legends"])
+
     # RR
     logger.info("Computing recognition rate")
     cmcs_dev = [bob.bio.base.score.load.cmc_four_column(f) for f in dev_files]
@@ -192,13 +285,17 @@ def main(command_line_parameters=None):
     
     pdf = PdfPages(args["--report-name"])
     try:
-        # create a separate figure for dev and eval
+        # CMC
         if args["--special-linestyle"]:
             fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=special_line_style, xmin=int(args["--x-min"]))
         else:
             fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=None, xmin=int(args["--x-min"]))
             
-        pdf.savefig(fig)    
+        pdf.savefig(fig)
+
+        # ROC
+        fig = _plot_roc(dev_files, colors, args["--legends"], args["--title"], linestyle=special_line_style,  fontsize=12, position=None, xmin=0, xmax=100)
+        pdf.savefig(fig)
   
     except RuntimeError as e:
         raise RuntimeError("During plotting of CMC curves, the following exception occured:\n%s\nUsually this happens when the label contains characters that LaTeX cannot parse." % e)
