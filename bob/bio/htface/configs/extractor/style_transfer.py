@@ -28,7 +28,7 @@ architecture = inception_resnet_v2_batch_norm
 
 # --checkpoint-dir
 from bob.extension import rc
-checkpoint_dir = rc['bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray']
+checkpoint_dir = rc['bob.bio.face_ongoing.casia-webface-inception-v2_batchnorm_gray']
 
 
 # --style-end-points and -- content-end-points

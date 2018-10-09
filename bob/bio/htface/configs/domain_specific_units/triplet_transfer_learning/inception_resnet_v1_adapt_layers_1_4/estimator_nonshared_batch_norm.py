@@ -71,7 +71,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
     right_scope['InceptionResnetV1/Conv2d_4b_3x3/'] = "InceptionResnetV1/Conv2d_4b_3x3_positive-negative/"
 
     # Preparing the prior
-    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.idiap_casia_inception_v1_centerloss_gray"],
+    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.casia-webface-inception-v1_batchnorm_gray"],
                         "scopes": [left_scope, right_scope]
                        }
 

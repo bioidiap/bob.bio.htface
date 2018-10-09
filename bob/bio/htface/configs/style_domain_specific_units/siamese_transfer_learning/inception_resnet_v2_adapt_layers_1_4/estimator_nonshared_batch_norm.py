@@ -78,7 +78,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
 
 
     # Preparing the prior
-    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray"],
+    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.casia-webface-inception-v2_batchnorm_gray"],
                         "scopes": [left_scope, right_scope]
                        }
 

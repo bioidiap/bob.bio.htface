@@ -114,10 +114,7 @@ setup(
             'gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main',
             'plot_covariate_shift.py = bob.bio.htface.script.plot_covariate_shift:main',
             'grassmann_test.py = bob.bio.htface.script.grassmann_test:main',
-            'verify_ht.py = bob.bio.htface.script.verify_ht:main',
             'bob_htface_evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main',
-            'bob_htface_baselines.py = bob.bio.htface.script.baselines:main',
-            'bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main',
             'bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main',
             'bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main', 
             'bob_htface_recrate_vs_nparameters_by_hand.py = bob.bio.htface.script.recrate_vs_nparameters_by_hand:main',
@@ -244,12 +241,18 @@ setup(
 
          'style_transfer_inception_v2 = bob.bio.htface.baselines.style_transfer.inception_v2:style_transfer_inception_v2',
  
-      ],        
+      ],
 
       # bob bio scripts
       'bob.bio.cli': [
-        'htface_baseline                    = bob.bio.htface.script.baseline:htface_baseline',
-        'htface_train_dsu = bob.bio.htface.script.domain_specic_units:htface_train_dsu',
+         'htface  = bob.bio.htface.script.htface:htface',
+      ],
+
+
+      # bob bio scripts
+      'bob.bio.htface.cli': [
+        'baseline  = bob.bio.htface.script.baseline:htface_baseline',
+        'train_dsu = bob.bio.htface.script.domain_specic_units:htface_train_dsu',
       ],
         
 
@@ -262,7 +265,7 @@ setup(
         'Framework :: Bob',
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: BSD',
         'Natural Language :: English',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',

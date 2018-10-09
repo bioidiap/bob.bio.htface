@@ -92,7 +92,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
     cmc_std     = numpy.std(cmc_accumulator, axis=0); cmc_std[-1]
     cmc_average = numpy.mean(cmc_accumulator, axis=0)
 
-    if(linestyle is not None):    
+    if(linestyle is not None):
       pyplot.semilogx(range(1, cmc_average.shape[0]+1), cmc_average * 100, lw=2, ms=10, mew=1.5, label=labels[i], ls=linestyle[i].replace('\\',''), color=colors[i])
     else:
       pyplot.semilogx(range(1, cmc_average.shape[0]+1), cmc_average * 100, lw=2, ms=10, mew=1.5, label=labels[i], color=colors[i])
@@ -108,7 +108,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   #pyplot.axis([0, max_x, xmin, 100])
   pyplot.axis([0, max_x, xmin, xmax])  
   pyplot.legend(loc=position, fontsize=12)
-  pyplot.title(title)
+  pyplot.title("")
   pyplot.grid(True)
 
   return figure
@@ -116,13 +116,13 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
 
 def _plot_roc(scores, colors, labels, title, linestyle,  fontsize=12, position=None, xmin=0, xmax=100):
 
-    def _semilogx(x, y, color, **kwargs):
+    def _semilogx(x, y, color, label, **kwargs):
         # remove points were x is 0
         x, y = numpy.asarray(x), numpy.asarray(y)
         zero_index = x == 0
         x = x[~zero_index]
         y = y[~zero_index]
-        return pyplot.semilogx(x, y, color=color, **kwargs)
+        return pyplot.semilogx(x, y, label=label, color=color, lw=2, ms=10, mew=1.5,  **kwargs)
 
     if position is None: position = 4
 
@@ -153,7 +153,7 @@ def _plot_roc(scores, colors, labels, title, linestyle,  fontsize=12, position=N
         std_y   = numpy.std(rocs[offset : offset+step,1,:], axis=0)
 
         offset += step
-        _semilogx(mean_x, mean_y, colors[i])
+        _semilogx(mean_x, mean_y, colors[i], labels[i])
         pyplot.errorbar(mean_x, mean_y, std_y, lw=0.5, ms=10,color=colors[i])
        
         
@@ -162,11 +162,13 @@ def _plot_roc(scores, colors, labels, title, linestyle,  fontsize=12, position=N
     #ticks = [int(t) for t in pyplot.xticks()[0]]
     pyplot.xlabel('False Acceptance Rate @')
     pyplot.ylabel('Verification Rate (\%)')
+    pyplot.legend(loc=position, fontsize=12)
+    pyplot.title("")
+
+    
     #pyplot.xticks(ticks, [str(t) for t in ticks])
     #pyplot.axis([0, max_x, xmin, 100])
-    #pyplot.axis([0, max_x, xmin, xmax])  
-    #pyplot.legend(loc=position, fontsize=12)
-    pyplot.title(title)
+    pyplot.axis([10e-3, 1., 0., 1.])
     pyplot.grid(True)
 
     return figure
@@ -251,7 +253,7 @@ def main(command_line_parameters=None):
 
     args = docopt(__doc__, version='Run experiment')
 
-    special_line_style = ["--", "-", "-", "-", "-", "-"]
+    special_line_style = ["--", "-", "-", "-", "-", "-", "-"]
 
     # check that the legends have the same length as the dev-files
     if (len(args["<experiment>"]) % len(args["--legends"])) != 0:
@@ -278,7 +280,7 @@ def main(command_line_parameters=None):
     # CMC
     logger.info("Plotting CMC")
     if len(args["--colors"]) ==0:
-        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue']
+        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown']
     else:
         if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
             logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
