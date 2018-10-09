@@ -502,16 +502,15 @@ In order to find such set, we exhaustively try, layer by layer (increasing the D
 Five possible :math:`\theta_t` sets are analysed and they are called :math:`\theta_{t[1-1]}`, :math:`\theta_{t[1-2]}`, :math:`\theta_{t[1-4]}`, :math:`\theta_{t[1-5]}` and :math:`\theta_{t[1-6]}`.
 A full description of which layers compose :math:`\theta_t` is presented in the Supplementary material of the paper.
 The Inception Resnet v2 architecture batch normalize REF[Ioffe2015] the forward signal for every layer.
-For convolutions, such batch normalization step is defined, for each layer $i$, as the following:
+For convolutions, such batch normalization step is defined, for each layer :math:`i`, as the following:
 
 :math:`h(x) = \beta_i + \frac{g{(W_i * x)}  +  \mu_i}{\sigma_i}`,
 where :math:`\beta` is the batch normalization offset (role of the biases), :math:`W` are the convolutional kernels, :math:`g` is the non-linear function applied to the convolution (ReLU activation), :math:`\mu` is the accumulated mean of the batch and :math:`\sigma` is the accumulated standard deviation of the batch.
 
 In the Equation, two variables are updated via backpropagation, the values of the kernel (:math:`W`) and the offset (:math:`\beta`).
-With these two variables, two possible scenarios for $\theta_{t[1-n]}$ are defined.
-In the first scenario, we consider that `\theta_{t[1-n]}` is composed by the set of batch normalization offsets (:math:`\beta`) only and the convolutional kernels $W$ are shared between $\mathcal{D}_s$ and $\mathcal{D}_t$.
-We may hypothesize that, since the target object that we are trying to model has the same structure among domains (frontal faces with neutral expression most of the time), the feature detectors for $\mathcal{D}_s$ and $\mathcal{D}_t$, encoded in $W$, are the same and just offsets need to be domain specific.
-In this work such models are represented as $\theta_{t[1-n]}(\beta)$.
-In the second scenario, both $W$ and $\beta$ are made domain specific (updated via back-propagation) and they are represented as $\theta_{t[1-n]}(\beta + W)$.
-
+With these two variables, two possible scenarios for :math:`\theta_{t[1-n]}` are defined.
+In the first scenario, we consider that :math:`\theta_{t[1-n]}` is composed by the set of batch normalization offsets (:math:`\beta`) only and the convolutional kernels :math:`W` are shared between :math:`\mathcal{D}_s` and :math:`\mathcal{D}_t`.
+We may hypothesize that, since the target object that we are trying to model has the same structure among domains (frontal faces with neutral expression most of the time), the feature detectors for :math:`\mathcal{D}_s` and :math:`\mathcal{D}_t`, encoded in :math:`W`, are the same and just offsets need to be domain specific.
+In this work such models are represented as :math:`\theta_{t[1-n]}(\beta)`.
+In the second scenario, both :math:`W` and :math:`\beta` are made domain specific (updated via back-propagation) and they are represented as :math:`\theta_{t[1-n]}(\beta + W)`.
 
