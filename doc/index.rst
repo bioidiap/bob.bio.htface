@@ -21,6 +21,13 @@ Please `install conda <https://conda.io/docs/install/quick.html#linux-miniconda-
 
 After everything installed do::
 
+  $ conda install bob.bio.htface
+  $ bob bio htface --help
+
+
+If you want to **DEVELOP** this package, follow below one possible set of instructions::
+
+  $ git clone https://gitlab.idiap.ch/bob/bob.bio.htface
   $ cd bob.bio.htface
   $ conda env create -f environment.yml
   $ source activate bob.bio.htface  # activate the environment
@@ -32,6 +39,7 @@ After everything installed do::
   Please, edit this file according to your own working environment::
 
   $ vim ~/.bobrc
+
 
 
 Follow below how this file looks like::

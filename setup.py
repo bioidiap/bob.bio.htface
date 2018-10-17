@@ -212,36 +212,35 @@ setup(
 
          ###### FREE DSU
 
-          'fdsu_inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.free_domain_specific_units.inception_v2.adapt_first:fdsu_inception_resnet_v2_siamese_adapt_first',
+          #'fdsu_inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.free_domain_specific_units.inception_v2.adapt_first:fdsu_inception_resnet_v2_siamese_adapt_first',
           
-          'fdsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm = bob.bio.htface.baselines.free_domain_specific_units.inception_v2.adapt_1_4:fdsu_inception_resnet_v2_siamese_adapt_1_4',
+          #'fdsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm = bob.bio.htface.baselines.free_domain_specific_units.inception_v2.adapt_1_4:fdsu_inception_resnet_v2_siamese_adapt_1_4',
 
-          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_same_modality = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_same_modality',
+          #'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_same_modality = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_same_modality',
  
-          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_random_pairs',
+          #'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_random_pairs = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_random_pairs',
  
-          'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_euclidean_loss = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_euclidean_loss',
+          #'siamese_inceptionv2_adapt_1_4_nonshared_batch_norm_euclidean_loss = bob.bio.htface.baselines.inception_v2.adapt_1_4:inception_resnet_v2_siamese_adapt_1_4_euclidean_loss',
 
 
          ####### STYLE DSU
          
-         'styledsu_inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_first:styledsu_inception_resnet_v2_siamese_adapt_first',
+         #'styledsu_inception_resnet_v2_siamese_adapt_first = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_first:styledsu_inception_resnet_v2_siamese_adapt_first',
 
 
-         'styledsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_4:styledsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm',
+         #'styledsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_4:styledsu_siamese_inceptionv2_adapt_1_4_nonshared_batch_norm',
          
-         'styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_4:styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm',
+         #'styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_4:styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm',
 
 
         ### ADAPT 1-5
-         'styledsu_siamese_inceptionv2_adapt_1_5_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_5:styledsu_siamese_inceptionv2_adapt_1_5_nonshared_batch_norm',
+         #'styledsu_siamese_inceptionv2_adapt_1_5_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_5:styledsu_siamese_inceptionv2_adapt_1_5_nonshared_batch_norm',
 
 
         ### ADAPT 1-6
-         'styledsu_siamese_inceptionv2_adapt_1_6_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_6:styledsu_siamese_inceptionv2_adapt_1_6_nonshared_batch_norm',
+         #'styledsu_siamese_inceptionv2_adapt_1_6_nonshared_batch_norm = bob.bio.htface.baselines.style_domain_specific_units.inception_v2.adapt_1_6:styledsu_siamese_inceptionv2_adapt_1_6_nonshared_batch_norm',
 
-
-         'style_transfer_inception_v2 = bob.bio.htface.baselines.style_transfer.inception_v2:style_transfer_inception_v2',
+         #'style_transfer_inception_v2 = bob.bio.htface.baselines.style_transfer.inception_v2:style_transfer_inception_v2',
  
       ],
 
