@@ -69,7 +69,6 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
     right_scope['InceptionResnetV2/Conv2d_1a_3x3/'] = "InceptionResnetV2/Conv2d_1a_3x3_right/"
 
 
-    # Preparing the prior
     extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.casia-webface-inception-v2_batchnorm_gray"],
                         "scopes": [left_scope, right_scope]
                        }

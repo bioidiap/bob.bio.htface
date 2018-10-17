@@ -48,4 +48,4 @@ def get_stair_case_learning_rates(samples_per_epoch, batch_size, epochs):
     run_01 = int(iterations*0.75)
     run_001 = run_01 + int(iterations*0.15)
     
-    return [run_01, run_001, run_001]
+    return [run_01, run_001]

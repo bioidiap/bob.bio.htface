@@ -107,7 +107,9 @@ setup(
             'nivl         = bob.bio.htface.configs.databases.nivl:database',
             'pola_thermal = bob.bio.htface.configs.databases.pola_thermal:database',
             'thermal = bob.bio.htface.configs.databases.thermal:database',
-            'casia-nir-vis-2 = bob.bio.htface.configs.databases.casia_nir_vis:database'
+            'casia-nir-vis-2 = bob.bio.htface.configs.databases.casia_nir_vis:database',
+            'fargo = bob.bio.htface.configs.databases.fargo:database',
+            'fargo_depth = bob.bio.htface.configs.databases.fargo_depth:database',
         ],
         
         'console_scripts' : [

@@ -9,12 +9,8 @@ build:
   skip: true  # [not linux]
   entry_points:
     - bob_htface_gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main
-    - bob_htface_plot_covariate_shift.py = bob.bio.htface.script.plot_covariate_shift:main
-    - bob_htface_grassmann_test.py = bob.bio.htface.script.grassmann_test:main
     - bob_htface_plot_tsne_modality.py = bob.bio.htface.script.plot_tsne_modality:main
     - bob_htface_evaluate_and_squash.py = bob.bio.htface.script.evaluate_and_squash:main
-    - bob_htface_baselines.py = bob.bio.htface.script.baselines:main
-    - bob_htface_train_cnn.py = bob.bio.htface.script.train_cnn_baselines:main
     - bob_htface_convolve_and_view.py = bob.bio.htface.script.convolve_and_view:main
     - bob_htface_recrate_vs_nparameters.py = bob.bio.htface.script.recrate_vs_nparameters:main
     - bob_htface_recrate_vs_nparameters_by_hand.py = bob.bio.htface.script.recrate_vs_nparameters_by_hand:main

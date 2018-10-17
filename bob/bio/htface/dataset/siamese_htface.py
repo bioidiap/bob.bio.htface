@@ -112,7 +112,7 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
     left_data, right_data, siamese_labels = siamese_htface_generator(database, protocol, groups, 
             purposes, pairs_same_modality=pairs_same_modality, random_pairs=random_pairs,
             same_identity_pairs=same_identity_pairs)    
-    dataset = tf.contrib.data.Dataset.from_tensor_slices((left_data, right_data, siamese_labels))
+    dataset = tf.data.Dataset.from_tensor_slices((left_data, right_data, siamese_labels))
     dataset = dataset.map(parser)
 
     # Shuffling
@@ -155,7 +155,7 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
     samples_B = list_2_dict(database.objects(protocol=protocol,
                             groups=groups,
                             purposes=purposes,
-                            modality=database.modalities[1]))
+                            modality=database.modalities[2]))
 
     genuine = True
     rounds = 5

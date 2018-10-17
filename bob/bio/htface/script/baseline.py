@@ -10,7 +10,7 @@ A script to run HETEROGENEOUS FACE RECOGNITION baselines
 from bob.bio.base import load_resource
 import os
 from bob.bio.base.baseline import get_available_databases, search_preprocessor
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import ResourceOption, verbosity_option
 import click
 from bob.bio.base.script.verify import main as verify
 from bob.extension import rc
@@ -24,9 +24,10 @@ import bob.io.base
 @click.argument('database', required=True)
 @click.option('--preprocess-training-data', default=False, help='If set, the preprocessed data from the training set (world) will be extracted', required=False, is_flag=True)
 @click.option('--result-directory', default=rc["bob.bio.htface.experiment-directory"], help='Directory where the experiments will be executed', required=True)
-@verbosity_option()
+@click.option('--protocols', default=None, help='If set, it will replace the set of predifined protocols. It\'s used when you want to run an experiment in a protocol that is not covered in this package', required=False)
+@verbosity_option(cls=ResourceOption)
 @click.pass_context
-def htface_baseline(ctx, baseline, database, preprocess_training_data, result_directory):
+def htface_baseline(ctx, baseline, database, preprocess_training_data, result_directory, protocols, **kwargs):
     """Run a biometric recognition baseline.
 
     \b
@@ -63,12 +64,17 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
     db = load_resource(database, 'database', package_prefix="bob.bio.")
     db_preprocessor = search_preprocessor(database, loaded_baseline.preprocessors.keys())
     preprocessor = loaded_baseline.preprocessors[db_preprocessor]
+
     # Iterating over the protocols
-    if hasattr(db, "reproducible_protocols"):
-        protocols = db.reproducible_protocols
+    if protocols is None:
+        # If the protocols were not set, take the ones preset in the database
+        if hasattr(db, "reproducible_protocols"):
+            protocols = db.reproducible_protocols
+        else:
+            # if doesn't have any defined, will take the default one
+            protocols = [None]
     else:
-        # if doesn't have any defined, will take the default one
-        protocols = [None]
+        protocols = [protocols]
 
     for p, i in zip(protocols, range(len(protocols))):
         temp_config_file = generate_temp_config_file(result_directory,

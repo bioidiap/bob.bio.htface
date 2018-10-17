@@ -35,7 +35,7 @@ def get_dsu_training_setup():
     training_setup["embedding_validation"] = True
     training_setup["steps"] = 2000000
 
-    #training_setup["learning_rate_values"] = [0.1, 0.01, 0.001]
-    training_setup["learning_rate_values"] = [1., 0.1, 0.01]
+    training_setup["learning_rate_values"] = [0.1, 0.01, 0.001]
+    #training_setup["learning_rate_values"] = [1., 0.1, 0.01]
 
     return training_setup

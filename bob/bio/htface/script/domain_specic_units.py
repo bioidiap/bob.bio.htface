@@ -11,7 +11,7 @@ Heterogeneous Face Recognition
 from bob.bio.base import load_resource
 import os
 from bob.bio.base.baseline import get_available_databases, search_preprocessor
-from bob.extension.scripts.click_helper import verbosity_option
+from bob.extension.scripts.click_helper import verbosity_option, ResourceOption
 import click
 from bob.bio.base.script.verify import main as verify
 from bob.extension import rc
@@ -26,9 +26,9 @@ from tensorflow.python import debug as tf_debug
 @click.argument('database', required=True)
 @click.option('--result-directory', default=rc["bob.bio.htface.experiment-directory"], help='Directory where the experiments will be executed', required=True)
 @click.option('--protocol', default=None, help='Protocol name. If not set, the script will iterate over all protocols of a given database', required=False)
-@verbosity_option()
+@verbosity_option(cls=ResourceOption)
 @click.pass_context
-def htface_train_dsu(ctx, baseline, database, result_directory, protocol):
+def htface_train_dsu(ctx, baseline, database, result_directory, protocol, **kwargs):
     """Trains a CNN using the domain specific units approach
 
     \b

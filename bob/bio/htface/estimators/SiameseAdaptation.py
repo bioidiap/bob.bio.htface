@@ -186,7 +186,6 @@ class SiameseAdaptation(estimator.Estimator):
                     # Compute the moving average of all individual losses and the total loss.
                     loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')
                     loss_averages_op = loss_averages.apply(tf.get_collection(tf.GraphKeys.LOSSES))
-                    
                     # Defining the learning rate
                     learning_rate = tf.train.piecewise_constant(global_step,
                                                                 self.learning_rate_boundaries,
