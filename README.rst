@@ -1,17 +1,16 @@
 .. vim: set fileencoding=utf-8 :
 .. Sat Aug 20 07:33:55 CEST 2016
 
-
-
-.. image:: http://img.shields.io/badge/docs-stable-yellow.png
-   :target: http://beatubulatest.lab.idiap.ch/private/docs/bob/bob.bio.htface/stable/index.html
-.. image:: http://img.shields.io/badge/docs-latest-orange.png
-   :target: http://beatubulatest.lab.idiap.ch/private/docs/bob/bob.bio.htface/master/index.html
+.. image:: https://img.shields.io/badge/docs-stable-yellow.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.htface/stable/index.html
+.. image:: http://img.shields.io/badge/docs-latest-orange.svg
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.htface/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.htface/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.htface/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.htface
-
+.. image:: https://img.shields.io/pypi/v/bob.bio.htface.svg
+   :target: https://pypi.python.org/pypi/bob.bio.htface
 
 ==============================================
  Run heterogeneous face recognition algorithms
@@ -22,18 +21,14 @@ Bob_.
 This package is part of the ``bob.bio`` packages, which allow to run comparable and reproducible biometric recognition experiments on publicly available databases.
 
 
-This package still relies on the old facerec lib.
-Migration is on the way.
-
-
 Installation
 ------------
 
 Follow our `installation`_ instructions. Then, using the Python interpreter
 provided by the distribution, bootstrap and buildout this package::
 
-  $ python bootstrap-buildout.py
-  $ ./bin/buildout
+  $ conda install bob.bio.htface
+  $ bob bio htface --help
 
 
 Contact

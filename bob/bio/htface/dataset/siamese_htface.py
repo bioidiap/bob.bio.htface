@@ -155,7 +155,7 @@ def siamese_htface_generator(database, protocol, groups="world", purposes="train
     samples_B = list_2_dict(database.objects(protocol=protocol,
                             groups=groups,
                             purposes=purposes,
-                            modality=database.modalities[2]))
+                            modality=database.modalities[1]))
 
     genuine = True
     rounds = 5
