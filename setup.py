@@ -131,10 +131,19 @@ setup(
           'htface_facenet = bob.bio.htface.baselines.standard_facerec:htface_facenet',
           'htface_lightcnn = bob.bio.htface.baselines.standard_facerec:htface_lightcnn',
 
-          'htface_idiap_casia_inception_v2_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v2_centerloss_gray',
-          'htface_idiap_casia_inception_v2_centerloss_rgb = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v2_centerloss_rgb',
 
-          'htface_idiap_casia_inception_v1_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v1_centerloss_gray',
+          'htface_idiap_msceleb_inception_v1_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_msceleb_inception_v1_centerloss_gray',
+          'htface_idiap_msceleb_inception_v1_centerloss_rgb = bob.bio.htface.baselines.standard_facerec:htface_idiap_msceleb_inception_v1_centerloss_rgb',
+
+          'htface_idiap_msceleb_inception_v2_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_msceleb_inception_v2_centerloss_gray',
+          'htface_idiap_msceleb_inception_v2_centerloss_rgb = bob.bio.htface.baselines.standard_facerec:htface_idiap_msceleb_inception_v2_centerloss_rgb',
+
+
+
+          #'htface_idiap_casia_inception_v2_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v2_centerloss_gray',
+          #'htface_idiap_casia_inception_v2_centerloss_rgb = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v2_centerloss_rgb',
+
+          #'htface_idiap_casia_inception_v1_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_casia_inception_v1_centerloss_gray',
           #'htface_idiap_casia_inception_v1_centerloss_rgb = bob.bio.face_ongoing.baselines.idiap_inception_v1:htface_idiap_casia_inception_v1_centerloss_rgb',
  
           # SOTA BASELINES

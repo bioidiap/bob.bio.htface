@@ -75,7 +75,6 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
             protocols = [None]
     else:
         protocols = [protocols]
-
     for p, i in zip(protocols, range(len(protocols))):
         temp_config_file = generate_temp_config_file(result_directory,
                                                      db.name,
@@ -84,7 +83,7 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
         # call verify with all parameters
         parameters = [
             temp_config_file,
-            loaded_baseline.extractor,           
+            '-e', loaded_baseline.extractor,
             '-p', preprocessor,
             '-d', database] + ['-v'] * ctx.meta['verbosity']
 
