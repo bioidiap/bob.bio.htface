@@ -95,7 +95,7 @@ def shuffle_data_and_labels_image_augmentation(database, protocol, data_shape, d
                  extension=extension)
 
     anchor_data, positive_data, negative_data = triplet_htface_generator(database, protocol, groups, purposes)
-    dataset = tf.contrib.data.Dataset.from_tensor_slices((anchor_data, positive_data, negative_data))
+    dataset = tf.data.Dataset.from_tensor_slices((anchor_data, positive_data, negative_data))
     dataset = dataset.map(parser)
 
     # Shuffling

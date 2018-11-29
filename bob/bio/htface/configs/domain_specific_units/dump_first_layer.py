@@ -27,7 +27,7 @@ from bob.bio.htface.extractor import SiameseEmbeddingDumpFirstLayer
 
 model_filename = "/idiap/temp/tpereira/HTFace/cnn/styledsu_siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm/pola_thermal/VIS-thermal-overall-split1/"
 
-#model_filename = rc["bob.bio.face_ongoing.casia-webface-inception-v2_batchnorm_gray"]
+#model_filename = rc["bob.bio.face_ongoing.msceleb-inception-v2_batchnorm_gray"]
 
 #########
 # Extraction

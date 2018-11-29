@@ -60,6 +60,57 @@ class MLBPHS(Baseline):
 
 htface_mlbphs = MLBPHS()
 
+
+class ClassicLBP(Baseline):
+    """
+    Baseline from:
+
+    """
+
+    def __init__(self, **kwargs):
+
+        name              = "classic_lbp"
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/classic_LBP.py")
+        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/classic_LBP.py")}
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/classic_LBP.py")
+
+        self.baseline_type     = "SOTA baselines"
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+        
+        super(ClassicLBP, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+
+htface_classic_lbp = ClassicLBP()
+
+
+class MultiScaleFeatures(Baseline):
+    """
+    Baseline from:
+
+    """
+
+    def __init__(self, **kwargs):
+
+        name              = "multiscale_features"
+        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/multiscale_features.py")
+        preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/multiscale_features.py")}
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/multiscale_features.py")
+
+        self.baseline_type     = "SOTA baselines"
+        self.reuse_extractor   = True
+
+        # train cnn
+        self.estimator         = None
+        self.preprocessed_data = None
+        
+        super(MultiScaleFeatures, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+
+htface_multiscale_features = MultiScaleFeatures()
+
+
 class GFKGabor(Baseline):
     """
     Baseline from:

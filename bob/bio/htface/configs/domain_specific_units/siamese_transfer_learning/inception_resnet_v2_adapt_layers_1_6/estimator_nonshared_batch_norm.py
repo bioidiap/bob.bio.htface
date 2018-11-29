@@ -87,7 +87,7 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
         right_scope['InceptionResnetV2/Repeat/block35_{0}/'.format(i)]       = "InceptionResnetV2/block35/block35_{0}_right/".format(i)
 
     # Preparing the prior
-    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.casia-webface-inception-v2_batchnorm_gray"],
+    extra_checkpoint = {"checkpoint_path": rc["bob.bio.face_ongoing.msceleb-inception-v2_batchnorm_gray"],
                         "scopes": [left_scope, right_scope]
                        }
 
@@ -128,4 +128,4 @@ def get_estimator(experiment_dir, database, protocol, samples_per_epoch, trainin
                                    scaffold=tf.train.Scaffold(),
                                    summary_writer=tf.summary.FileWriter(model_dir))]
 
-    return estimator, train_input_fn, hooks, "idiap_casia_inception_v2_centerloss_gray"
+    return estimator, train_input_fn, hooks, "htface_idiap_msceleb_inception_v2_centerloss_gray"

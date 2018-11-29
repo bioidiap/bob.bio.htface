@@ -110,6 +110,8 @@ setup(
             'casia-nir-vis-2 = bob.bio.htface.configs.databases.casia_nir_vis:database',
             'fargo = bob.bio.htface.configs.databases.fargo:database',
             'fargo_depth = bob.bio.htface.configs.databases.fargo_depth:database',
+            'ldhf = bob.bio.htface.configs.databases.ldhf:database',
+            'eprip = bob.bio.htface.configs.databases.eprip:database',
         ],
         
         'console_scripts' : [
@@ -149,6 +151,8 @@ setup(
           # SOTA BASELINES
           'htface_isv = bob.bio.htface.baselines.sota_baselines:htface_isv',
           'htface_mlbphs = bob.bio.htface.baselines.sota_baselines:htface_mlbphs',
+          'htface_classic_lbp = bob.bio.htface.baselines.sota_baselines:htface_classic_lbp',
+          'htface_multiscale_features = bob.bio.htface.baselines.sota_baselines:htface_multiscale_features',
           'htface_gfkgabor = bob.bio.htface.baselines.sota_baselines:htface_gfkgabor',
 
           # DSU - HTFACE-BASELINE
@@ -263,6 +267,7 @@ setup(
       'bob.bio.htface.cli': [
         'baseline  = bob.bio.htface.script.baseline:htface_baseline',
         'train_dsu = bob.bio.htface.script.domain_specic_units:htface_train_dsu',
+        'filter_ldhf = bob.bio.htface.script.filter_ldhf:filter_ldhf',
       ],
         
 

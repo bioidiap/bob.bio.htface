@@ -66,7 +66,7 @@ class VGG16(Baseline):
     def __init__(self, **kwargs):
  
         name              = "vgg16"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_extractor.py")
+        extractor         = "vgg_features"
         preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_preprocessor.py")}
         algorithm          = "distance-cosine"
 
@@ -120,7 +120,7 @@ class Inceptionv1_rgb(Baseline):
 
         name              = "htface_idiap_msceleb_inception_v1_centerloss_rgb"
         extractor         = pkg_resources.resource_filename("bob.bio.face_ongoing", "configs/baselines/msceleb/inception_resnet_v1/centerloss_rgb.py")
-        preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
+        preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/facenet_preprocessor.py")}
         algorithm = "distance-cosine"
  
         self.baseline_type     = "Standard FaceRec"

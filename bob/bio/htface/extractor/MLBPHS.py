@@ -99,14 +99,35 @@ class MLBPHS (Extractor):
     def __call__(self, image):
         """Extracts the local binary pattern histogram sequence from the given image"""
         
-        histogram_shape = numpy.prod(bob.ip.base.lbphs_output_shape(image, self.m_lbp[0], self.block_size, self.block_overlap))* len(self.lbp_radius)
-        hist = numpy.zeros((histogram_shape))
-        
-        offset = 0
-        for l in self.m_lbp:
-            h = bob.ip.base.lbphs(image, l, block_size=self.block_size, block_overlap=self.block_overlap).flatten().astype('float')
-            hist[offset:offset+h.shape[0]] = h
-            offset += h.shape[0]
+        if image.ndim == 2:        
+                
+            histogram_shape = numpy.prod(bob.ip.base.lbphs_output_shape(image, self.m_lbp[0], self.block_size, self.block_overlap))* len(self.lbp_radius)
+            hist = numpy.zeros((histogram_shape))
             
-        return hist
+            offset = 0
+            for l in self.m_lbp:
+                h = bob.ip.base.lbphs(image, l, block_size=self.block_size, block_overlap=self.block_overlap).flatten().astype('float')
+                hist[offset:offset+h.shape[0]] = h
+                offset += h.shape[0]
+                
+            return hist
+
+        else:
+            hist_per_channel = []
+            for i in range(image.shape[0]):
+                
+                channel_image = image[i, :, :]
+                
+            
+                histogram_shape = numpy.prod(bob.ip.base.lbphs_output_shape(channel_image, self.m_lbp[0], self.block_size, self.block_overlap))* len(self.lbp_radius)
+                hist = numpy.zeros((histogram_shape))
+                
+                offset = 0
+                for l in self.m_lbp:
+                    h = bob.ip.base.lbphs(channel_image, l, block_size=self.block_size, block_overlap=self.block_overlap).flatten().astype('float')
+                    hist[offset:offset+h.shape[0]] = h
+                    offset += h.shape[0]
+                hist_per_channel += list(hist)
+                
+            return numpy.array(hist_per_channel)
 

@@ -9,6 +9,8 @@ from .cbsr_nir_vis_2 import CBSR_NIR_VIS_2BioDatabase
 from .pola_thermal import Pola_ThermalBioDatabase
 from .pericrosseye import PeriCrossEyeBioDatabase
 from .fargo import FargoBioDatabase, FargoDepthBioDatabase
+from .ldhf import LDHFBioDatabase
+from .eprip import EPRIPBioDatabase
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -33,6 +35,8 @@ __appropriate__(
     Pola_ThermalBioDatabase,
     PeriCrossEyeBioDatabase,
     FargoBioDatabase,
-    FargoDepthBioDatabase
+    FargoDepthBioDatabase,
+    LDHFBioDatabase,
+    EPRIPBioDatabase
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

@@ -5,6 +5,8 @@ from .TripletEmbedding import TripletEmbedding
 from .SiameseEmbeddingDumpFirstLayer import SiameseEmbeddingDumpFirstLayer
 from .MLBPHS import MLBPHS
 from .StyleTransfer import StyleTransfer
+from .HoG import HoG
+from .ParallelConcatenatedExtractor import ParallelConcatenatedExtractor
 
 
 # gets sphinx autodoc done right - don't remove it

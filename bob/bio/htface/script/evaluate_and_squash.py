@@ -89,7 +89,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
       cmc_accumulator[j,:] = numpy.pad(cmc_curves[j],(0,padding_diff), 'constant',constant_values=(1))
       #cmc_average  += numpy.pad(cmc_curves[j],(0,padding_diff), 'constant',constant_values=(1))
 
-    cmc_std     = numpy.std(cmc_accumulator, axis=0); cmc_std[-1]
+    cmc_std     = numpy.std(cmc_accumulator, axis=0);# cmc_std[-1]
     cmc_average = numpy.mean(cmc_accumulator, axis=0)
 
     if(linestyle is not None):
@@ -107,7 +107,7 @@ def _plot_cmc(cmcs, colors, labels, title, linestyle,  fontsize=12, position=Non
   pyplot.xticks(ticks, [str(t) for t in ticks])
   #pyplot.axis([0, max_x, xmin, 100])
   pyplot.axis([0, max_x, xmin, xmax])  
-  pyplot.legend(loc=position, fontsize=12)
+  pyplot.legend(loc=position, fontsize=8)
   pyplot.title("")
   pyplot.grid(True)
 
@@ -253,7 +253,7 @@ def main(command_line_parameters=None):
 
     args = docopt(__doc__, version='Run experiment')
 
-    special_line_style = ["--", "-", "-", "-", "-", "-", "-"]
+    special_line_style = ["--", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]
 
     # check that the legends have the same length as the dev-files
     if (len(args["<experiment>"]) % len(args["--legends"])) != 0:
@@ -280,7 +280,7 @@ def main(command_line_parameters=None):
     # CMC
     logger.info("Plotting CMC")
     if len(args["--colors"]) ==0:
-        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown']
+        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown', 'darkmagenta', 'indigo', 'dodgerblue', 'coral']
     else:
         if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
             logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
