@@ -91,7 +91,6 @@ class GFK (bob.bio.base.algorithm.Algorithm):
 
       else:
           for d, m in zip(data, metadata):
-
               if m.db.modality_separator == m.modality:
                   source_jets.append(d)
               else:

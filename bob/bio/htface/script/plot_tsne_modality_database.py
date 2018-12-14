@@ -41,7 +41,7 @@ import logging
 import bob.bio.base
 import bob.core
 import os
-from bob.bio.htface.tools import FileSelector
+from bob.bio.base.tools import FileSelector
 import bob.io.base
 import bob.io.image
 from sklearn.preprocessing import normalize
@@ -60,6 +60,8 @@ import bob.core
 import bob.bio.base
 from mpl_toolkits.mplot3d import Axes3D
 numpy.random.seed(10)
+from matplotlib import colors as mcolors
+from matplotlib.lines import Line2D
 
 
 def process_raw_data(raw_data):
@@ -103,12 +105,12 @@ def main():
     bob_db = bob.bio.base.utils.load_resource(database, database_resource_key,
                                               imports=['bob.bio.base'], package_prefix='bob.bio.',
                                               preferred_package=None)
+                                                                                            
     if protocol is not  None:
         bob_db.protocol = protocol
 
     FileSelector.create(
-            database=bob_db,
-            modality_separator=bob_db.modality_separator,
+            database=bob_db,            
             extractor_file="",
             projector_file="",
             enroller_file="",
@@ -126,23 +128,31 @@ def main():
     fs = FileSelector.instance()
 
     logger.debug("  >> Loading data ...")
-    original_datalist = fs.original_data_list(groups="world")
+    original_datalist = fs.original_data_list(groups="dev")
             
-
     # Keeping two lists for each modality. Will be useful to use the colors
-    indexes_modality = dict()
-    indexes_modality[bob_db.modalities[0]] = []
-    indexes_modality[bob_db.modalities[1]] = []
+    #indexes_modality = dict()
+    #indexes_modality[bob_db.modalities[0]] = []
+    #indexes_modality[bob_db.modalities[1]] = []
 
     data = None
     total_samples = len(original_datalist)
+
+
+    color_index = 0
+    colors = list(dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS).keys())
+    client_colors = dict() # Stores the color per client
+    sample_colors = [] # Stores the color/modality
+    legend_elements = [Line2D([0], [0], marker="^", label="VIS"), Line2D([0], [0], marker="o", label="Thermal") ]
+
     for o, i in zip(original_datalist, range(total_samples)):
 
-        # Keeping track of the modality indexes
-        if o.modality == bob_db.modality_separator:
-            indexes_modality[bob_db.modalities[0]].append(i)
-        else:
-            indexes_modality[bob_db.modalities[1]].append(i)
+        if o.client_id not in client_colors:
+            client_colors[o.client_id] = colors[color_index]
+            color_index += 1
+        
+        marker = "^" if o.modality == bob_db.modality_separator else "o"
+        sample_colors.append([client_colors[o.client_id], marker, o.modality])
 
         raw_data = bob.io.base.load(o.make_path(database_original_directory) + database_extension)
         raw_data = process_raw_data(raw_data)
@@ -162,6 +172,7 @@ def main():
                 data[i,j] = raw_data[j]
  
     pp = PdfPages(output_file)
+    # One TSNE per filter
     for i in range(data.shape[1]):
     #for i in range(32):
 
@@ -176,23 +187,19 @@ def main():
         ax = mpl.subplot(111)
     
         #mpl.title("T-SNE - '{0}'".format(database_name))
-        mpl.title("T-SNE - kernel {0}".format(i))
+        mpl.title("".format(i))
 
-        indexes = numpy.array(indexes_modality[bob_db.modalities[0]])
-        ax.scatter(projected_data[indexes, 0],
-                   projected_data[indexes, 1],
-                   c="cadetblue",
-                   marker="o",
-                   s=3)
+        for j in range(projected_data.shape[0]):
+            mpl.plot(projected_data[j, 0], projected_data[j, 1], marker=sample_colors[j][1], color=sample_colors[j][0], label=sample_colors[j][2])
 
-        indexes = numpy.array(indexes_modality[bob_db.modalities[1]])
-        ax.scatter(projected_data[indexes, 0],
-                   projected_data[indexes, 1],
-                   c="indianred",
-                   marker="o",
-                    s=1)
+            #ax.scatter(projected_data[j, 0],
+            #           projected_data[j, 1],
+            #           c=sample_colors[j][0],
+            #           marker=sample_colors[j][1],
+            #           s=1)
    
-        mpl.legend(bob_db.modalities)
+        #mpl.legend(bob_db.modalities)
+        mpl.legend(handles=legend_elements)
         pp.savefig(fig)
 
     pp.close()

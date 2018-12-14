@@ -64,7 +64,7 @@ class SiameseAdaptLayers1_4_BetasBatchNorm(Baseline):
     def __init__(self, **kwargs):
     
         name              = "siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm"
-        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_2/extractor_nonshared_betas_batch_norm.py")
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_betas_batch_norm.py")
         preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
 
@@ -83,7 +83,7 @@ class TripletAdaptLayers1_4_BatchNorm(Baseline):
     def __init__(self, **kwargs):
     
         name              = "triplet_inceptionv2_layers_1_4_nonshared_batch_norm"
-        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_2/extractor_nonshared_batch_norm.py")
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_batch_norm.py")
         preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
 
@@ -97,6 +97,33 @@ class TripletAdaptLayers1_4_BatchNorm(Baseline):
         super(TripletAdaptLayers1_4_BatchNorm, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
 
 
+class SiameseAdaptLayers1_4_BatchNorm_PLDA(Baseline):
+    """
+    This baseline has the following features:
+      - The prior uses batch norm in all layers
+      - Siamese net
+      - Adapt the 1-5 layers
+    """
+
+    def __init__(self, **kwargs):
+    
+        name              = "siamese_inceptionv2_adapt_1_4_betas_nonshared_batch_norm_plda"
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/siamese_transfer_learning/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_batch_norm.py")
+        preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
+        algorithm = pkg_resources.resource_filename("bob.bio.htface", "configs/algorithm/plda_short.py")
+
+
+        self.baseline_type     = "Siamese BN"
+        self.reuse_extractor   = False        
+
+        # train cnn
+        self.estimator         = bob.bio.htface.configs.domain_specific_units.siamese_transfer_learning.inception_resnet_v2_adapt_layers_1_4.estimator_nonshared_batch_norm.get_estimator
+        self.preprocessed_data = pkg_resources.resource_filename("bob.bio.htface", "configs/tensorflow/siamese_transfer_learning/inception_resnet_v2_databases/")
+
+        super(SiameseAdaptLayers1_4_BatchNorm_PLDA, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
+
+
+
         
 class TripletAdaptLayers1_4_BetasBatchNorm(Baseline):
     """
@@ -108,7 +135,7 @@ class TripletAdaptLayers1_4_BetasBatchNorm(Baseline):
     def __init__(self, **kwargs):
             
         name              = "triplet_inceptionv2_layers_1_4_betas_nonshared_batch_norm"
-        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_2/extractor_nonshared_betas_batch_norm.py")
+        extractor         =  pkg_resources.resource_filename("bob.bio.htface", "configs/domain_specific_units/triplet_transfer_learning/inception_resnet_v2_adapt_layers_1_4/extractor_nonshared_betas_batch_norm.py")
         preprocessors   = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/inception_resnet_v2_gray_preprocessor.py")}
         algorithm         = "distance-cosine"
 
@@ -204,11 +231,15 @@ class SiameseAdaptLayers1_4_BatchNorm_euclidean_loss(Baseline):
 
 
 # Entry points
+inception_resnet_v2_siamese_adapt_1_4_plda = SiameseAdaptLayers1_4_BatchNorm_PLDA()
+
 inception_resnet_v2_siamese_adapt_1_4 = SiameseAdaptLayers1_4_BatchNorm()
 inception_resnet_v2_siamese_adapt_1_4_betas = SiameseAdaptLayers1_4_BetasBatchNorm()
 
 inception_resnet_v2_triplet_adapt_1_4 = TripletAdaptLayers1_4_BatchNorm()
 inception_resnet_v2_triplet_adapt_1_4_betas = TripletAdaptLayers1_4_BetasBatchNorm()
+
+
 
 
 #inception_resnet_v2_siamese_adapt_1_4_same_modality = SiameseAdaptLayers1_4_BatchNorm_same_modality()

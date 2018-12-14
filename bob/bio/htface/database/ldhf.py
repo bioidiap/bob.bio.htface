@@ -61,11 +61,11 @@ class LDHFBioDatabase(BioDatabase):
         
     @property
     def modality_separator(self):
-        return "VIS"
+        return self._db.modality_separator
 
     @property
     def modalities(self):
-        return ["VIS", "NIR"] 
+        return self._db.modalities
 
     @property
     def reproducible_protocols(self):

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import bob.bio.face
-from bob.bio.htface.database import Pola_ThermalBioDatabase
+from bob.bio.htface.database import Polarimetric_ThermalBioDatabase
 from bob.extension import rc
 
-database = Pola_ThermalBioDatabase(original_directory=rc["bob.bio.htface.polathermal_path"],
+database = Polarimetric_ThermalBioDatabase(original_directory=rc["bob.bio.htface.polathermal_path"],
                                 original_extension=rc["bob.bio.htface.polathermal_extension"],
                                 protocol='VIS-polarimetric-overall-split1',
                                 models_depend_on_protocol = True)

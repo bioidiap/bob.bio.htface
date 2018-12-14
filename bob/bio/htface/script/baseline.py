@@ -83,7 +83,7 @@ def htface_baseline(ctx, baseline, database, preprocess_training_data, result_di
         # call verify with all parameters
         parameters = [
             temp_config_file,
-            '-e', loaded_baseline.extractor,
+            loaded_baseline.extractor,
             '-p', preprocessor,
             '-d', database] + ['-v'] * ctx.meta['verbosity']
 

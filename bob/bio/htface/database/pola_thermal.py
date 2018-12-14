@@ -66,3 +66,19 @@ class Pola_ThermalBioDatabase(BioDatabase):
 
     def annotations(self, file_object):
         return file_object.f.annotations()
+        
+        
+class Polarimetric_ThermalBioDatabase(Pola_ThermalBioDatabase):
+    """
+    Implements verification API for querying Pola_Thermal database.
+    """
+
+    @property
+    def reproducible_protocols(self):
+        """
+        Those are the protocols used in the publications
+        """
+        return ["VIS-polarimetric-overall-split1", "VIS-polarimetric-overall-split2", "VIS-polarimetric-overall-split3",
+                "VIS-polarimetric-overall-split4", "VIS-polarimetric-overall-split5"]
+
+

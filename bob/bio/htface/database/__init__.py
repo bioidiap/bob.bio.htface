@@ -6,7 +6,7 @@ from .cuhk_cufs import CUHK_CUFSBioDatabase
 from .cuhk_cufsf import CUHK_CUFSFBioDatabase
 from .nivl import NIVLBioDatabase
 from .cbsr_nir_vis_2 import CBSR_NIR_VIS_2BioDatabase
-from .pola_thermal import Pola_ThermalBioDatabase
+from .pola_thermal import Pola_ThermalBioDatabase, Polarimetric_ThermalBioDatabase
 from .pericrosseye import PeriCrossEyeBioDatabase
 from .fargo import FargoBioDatabase, FargoDepthBioDatabase
 from .ldhf import LDHFBioDatabase

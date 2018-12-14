@@ -99,7 +99,7 @@ class GFK_GaborJet(GFK, GaborJet):
                 shape = (0, len(j[0].abs))
                 jet_index = 0
                 for a in j:
-                    if not jets_abs.has_key(jet_index):
+                    if jet_index not in jets_abs:
                         jets_abs[jet_index] = numpy.zeros(shape=shape)
                     jets_abs[jet_index] = numpy.vstack((jets_abs[jet_index], a.abs))
                     jet_index += 1
@@ -149,6 +149,7 @@ class GFK_GaborJet(GFK, GaborJet):
         source_jets, target_jets = self.split_data_by_modality(training_features, metadata, self.split_training_features_by_client)
         #self.split_training_features_by_client
         # Creating a kernel per jet
+
         if self.kernel_per_jet:
 
             # Stacking the jets per node

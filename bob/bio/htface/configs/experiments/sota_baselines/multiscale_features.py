@@ -18,8 +18,12 @@ CROPPED_IMAGE_WIDTH = 120
 #RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
 #LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
 
-RIGHT_EYE_POS = (34, 40)
-LEFT_EYE_POS = (34, 80)
+#RIGHT_EYE_POS = (34, 40)
+#LEFT_EYE_POS = (34, 80)
+
+RIGHT_EYE_POS = (30, 30)
+LEFT_EYE_POS = (30, 90)
+
 
 cropper = FaceCrop(
                         cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
@@ -44,8 +48,8 @@ preprocessor = DoG_Pyramid(filters)
 import bob.ip.base
 from bob.bio.htface.extractor import HoG, MLBPHS, ParallelConcatenatedExtractor
 
-hog = HoG(bob.ip.base.HOG(image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)))
-lbp = MLBPHS(block_size=(32, 32), block_overlap=(16, 16), lbp_radius=[1, 3, 5],
+hog = HoG(bob.ip.base.HOG(image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH), block_size=(32, 32), cell_size=(32, 32)))
+lbp = MLBPHS(block_size=(32, 32), block_overlap=(16, 16), lbp_radius=[1, 3],
              lbp_uniform=True, lbp_circular=True)
     
 extractor = ParallelConcatenatedExtractor([hog, lbp])
