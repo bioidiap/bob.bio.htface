@@ -12,46 +12,46 @@ import logging
 logger = logging.getLogger("bob.bio.htface")
 
 class DoG_Pyramid(Base):
-  """Implements the DoG Piramid
+    """Implements the DoG Piramid
 
-  **Parameters:**
+    **Parameters:**
 
-  multidog_features:
+    multidog_features:
     List of DoG filteres
-  """
+    """
 
-  def __init__(
+    def __init__(
       self,
       filters=[],
       **kwargs
-  ):
-    # call base class constructors
-    self.filters = filters
+    ):
+        # call base class constructors
+        self.filters = filters
 
-    Base.__init__(self, **kwargs)
+        Base.__init__(self, **kwargs)
 
-  def __call__(self, image, annotations=None):
-    """__call__(image, annotations = None) -> face
+    def __call__(self, image, annotations=None):
+        """__call__(image, annotations = None) -> face
 
-    Crops the face using the mtcnn face detector
-    
-    **Parameters:**
+        Crops the face using the mtcnn face detector
 
-    image : 3D :py:class:`numpy.ndarray`
-      The face image to be processed (3 channels only(.
+        **Parameters:**
 
-    annotations : any
-      Ignored.
+        image : 3D :py:class:`numpy.ndarray`
+          The face image to be processed (3 channels only(.
 
-    **Returns:**
+        annotations : any
+          Ignored.
 
-    face : 3D :py:class:`numpy.ndarray`
-      The cropped face.
-    """
-    
-    filtered_images = []
-    for f in self.filters:
-        filtered_images.append(f(image,annotations=annotations))
-        
-    return numpy.array(filtered_images)
+        **Returns:**
+
+        face : 3D :py:class:`numpy.ndarray`
+          The cropped face.
+        """
+
+        filtered_images = []
+        for f in self.filters:
+            filtered_images.append(f(image,annotations=annotations))
+            
+        return numpy.array(filtered_images)
 

@@ -18,7 +18,7 @@ def test_DoG_Pyramid():
     scales = [4,5] 
     for s in sigmas:
         for c in scales:
-            filters.append(bob.ip.base.TanTriggs(radius=c, alpha=0.1, sigma0=s, sigma1=s+1))
+            filters.append(bob.bio.face.preprocessor.TanTriggs(face_cropper=None, radius=c, alpha=0.1, sigma0=s, sigma1=s+1))
 
     preprocessor = DoG_Pyramid(filters)
     
