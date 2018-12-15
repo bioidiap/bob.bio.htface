@@ -287,8 +287,8 @@ def main():
     else:
 
       #training
-      if(verbose):
-        print "Doing PCA. Matrix [{0} x {1}] ... ".format(training_data.shape[0],training_data.shape[1])
+      #if(verbose):
+      #  print("Doing PCA. Matrix [{0} x {1}] ... ".format(training_data.shape[0],training_data.shape[1]))
 
       machine, energy        = make_pca(training_data, components=components)
       machine.input_divide   = std
@@ -298,7 +298,7 @@ def main():
       hdf5file.set('energy', energy)
       machine.save(hdf5file)
     
-      print "Energy accumulated in the first two components {0}%".format(energy * 100)
+      #print "Energy accumulated in the first two components {0}%".format(energy * 100)
     
       del training_data
       
@@ -307,7 +307,7 @@ def main():
     machine  = bob.learn.linear.Machine(hdf5file)
 
     energy           = hdf5file.read('energy')
-    print "Energy accumulated in the first two components {0}%".format(energy * 100)
+    #print "Energy accumulated in the first two components {0}%".format(energy * 100)
     
 
   #Ploting
@@ -316,8 +316,8 @@ def main():
 
   files_A, files_B = split_modalities(database.objects(protocol=protocol, groups="world"), split_string)
 
-  if(verbose):
-    print("Loading dev data ...")
+  #if(verbose):
+  #  print("Loading dev data ...")
 
 
   data_A       = load_files_from_list(database, files_A[0:1000], flatten=True)

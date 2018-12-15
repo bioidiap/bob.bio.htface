@@ -102,7 +102,7 @@ class ISV_g64_u50(Baseline):
         name              = "isv-g64-u50"
         extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_extractor.py")
         preprocessors     = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_preprocessor.py")}
-        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_g128u50.py")
+        algorithm         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/sota_baselines/isv_g64u50.py")
 
         self.baseline_type     = "SOTA baselines"
         self.reuse_extractor   = True
