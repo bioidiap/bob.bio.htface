@@ -100,6 +100,7 @@ def main():
 
     data = dict()
     indexes_modality = dict()
+    MAX_CLIENTS = 100
 
     # Loading the database
     bob_db = bob.bio.base.utils.load_resource(database, database_resource_key,
@@ -141,14 +142,15 @@ def main():
 
     color_index = 0
     colors = list(dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS).keys())
+
     client_colors = dict() # Stores the color per client
     sample_colors = [] # Stores the color/modality
-    legend_elements = [Line2D([0], [0], marker="^", label="VIS"), Line2D([0], [0], marker="o", label="Thermal") ]
+    legend_elements = [Line2D([0], [0], marker="^", label="VIS"), Line2D([0], [0], marker="o", label="Sketch") ]
 
     for o, i in zip(original_datalist, range(total_samples)):
 
         if o.client_id not in client_colors:
-            client_colors[o.client_id] = colors[color_index]
+            client_colors[o.client_id] = colors[color_index%len(colors)]
             color_index += 1
         
         marker = "^" if o.modality == bob_db.modality_separator else "o"
@@ -174,7 +176,7 @@ def main():
     pp = PdfPages(output_file)
     # One TSNE per filter
     for i in range(data.shape[1]):
-    #for i in range(32):
+
 
         logger.debug("  >> Training TSNE with {0} ...".format(data.shape))
         model = TSNE(n_components=2, random_state=seed, perplexity=perplexity,
@@ -189,8 +191,16 @@ def main():
         #mpl.title("T-SNE - '{0}'".format(database_name))
         mpl.title("".format(i))
 
-        for j in range(projected_data.shape[0]):
-            mpl.plot(projected_data[j, 0], projected_data[j, 1], marker=sample_colors[j][1], color=sample_colors[j][0], label=sample_colors[j][2])
+        client_tracker = []
+        for o, j in zip(original_datalist, range(projected_data.shape[0])):
+
+            if o.client_id not in client_tracker and len(client_tracker) > MAX_CLIENTS:
+                continue
+            else: 
+                client_tracker.append(o.client_id)
+
+
+            mpl.plot(projected_data[j, 0], projected_data[j, 1], marker=sample_colors[j][1], color=sample_colors[j][0], label=sample_colors[j][2], markersize=5)
 
             #ax.scatter(projected_data[j, 0],
             #           projected_data[j, 1],
