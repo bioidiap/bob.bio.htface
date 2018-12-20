@@ -7,6 +7,8 @@
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.htface/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.htface/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.htface/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.htface/badges/master/coverage.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.htface/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.htface
 .. image:: https://img.shields.io/pypi/v/bob.bio.htface.svg
