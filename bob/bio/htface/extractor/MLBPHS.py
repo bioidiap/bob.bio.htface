@@ -60,7 +60,9 @@ class MLBPHS (Extractor):
         lbp_add_average = False,
         # histogram options
         sparse_histogram = False,
-        split_histogram = None
+        split_histogram = None,
+        get_histograms_per_block = False,
+        variance_flooring = 10e-5
     ):
       """Initializes the local Gabor binary pattern histogram sequence tool chain with the given file selector object"""
 
@@ -78,7 +80,9 @@ class MLBPHS (Extractor):
           lbp_compare_to_average = lbp_compare_to_average,
           lbp_add_average = lbp_add_average,
           sparse_histogram = sparse_histogram,
-          split_histogram = split_histogram
+          split_histogram = split_histogram,
+          variance_flooring=variance_flooring
+          
       )
       
       if not isinstance(lbp_radius, list):
@@ -94,23 +98,44 @@ class MLBPHS (Extractor):
       self.block_size=block_size
       self.block_overlap = block_overlap
       self.lbp_radius = lbp_radius
+      self.get_histograms_per_block = get_histograms_per_block
+      self.variance_flooring = variance_flooring
       
 
     def __call__(self, image):
         """Extracts the local binary pattern histogram sequence from the given image"""
         
         if image.ndim == 2:        
+
+            if self.get_histograms_per_block:
                 
-            histogram_shape = numpy.prod(bob.ip.base.lbphs_output_shape(image, self.m_lbp[0], self.block_size, self.block_overlap))* len(self.lbp_radius)
-            hist = numpy.zeros((histogram_shape))
-            
-            offset = 0
-            for l in self.m_lbp:
-                h = bob.ip.base.lbphs(image, l, block_size=self.block_size, block_overlap=self.block_overlap).flatten().astype('float')
-                hist[offset:offset+h.shape[0]] = h
-                offset += h.shape[0]
+                for l in self.m_lbp:
+                    lbp_image = l(image)
+                    blocks = bob.ip.base.block(lbp_image, self.block_size, self.block_overlap)
+                    hist_blocks = []
+                    
+                    for i in range(blocks.shape[0]):
+                        for j in range(blocks.shape[1]):
+                            hist_blocks.append(bob.ip.base.histogram(blocks[i,j,:,:], l.max_label))
+
+                hist_blocks = numpy.array(hist_blocks)
+                hist_blocks = (hist_blocks - numpy.mean(hist_blocks, axis=0)) / numpy.std(hist_blocks, axis=0)
+                hist_blocks = numpy.nan_to_num(hist_blocks, self.variance_flooring)
                 
-            return hist
+                            
+                return hist_blocks
+            else:
+                
+                histogram_shape = numpy.prod(bob.ip.base.lbphs_output_shape(image, self.m_lbp[0], self.block_size, self.block_overlap))* len(self.lbp_radius)
+                hist = numpy.zeros((histogram_shape))
+                
+                offset = 0
+                for l in self.m_lbp:
+                    h = bob.ip.base.lbphs(image, l, block_size=self.block_size, block_overlap=self.block_overlap).flatten().astype('float')
+                    hist[offset:offset+h.shape[0]] = h
+                    offset += h.shape[0]
+                    
+                return hist
 
         else:
             hist_per_channel = []

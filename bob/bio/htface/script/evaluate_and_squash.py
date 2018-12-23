@@ -280,7 +280,7 @@ def main(command_line_parameters=None):
     # CMC
     logger.info("Plotting CMC")
     if len(args["--colors"]) ==0:
-        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown', 'darkmagenta', 'indigo', 'dodgerblue', 'coral']
+        colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown', 'darkmagenta', 'indigo', 'dodgerblue', 'coral', 'lime']
     else:
         if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
             logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))

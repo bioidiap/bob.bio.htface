@@ -155,7 +155,12 @@ setup(
           'isv_g128_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g128_u50',
           'isv_g64_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g64_u50',
  
- 
+
+          'isv_g512_u50_LBP = bob.bio.htface.baselines.sota_baselines.isv_lbp_baselines:isv_g512_u50_LBP',
+          'isv_g256_u50_LBP = bob.bio.htface.baselines.sota_baselines.isv_lbp_baselines:isv_g256_u50_LBP',
+          'isv_g128_u50_LBP = bob.bio.htface.baselines.sota_baselines.isv_lbp_baselines:isv_g128_u50_LBP',
+          'isv_g64_u50_LBP = bob.bio.htface.baselines.sota_baselines.isv_lbp_baselines:isv_g64_u50_LBP',
+
  
           # SOTA BASELINES
           'htface_mlbphs = bob.bio.htface.baselines.sota_baselines:htface_mlbphs',
@@ -279,6 +284,8 @@ setup(
         'train_dsu = bob.bio.htface.script.domain_specic_units:htface_train_dsu',
         'filter_ldhf = bob.bio.htface.script.filter_ldhf:filter_ldhf',
         'fft_analysis = bob.bio.htface.script.fft_analysis:fft_analysis',
+        'create_block_image = bob.bio.htface.script.create_block_image:create_block_image',
+        'isv_intuition = bob.bio.htface.script.isv_intuition:isv_intuition',
       ],
         
 
