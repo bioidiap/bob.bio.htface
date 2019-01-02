@@ -150,6 +150,7 @@ setup(
  
  
           # ISV
+          'isv_g1024_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g512_u1024',
           'isv_g512_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g512_u50',
           'isv_g256_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g256_u50',
           'isv_g128_u50 = bob.bio.htface.baselines.sota_baselines.isv_baselines:isv_g128_u50',
