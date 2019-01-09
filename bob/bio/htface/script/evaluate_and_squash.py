@@ -2,33 +2,6 @@
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-"""
-This script runs CMC, DET plots and Recognition prints of groups of experiments.
-It's useful when an evaluation protocol is based of k-fold cross validation.
-
-
-Let's say you have executed 2 different experiments in a dataset whose protocol has five folds.
-The command bellow will search for the scores of every fold and average them accordingly
-
-Examples:
-
-  `bob_htface_evaluate_and_squash.py <experiment_1> [<experiment_2>] --legends experiment1 --legends experiment2`
-  
-
-Usage:
-  bob_htface_evaluate_and_squash.py  <experiment>... --legends=<arg>... [--title=<arg>] [--report-name=<arg>] [--colors=<arg>]... [--score-base-name=<arg>] [--x-min=<arg>] [--special-linestyle]
-  bob_htface_evaluate_and_squash.py -h | --help
-
-Options:
-  --legends=<arg>                Name of each experiment  
-  --colors=<arg>                 Colors of each plot
-  --report-name=<arg>            Name of the report [default: report_name.pdf]
-  --title=<arg>                  Title of the plot
-  --score-base-name=<arg>        Name of the score files [default: scores-dev]
-  --x-min=<arg>                  Axis x-min [default: 0]
-  --special-linestyle            Use the special set of linestily. Such set will do the first plot dashed and the rest as solid lines
-  -h --help                      Show this screen.
-"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -39,7 +12,10 @@ import numpy
 import math
 import os
 import bob.bio.base
-from docopt import docopt
+#from docopt import docopt
+from bob.extension.scripts.click_helper import ResourceOption, verbosity_option
+import click
+
 
 # matplotlib stuff
 
@@ -248,55 +224,79 @@ def discover_scores(base_path, score_name="scores-dev", skip=["extracted", "prep
     return score_files
 
 
-def main(command_line_parameters=None):
-    """Reads score files, computes error measures and plots curves."""
+@click.command(context_settings={'ignore_unknown_options': True,
+                                 'allow_extra_args': True})
+@click.argument('experiment', required=True, nargs=-1)
+@click.option('--legends', help='Name of each experiment', required=True, multiple=True)
+@click.option('--colors', help='Color of each plot', multiple=True)
+@click.option('--report-name', help='Name of the report', default="report_name.pdf")
+@click.option('--title', help='Title of the plot')
+@click.option('--score-base-name', help='Name of the score files', default="scores-dev")
+@click.option('--x-min', help='Axis x-min', default=0)
+@click.option('--special-linestyle', help='Use the special set of linestily. Such set will do the first plot dashed and the rest as solid lines', default=False, is_flag=True)
+@verbosity_option(cls=ResourceOption)
+def evaluate_and_squash(experiment, legends, colors, report_name, title, score_base_name, x_min, special_linestyle, **kwargs):
+    """
+    This script runs CMC, DET plots and Recognition prints of groups of experiments.
+    It's useful when an evaluation protocol is based of k-fold cross validation.
 
-    args = docopt(__doc__, version='Run experiment')
+
+    Let's say you have executed 2 different experiments in a dataset whose protocol has five folds.
+    The command bellow will search for the scores of every fold and average them accordingly
+
+    Examples:
+
+       `bob_htface_evaluate_and_squash.py <experiment_1> [<experiment_2>] --legends experiment1 --legends experiment2`
+    
+    """
+
+    #args = docopt(__doc__, version='Run experiment')
+    import ipdb; ipdb.set_trace()
 
     special_line_style = ["--", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]
 
     # check that the legends have the same length as the dev-files
-    if (len(args["<experiment>"]) % len(args["--legends"])) != 0:
+    if (len(experiment) % len(legends)) != 0:
         logger.error("The number of experiments (%d) is not multiple of --legends (%d) ", len(args["<experiment>"]), len(args["--legends"]))
 
     
     bob.core.log.set_verbosity_level(logger, 3)
     dev_files = []
-    for e in args["<experiment>"]:
-        df = discover_scores(e, score_name=args["--score-base-name"])
+    for e in experiment:
+        df = discover_scores(e, score_name=score_base_name)
         dev_files += df
         logger.info("{0} scores discovered in {1}".format(len(df), e))
 
 
     # TPIR@FAR=0.1
     logger.info("Computing TPIR@FAR=0.1")
-    _compute_tpir_at_far(dev_files, args["--legends"])
+    _compute_tpir_at_far(dev_files, legends)
 
     # RR
     logger.info("Computing recognition rate")
     cmcs_dev = [bob.bio.base.score.load.cmc_four_column(f) for f in dev_files]
-    _compute_rr(cmcs_dev, args["--legends"])
+    _compute_rr(cmcs_dev, legends)
     
     # CMC
     logger.info("Plotting CMC")
-    if len(args["--colors"]) ==0:
+    if len(colors) ==0:
         colors     = ['red','darkviolet','darkorange', 'dimgrey','darkcyan', 'royalblue', 'saddlebrown', 'darkmagenta', 'indigo', 'dodgerblue', 'coral', 'lime']
     else:
-        if (len(args["<experiment>"]) % len(args["--colors"])) != 0:
-            logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(args["<experiment>"]), len(args["--colors"]))
+        if (len(experiment) % len(colors)) != 0:
+            logger.error("The number of experiments (%d) is not multiple of --colors (%d) ", len(experiment), len(colors))
     
-    pdf = PdfPages(args["--report-name"])
+    pdf = PdfPages(report_name)
     try:
         # CMC
-        if args["--special-linestyle"]:
-            fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=special_line_style, xmin=int(args["--x-min"]))
+        if special_linestyle:
+            fig = _plot_cmc(cmcs_dev, colors, legends, title, linestyle=special_line_style, xmin=int(x_min))
         else:
-            fig = _plot_cmc(cmcs_dev, colors, args["--legends"], args["--title"], linestyle=None, xmin=int(args["--x-min"]))
+            fig = _plot_cmc(cmcs_dev, colors, legends, title, linestyle=None, xmin=int(x_min))
             
         pdf.savefig(fig)
 
         # ROC
-        fig = _plot_roc(dev_files, colors, args["--legends"], args["--title"], linestyle=special_line_style,  fontsize=12, position=None, xmin=0, xmax=100)
+        fig = _plot_roc(dev_files, colors, legends, title, linestyle=special_line_style,  fontsize=12, position=None, xmin=0, xmax=100)
         pdf.savefig(fig)
   
     except RuntimeError as e:
@@ -304,8 +304,4 @@ def main(command_line_parameters=None):
 
     pdf.close()
     logger.info("Done !!!")
-
-
-if __name__ == '__main__':
-    main()
 

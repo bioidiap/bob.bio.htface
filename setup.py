@@ -287,6 +287,7 @@ setup(
         'fft_analysis = bob.bio.htface.script.fft_analysis:fft_analysis',
         'create_block_image = bob.bio.htface.script.create_block_image:create_block_image',
         'isv_intuition = bob.bio.htface.script.isv_intuition:isv_intuition',
+        'evaluate_and_squash = bob.bio.htface.script.evaluate_and_squash:evaluate_and_squash',
       ],
         
 
