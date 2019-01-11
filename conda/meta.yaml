@@ -42,6 +42,7 @@ requirements:
     - bob.db.ldhf
     - bob.db.cbsr_nir_vis_2
     - bob.learn.tensorflow
+    - bob.ip.mtcnn
   run:
     - python
     - setuptools
