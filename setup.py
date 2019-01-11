@@ -297,12 +297,12 @@ setup(
     # PyPI. You can find the complete list of classifiers that are valid and
     # useful here (http://pypi.python.org/pypi?%3Aaction=list_classifiers).
     classifiers=[
-        'Framework :: Bob',
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD',
-        'Natural Language :: English',
-        'Programming Language :: Python',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+      'Framework :: Bob',
+      'Development Status :: 3 - Alpha',
+      'Intended Audience :: Developers',
+      'License :: OSI Approved :: BSD License',
+      'Natural Language :: English',
+      'Programming Language :: Python',
+      'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
 )
