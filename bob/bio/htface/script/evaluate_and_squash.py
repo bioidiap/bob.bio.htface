@@ -250,10 +250,8 @@ def evaluate_and_squash(experiment, legends, colors, report_name, title, score_b
     
     """
 
-    #args = docopt(__doc__, version='Run experiment')
-    import ipdb; ipdb.set_trace()
-
     special_line_style = ["--", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]
+    #special_line_style = ["--", "--", "--", "--", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]
 
     # check that the legends have the same length as the dev-files
     if (len(experiment) % len(legends)) != 0:
