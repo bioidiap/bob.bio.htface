@@ -19,14 +19,7 @@ import click
 
 # matplotlib stuff
 
-import matplotlib; matplotlib.use('agg') #avoids TkInter threaded start
-from matplotlib import pyplot
-from matplotlib.backends.backend_pdf import PdfPages
-
-# enable LaTeX interpreter
-matplotlib.rc('text', usetex=True)
-matplotlib.rc('font', family='serif')
-matplotlib.rc('lines', linewidth = 4)
+import matplotlib
 
 # increase the default font size
 import bob.core
@@ -249,6 +242,15 @@ def evaluate_and_squash(experiment, legends, colors, report_name, title, score_b
        `bob_htface_evaluate_and_squash.py <experiment_1> [<experiment_2>] --legends experiment1 --legends experiment2`
     
     """
+    
+    matplotlib.use('agg') #avoids TkInter threaded start
+    from matplotlib import pyplot
+    from matplotlib.backends.backend_pdf import PdfPages
+
+    # enable LaTeX interpreter
+    matplotlib.rc('text', usetex=True)
+    matplotlib.rc('font', family='serif')
+    matplotlib.rc('lines', linewidth = 4)    
 
     special_line_style = ["--", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]
     #special_line_style = ["--", "--", "--", "--", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-"]

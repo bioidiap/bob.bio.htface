@@ -38,9 +38,7 @@ from .evaluate_and_squash import _compute_rr, discover_scores
 
 # matplotlib stuff
 import tensorflow as tf
-import matplotlib; matplotlib.use('agg') #avoids TkInter threaded start
-from matplotlib import pyplot
-from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib
 
 from bob.bio.htface.architectures.inception_v1_batch_norm import inception_resnet_v1_adapt_first_head,\
                                                                  inception_resnet_v1_adapt_layers_1_2_head,\
@@ -53,11 +51,6 @@ from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resne
                                                                  inception_resnet_v2_adapt_layers_1_4_head,\
                                                                  inception_resnet_v2_adapt_layers_1_5_head,\
                                                                  inception_resnet_v2_adapt_layers_1_6_head
-
-# enable LaTeX interpreter
-matplotlib.rc('text', usetex=True)
-matplotlib.rc('font', family='serif')
-matplotlib.rc('lines', linewidth = 4)
 
 # increase the default font size
 import bob.core
@@ -146,6 +139,17 @@ def compute_trainable_variables(base_architecture):
 
 def main(command_line_parameters=None):
     """Reads score files, computes error measures and plots curves."""
+
+
+    matplotlib.use('agg') #avoids TkInter threaded start
+    from matplotlib import pyplot
+    from matplotlib.backends.backend_pdf import PdfPages
+
+    # enable LaTeX interpreter
+    matplotlib.rc('text', usetex=True)
+    matplotlib.rc('font', family='serif')
+    matplotlib.rc('lines', linewidth = 4)
+
 
     args = docopt(__doc__, version='Run experiment')
 

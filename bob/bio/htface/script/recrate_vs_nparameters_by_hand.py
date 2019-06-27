@@ -29,16 +29,7 @@ import numpy
 import math
 import os
 from docopt import docopt
-import matplotlib; matplotlib.use('agg') #avoids TkInter threaded start
-from matplotlib import pyplot
-from matplotlib.backends.backend_pdf import PdfPages
-
-
-
-# enable LaTeX interpreter
-matplotlib.rc('text', usetex=True)
-matplotlib.rc('font', family='serif')
-matplotlib.rc('lines', linewidth = 4)
+import matplotlib
 
 # increase the default font size
 import bob.core
@@ -58,6 +49,16 @@ n_parameters = [0, 320/1000., 33264/1000., 171696/1000., 439488/1000., 1668768/1
 
 def main(command_line_parameters=None):
     """Reads score files, computes error measures and plots curves."""
+
+    matplotlib.use('agg') #avoids TkInter threaded start
+    from matplotlib import pyplot
+    from matplotlib.backends.backend_pdf import PdfPages
+
+    # enable LaTeX interpreter
+    matplotlib.rc('text', usetex=True)
+    matplotlib.rc('font', family='serif')
+    matplotlib.rc('lines', linewidth = 4)
+
 
     args = docopt(__doc__, version='Run experiment')
 
