@@ -1,10 +1,10 @@
 .. vim: set fileencoding=utf-8 :
 .. Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-.. _bob.learn.tensorflow:
+.. _bob.bio.htface:
 
 ===============================
- Heterogeneous Face Recognition 
+ Heterogeneous Face Recognition
 ===============================
 
 The goal of this package is to provide an "easy to reproduce" set of experiments in HETEROGENEOUS
@@ -12,9 +12,8 @@ face recognition databases.
 This package is an extension of the
 `bob.bio.base <https://www.idiap.ch/software/bob/docs/bob/bob.bio.base/stable/index.html>`_ framework.
 
-=============
- Installation
-=============
+Installation
+============
 
 The installation instructions are based on conda (**LINUX ONLY**).
 Please `install conda <https://conda.io/docs/install/quick.html#linux-miniconda-install>`_ before continuing.
@@ -46,12 +45,12 @@ Follow below how this file looks like::
 
     {
     "bob.bio.htface.experiment-directory": "[PATH-WHERE-THE-EXPERIMENTS-WILL-BE-EXECUTED]",
-    
+
     "bob.bio.htface.cufs_path": "[CUHK-CUFS-DB-PATH]",
     "bob.bio.htface.arface_path": "[ARFACE-DB-PATH]",
     "bob.bio.htface.xm2vts_path": "[XM2VTS-DB-PATH]",
     "bob.bio.htface.cufs_extension": [".jpg", ".JPG", ".ppm"],
-    
+
     "bob.bio.htface.nivl_path": "[NIVL-DB-PATH]",
     "bob.bio.htface.nivl_extension": ".png",
 
@@ -69,13 +68,12 @@ Follow below how this file looks like::
     "bob.bio.face_ongoing.idiap_casia_inception_v1_centerloss_rgb": "[INCEPTIONV1-RGB-MODEL-PATH],
     "bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_gray": "[INCEPTIONV2-GRAY-MODEL-PATH],
     "bob.bio.face_ongoing.idiap_casia_inception_v2_centerloss_rgb": "[INCEPTIONV2-RGB-MODEL-PATH]
-    
+
     }
 
-.. warning::  
+.. warning::
   Sorry, but there is no other way, you have to set all these things
-   
-========
+
 The task
 ========
 
@@ -88,9 +86,8 @@ Follow below possible Heteregenous Face Recognition Scenarious.
  :scale: 100 %
 
 
-==========
 Databases
-==========
+=========
 
 This subsection describes the databases used in this work.
 
@@ -101,7 +98,6 @@ This subsection describes the databases used in this work.
 
 
 
-==========
 Hypotheses
 ==========
 
@@ -114,7 +110,6 @@ Hypotheses
    transfer_learning/transfer_learning
 
 
-==========
 User guide
 ==========
 
@@ -124,7 +119,6 @@ User guide
    user_guide
 
 
-==========
 References
 ==========
 .. toctree::
