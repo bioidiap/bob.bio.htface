@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-
+from nose.plugins.attrib import attr
 import tensorflow as tf
 from bob.bio.htface.architectures.inception_v2 import inception_resnet_v2_adapt_first_head,\
                                                       inception_resnet_v2_adapt_layers_1_2_head,\
@@ -16,7 +16,7 @@ from bob.bio.htface.architectures.inception_v1 import inception_resnet_v1_adapt_
                                                       inception_resnet_v1_adapt_layers_1_5_head,\
                                                       inception_resnet_v1_adapt_layers_1_6_head
 
-
+@attr('slow')
 def test_inceptionv2_siamese():
 
     # Elements for checking
@@ -56,7 +56,7 @@ def test_inceptionv2_siamese():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv2_triplet():
 
     # Elements for checking
@@ -108,7 +108,7 @@ def test_inceptionv2_triplet():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv1_siamese():
 
     # Elements for checking

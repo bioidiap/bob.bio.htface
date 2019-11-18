@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-
+from nose.plugins.attrib import attr
 import tensorflow as tf
 from bob.bio.htface.architectures.inception_v2_batch_norm import inception_resnet_v2_adapt_first_head, \
     inception_resnet_v2_adapt_layers_1_2_head, \
@@ -17,7 +17,7 @@ from bob.bio.htface.architectures.inception_v1_batch_norm import inception_resne
     inception_resnet_v1_adapt_layers_1_5_head, \
     inception_resnet_v1_adapt_layers_1_6_head
 
-
+@attr('slow')
 def test_inceptionv2_siamese():
     # Elements for checking
     functions = [inception_resnet_v2_adapt_first_head,
@@ -57,7 +57,7 @@ def test_inceptionv2_siamese():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv2_siamese_weights_shutdown():
     # Elements for checking
     functions = [inception_resnet_v2_adapt_first_head,
@@ -99,7 +99,7 @@ def test_inceptionv2_siamese_weights_shutdown():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv2_triplet_weights_shutdown():
     # Elements for checking
     functions = [inception_resnet_v2_adapt_first_head,
@@ -154,9 +154,8 @@ def test_inceptionv2_triplet_weights_shutdown():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv2_triplet():
-    # Elements for checking
     # Elements for checking
     functions = [inception_resnet_v2_adapt_first_head,
                  inception_resnet_v2_adapt_layers_1_2_head,
@@ -205,7 +204,7 @@ def test_inceptionv2_triplet():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv1_siamese():
     # Elements for checking
     functions = [inception_resnet_v1_adapt_first_head,
@@ -245,7 +244,7 @@ def test_inceptionv1_siamese():
         tf.reset_default_graph()
         assert len(tf.global_variables()) == 0
 
-
+@attr('slow')
 def test_inceptionv1_siamese_weights_shutdown():
     # Elements for checking
     functions = [inception_resnet_v1_adapt_first_head,
