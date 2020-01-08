@@ -30,7 +30,6 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - bob.bio.base
-    - bob.bio.caffe_face
     - bob.bio.face
     - bob.bio.gmm
     - bob.ip.tensorflow_extractor
@@ -42,7 +41,6 @@ requirements:
     - bob.db.ldhf
     - bob.db.cbsr_nir_vis_2
     - bob.learn.tensorflow
-    - bob.ip.mtcnn
   run:
     - python
     - setuptools

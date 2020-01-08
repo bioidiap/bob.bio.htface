@@ -129,9 +129,7 @@ setup(
       'bob.bio.baseline':[
 
            # FACE REC BASELINES
-          'htface_vgg16 = bob.bio.htface.baselines.standard_facerec:htface_vgg16',
           'htface_facenet = bob.bio.htface.baselines.standard_facerec:htface_facenet',
-          'htface_lightcnn = bob.bio.htface.baselines.standard_facerec:htface_lightcnn',
 
 
           'htface_idiap_msceleb_inception_v1_centerloss_gray = bob.bio.htface.baselines.standard_facerec:htface_idiap_msceleb_inception_v1_centerloss_gray',

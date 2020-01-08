@@ -7,33 +7,6 @@ from bob.bio.base.baseline import Baseline
 import pkg_resources
 
 
-class LightCNN(Baseline):
-    """
-    Light CNN Baseline
-    """
-
-    def __init__(self, **kwargs):
-
-        name              = "lightcnn"
-        extractor         = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_extractor.py")
-        preprocessors      = dict()
-        preprocessors["default"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_preprocessor.py")
-        preprocessors["thermal"] = pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/lightcnn_preprocessor_polathermal.py")
-        algorithm = "distance-cosine"
-
-        self.baseline_type     = "Standard FaceRec"
-        self.reuse_extractor   = True
-
-        # train cnn
-        self.estimator         = None
-        self.preprocessed_data = None
-
-        super(LightCNN, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
-       
-
-htface_lightcnn = LightCNN()
-
-
 class Facenet(Baseline):
     """
     Facenet CNN Baseline
@@ -57,29 +30,6 @@ class Facenet(Baseline):
 
 htface_facenet = Facenet()
 
-
-class VGG16(Baseline):
-    """
-    VGG16 CNN Baseline
-    """
-
-    def __init__(self, **kwargs):
- 
-        name              = "vgg16"
-        extractor         = "vgg_features"
-        preprocessors      = {"default": pkg_resources.resource_filename("bob.bio.htface", "configs/experiments/standard_facerec/vgg16_preprocessor.py")}
-        algorithm          = "distance-cosine"
-
-        self.baseline_type     = "Standard FaceRec"
-        self.reuse_extractor   = True
-
-        # train cnn
-        self.estimator         = None
-        self.preprocessed_data = None
-
-        super(VGG16, self).__init__(name, preprocessors, extractor, algorithm, **kwargs)
-
-htface_vgg16 = VGG16()
 
 
 ##########################
