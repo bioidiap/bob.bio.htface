@@ -6,7 +6,6 @@ package:
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
 build:
-  skip: true  # [not linux]
   entry_points:
     - bob_htface_gmm_responsibility_map.py = bob.bio.htface.script.gmm_responsibility_map:main
     - bob_htface_plot_tsne_modality.py = bob.bio.htface.script.plot_tsne_modality:main
@@ -50,7 +49,7 @@ requirements:
     - tensorflow
     - scikit-learn
     - numpy
-      
+
 test:
   imports:
     - {{ name }}
